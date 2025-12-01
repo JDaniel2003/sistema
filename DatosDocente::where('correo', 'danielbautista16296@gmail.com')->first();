@@ -1,0 +1,19 @@
+[90m= [39m[34;4mApp\Models\DatosDocente[39;24m {#6750
+    [34mid_datos_docentes[39m: [35m15[39m,
+    [34mnombre[39m: "[32mJuan daniel[39m",
+    [34mapellido_paterno[39m: "[32mbautista[39m",
+    [34mapellido_materno[39m: "[32mcruz[39m",
+    [34mid_abreviatura[39m: [35m3[39m,
+    [34medad[39m: [35m46[39m,
+    [34mid_genero[39m: [35m2[39m,
+    [34mfecha_nacimiento[39m: "[32m1978-07-21[39m",
+    [34mcedula_profesional[39m: "[32m5678902[39m",
+    [34mrfc[39m: "[32mRAGA780721O5P[39m",
+    [34mtelefono[39m: "[32m9515555556[39m",
+    [34mcorreo[39m: "[32mdanielbautista16296@gmail.com[39m",
+    [34mcurp[39m: "[32mRAGA780721HOCRRT15[39m",
+    [34mid_domicilio_docente[39m: [35m15[39m,
+    [34mnumero_seguridad_social[39m: "[32m55555555556[39m",
+    [34mdatos[39m: [36mnull[39m,
+  }
+

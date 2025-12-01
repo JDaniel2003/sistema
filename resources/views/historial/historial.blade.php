@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Historial</title>
+    <!-- Custom fonts -->
+    <link href="{{ asset('libs/fontawesome/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('libs/sbadmin/img/up_logo.png') }}">
+    <!-- Custom styles -->
+    <link href="{{ asset('libs/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <!-- Top Header -->
+    <div class="bg-danger text-white1 text-center py-2">
+        <h4 class="mb-0">SISTEMA DE CONTROL ESCOLAR</h4>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+
+                    <div class="w-100 text-center">
+                        <h5 class="m-0 font-weight-bold" id="logoutModalLabel">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Cerrar Sesión
+                        </h5>
+                    </div>
+                    <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close"
+                        style="position: absolute; right: 1rem; top: 1rem; opacity: 0.9;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-exclamation-circle text-warning" style="font-size: 4rem;"></i>
+                    </div>
+                    <h6 class="font-weight-bold mb-3">¿Desea cerrar su sesión?</h6>
+                    <p class="text-muted mb-0">
+                        Al cerrar sesión, será redirigido a la página de inicio de sesión.
+                    </p>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary px-4" type="button" data-dismiss="modal">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancelar
+                    </button>
+
+                    <!-- Formulario para cerrar sesión -->
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
+        <div class="d-flex align-items-center">
+            <div style="width: 300px; height: 120px;">
+                <img src="{{ asset('libs/sbadmin/img/upn.png') }}" alt="Logo"
+                    style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+        <div class="collapse navbar-collapse ml-4">
+            <ul class="navbar-nav" style="padding-left: 20%;">
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('admin') }}">Inicio</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('periodos.index') }}">Períodos Escolares</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('carreras.index') }}">Carreras</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('materias.index') }}">Materias</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('planes.index') }}">Planes
+                        de estudio</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('alumnos.index') }}">Alumnos</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('asignaciones.index') }}">Asignaciones Docentes</a></li>
+                <li class="nav-item"><a class="nav-link navbar-active-item px-3"
+                        href="{{ route('historial.index') }}">Historial</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('calificaciones.index') }}">Calificaciones</a></li>
+
+            </ul>
+        </div>
+        <div class="position-absolute" style="top: 10px; right: 20px; z-index: 1000;">
+            <div class="d-flex align-items-center text-white">
+                <span class="mr-3">{{ Auth::user()->rol->nombre }}</span>
+                <a href="#" class="text-white text-decoration-none logout-link" data-toggle="modal"
+                    data-target="#logoutModal">
+                    Cerrar Sesión <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid py-5">
+                    <h1 class="text-danger text-center mb-5"
+                        style="font-size: 2.5rem; font-weight: bold; font-family: 'Arial Black', Verdana, sans-serif;">
+                        Historial de Reinscripciones
+                    </h1>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-11">
+                            <!-- Botón nueva reinscripción -->
+                            <div class="mb-3 text-right">
+                                <button type="button" class="btn btn-primary mr-2" data-toggle="modal"
+                                    data-target="#modalInscripcionPrimeraVez">
+                                    <i class="fas fa-user-plus"></i> Inscripción Primera Vez
+                                </button>
+                                <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                                    data-target="#modalReinscripcionMasiva">
+                                    <i class="fas fa-users"></i> Promoción
+                                </button>
+                                <button type="button" class="btn btn-info mr-2" data-toggle="modal"
+                                    data-target="#modalReinscripcionMasivaAvanzada">
+                                    <i class="fas fa-users"></i> Reinscripción Masiva
+                                </button>
+
+                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#nuevaReinscripcionModal">
+                                    <i class="fas fa-plus-circle"></i> Nueva Reinscripción
+                                </button>
+                            </div>
+                            <!-- Modal Inscripción Primera Vez -->
+                            <div class="modal fade" id="modalInscripcionPrimeraVez" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-xl" role="document">
+                                    <div class="modal-content border-0 shadow-lg">
+                                        <div class="modal-header modal-header-custom border-0 bg-primary">
+                                            <div class="w-100 text-center">
+                                                <h5 class="mb-0 font-weight-bold text-white">
+                                                    👨‍🎓 Inscripción Primera Vez (Aspirantes → Inscritos)
+                                                </h5>
+                                                <p class="m-0 mt-2 mb-0 text-white"
+                                                    style="font-size: 0.9rem; opacity: 0.95;">
+                                                    Asigna materias a alumnos que acaban de inscribirse por primera vez
+                                                </p>
+                                            </div>
+                                            <button type="button" class="close text-white" data-dismiss="modal"
+                                                aria-label="Cerrar"
+                                                style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="formInscripcionPrimeraVez" method="POST"
+                                                action="{{ route('historial.store-primera-vez') }}">
+                                                @csrf
+
+                                                <!-- Paso 1: Seleccionar carrera -->
+                                                <div class="card shadow mb-3">
+                                                    <div class="card-header bg-white">
+                                                        <b>1. Selecciona la carrera</b>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label>Carrera <span
+                                                                        class="text-danger">*</span></label>
+                                                                <select name="id_carrera" id="carreraPrimeraVez"
+                                                                    class="form-control" required>
+                                                                    <option value="">-- Selecciona --</option>
+                                                                    @foreach ($carreras as $carrera)
+                                                                        <option value="{{ $carrera->id_carrera }}">
+                                                                            {{ $carrera->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label>Generación <span
+                                                                        class="text-danger">*</span></label>
+                                                                <select name="id_generacion" id="generacionPrimeraVez"
+                                                                    class="form-control" required>
+                                                                    <option value="">-- Selecciona una generación
+                                                                        --</option>
+                                                                    @foreach ($generaciones as $gen)
+                                                                        <option value="{{ $gen->id_generacion }}">
+                                                                            {{ $gen->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Paso 2: Alumnos encontrados -->
+                                                <div id="contenedorAlumnosPrimeraVez" style="display: none;">
+                                                    <div class="card shadow mb-3">
+                                                        <div class="card-header bg-white">
+                                                            <div
+                                                                class="d-flex justify-content-between align-items-center">
+                                                                <b>2. Alumnos a inscribir</b>
+                                                                <button type="button" id="btnSeleccionarTodosPrimera"
+                                                                    class="btn btn-sm btn-outline-secondary">Seleccionar
+                                                                    todos</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div id="listaAlumnosPrimeraVez"
+                                                                style="max-height: 200px; overflow-y: auto;">
+                                                                <div class="text-center py-2 text-muted">Selecciona una
+                                                                    carrera</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Paso 3: Datos de inscripción -->
+                                                <div class="card shadow mb-3">
+                                                    <div class="card-header bg-white">
+                                                        <b>3. Datos de inscripción</b>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label>Período Escolar <span
+                                                                        class="text-danger">*</span></label>
+                                                                <select name="id_periodo_escolar"
+                                                                    id="periodoPrimeraVez" class="form-control"
+                                                                    required>
+                                                                    <option value="">-- Selecciona --</option>
+                                                                    @foreach ($periodosAbiertos as $p)
+                                                                        <option value="{{ $p->id_periodo_escolar }}">
+                                                                            {{ $p->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label>Grupo <span class="text-danger">*</span></label>
+                                                                <select name="id_grupo" id="grupoPrimeraVez"
+                                                                    class="form-control" required>
+                                                                    <option value="">-- Selecciona --</option>
+                                                                    @foreach ($grupos as $g)
+                                                                        <option value="{{ $g->id_grupo }}">
+                                                                            {{ $g->nombre }} -
+                                                                            {{ $g->carrera->nombre ?? 'N/A' }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mt-3">
+                                                                <label>Número de Período</label>
+                                                                <input type="text" id="numeroPeriodoPrimeraDisplay"
+                                                                    class="form-control" readonly
+                                                                    placeholder="Se autorellenará">
+                                                                <input type="hidden" name="id_numero_periodo"
+                                                                    id="id_numero_periodo_primera">
+                                                            </div>
+                                                            <div class="col-md-6 mt-3">
+                                                                <label>Fecha de Inscripción</label>
+                                                                <input type="date" name="fecha_inscripcion"
+                                                                    class="form-control" value="{{ date('Y-m-d') }}">
+                                                            </div>
+
+                                                            <div class="col-md-6 mt-3">
+                                                                <label>Status Inicio <span
+                                                                        class="text-danger">*</span></label>
+                                                                <select name="id_status_inicio" class="form-control"
+                                                                    required>
+                                                                    <option value="">-- Selecciona --</option>
+                                                                    @foreach ($historialStatus as $status)
+                                                                        <option
+                                                                            value="{{ $status->id_historial_status }}">
+                                                                            {{ $status->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mt-3">
+                                                                <label>Status Terminación</label>
+                                                                <select name="id_status_terminacion"
+                                                                    class="form-control">
+                                                                    <option value="">-- Opcional --</option>
+                                                                    @foreach ($historialStatus as $status)
+                                                                        <option
+                                                                            value="{{ $status->id_historial_status }}">
+                                                                            {{ $status->nombre }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Paso 4: Asignaciones -->
+                                                <div class="card shadow mb-3">
+                                                    <div class="card-header bg-white">
+                                                        <b>4. Asignaciones</b>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="loadingAsignacionesPrimera" class="text-center py-2"
+                                                            style="display: none;">
+                                                            <div class="spinner-border text-primary"></div> Cargando...
+                                                        </div>
+                                                        <div id="asignacionesContainerPrimera" style="display: none;">
+                                                            <div class="border rounded p-2 bg-light"
+                                                                style="max-height: 300px; overflow-y: auto;"
+                                                                id="listaAsignacionesPrimera"></div>
+                                                            <input type="hidden" name="asignaciones"
+                                                                id="asignacionesPrimeraInput">
+                                                            <small class="text-muted d-block mt-2">Selecciona hasta 8
+                                                                materias para todos los alumnos.</small>
+                                                        </div>
+                                                        <div id="mensajeAsignacionesPrimera" class="text-muted">
+                                                            Selecciona período y grupo para cargar materias.</div>
+                                                    </div>
+                                                </div>
+
+                                                <input type="hidden" name="alumnos_json" id="alumnosJsonPrimera">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancelar</button>
+                                            <button type="button" id="btnGuardarPrimeraVez" class="btn btn-success"
+                                                disabled>
+                                                <i class="fas fa-save mr-1"></i> Inscribir Seleccionados
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filtros -->
+                            <div class="container mb-4 d-flex justify-content-center">
+                                <div class="p-3 border rounded bg-light d-inline-block shadow-sm">
+                                    <form id="filtrosForm" method="GET" action="{{ route('historial.index') }}"
+                                        class="d-flex flex-wrap gap-2 align-items-center">
+                                        <div style="width: 500px;">
+                                            <input type="text" id="searchInput"
+                                                class="form-control form-control-sm" placeholder="🔍 Buscar">
+                                        </div>
+                                        <select name="mostrar" onchange="this.form.submit()"
+                                            class="form-control form-control-sm w-auto">
+                                            <option value="10" {{ request('mostrar') == 10 ? 'selected' : '' }}>10
+                                            </option>
+                                            <option value="13" {{ request('mostrar') == 13 ? 'selected' : '' }}>13
+                                            </option>
+                                            <option value="25" {{ request('mostrar') == 25 ? 'selected' : '' }}>25
+                                            </option>
+                                            <option value="50" {{ request('mostrar') == 50 ? 'selected' : '' }}>50
+                                            </option>
+                                            <option value="todo"
+                                                {{ request('mostrar') == 'todo' ? 'selected' : '' }}>Todo</option>
+                                        </select>
+                                        <a href="{{ route('historial.index', ['mostrar' => 'todo']) }}"
+                                            class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+                                            <i class="fas fa-list me-1"></i> Mostrar todo
+                                        </a>
+                                    </form>
+
+
+                                </div>
+
+                            </div>
+
+                            @if (session('success'))
+                                <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
+
+                            <!-- Tabla de historial -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover text-center" id="teachersTable"
+                                    width="100%">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Alumno</th> {{-- <th>Matrícula</th><th>Período Escolar</th><th>Grupo</th><th>Número Período</th> --}}
+                                            <th>Asignaciones</th>
+                                            <th>Fecha Inscripción</th>
+                                            <th>Status Inicio</th>
+                                            <th>Status Terminación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($historial as $registro)
+                                            <tr>
+                                                <td>
+                                                    {{ optional($registro->alumno->datosPersonales)->nombres ?? 'N/A' }}
+                                                    {{ optional($registro->alumno->datosPersonales)->primer_apellido ?? '' }}
+                                                    {{ optional($registro->alumno->datosPersonales)->segundo_apellido ?? '' }}
+                                                </td>
+                                                {{-- <td>{{ optional($registro->periodoEscolar)->nombre ?? 'N/A' }}</td>
+                                                <td>{{ optional($registro->grupo)->nombre ?? 'N/A' }}</td>
+                                                <td>{{ $registro->numeroPeriodo->tipoPeriodo->nombre ?? 'N/A' }} {{ $registro->numeroPeriodo->numero ?? 'N/A' }}</td> --}}
+                                                <td>
+                                                    @php
+                                                        $asignacionesCount = 0;
+                                                        for ($i = 1; $i <= 8; $i++) {
+                                                            $asignacion = $registro->{"asignacion$i"};
+                                                            if ($asignacion && $asignacion->materia) {
+                                                                $asignacionesCount++;
+                                                                echo '<span class="asignacion-tag d-block mb-1">' .
+                                                                    $asignacion->materia->nombre .
+                                                                    '</span>';
+                                                            }
+                                                        }
+                                                        if ($asignacionesCount === 0) {
+                                                            echo '<span class="text-muted">Sin asignaciones</span>';
+                                                        }
+                                                    @endphp
+                                                </td>
+
+                                                <td>{{ $registro->fecha_inscripcion ? \Carbon\Carbon::parse($registro->fecha_inscripcion)->format('d/m/Y') : 'N/A' }}
+                                                </td>
+                                                <td>{{ optional($registro->statusInicio)->nombre ?? 'N/A' }}</td>
+                                                <td>{{ optional($registro->statusTerminacion)->nombre ?? 'Sin Asignar' }}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm" data-toggle="modal"
+                                                        data-target="#verHistorialModal{{ $registro->id_historial }}">
+                                                        <i class="fas fa-eye"></i> Ver
+                                                    </button>
+                                                    <button class="btn btn-warning btn-sm" data-toggle="modal"
+                                                        data-target="#editarHistorialModal{{ $registro->id_historial }}">
+                                                        <i class="fas fa-edit"></i> Editar
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        data-toggle="modal"
+                                                        data-target="#eliminarModal{{ $registro->id_historial }}">
+                                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                                    </button>
+                                                    <!-- Modal Eliminar Historial -->
+                                                    <div class="modal fade"
+                                                        id="eliminarModal{{ $registro->id_historial }}"
+                                                        tabindex="-1" role="dialog"
+                                                        aria-labelledby="eliminarModalLabel{{ $registro->id_historial }}"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div
+                                                                    class="modal-header1 modal-header-custom border-0">
+                                                                    <div class="w-100 text-center">
+                                                                        <h5 class="m-0 font-weight-bold"
+                                                                            id="eliminarModalLabel{{ $registro->id_historial }}">
+                                                                            🗑️ Eliminar Registro del Historial
+                                                                        </h5>
+                                                                    </div>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Cerrar">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    ¿Seguro que deseas eliminar el registro del
+                                                                    historial
+                                                                    <strong>{{ $registro->nombre ?? 'este registro' }}</strong>?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-dismiss="modal">
+                                                                        Cancelar
+                                                                    </button>
+                                                                    <form
+                                                                        action="{{ route('historial.destroy', $registro->id_historial) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-danger">
+                                                                            Eliminar
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="11" class="text-muted text-center">No hay registros de
+                                                    reinscripción</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Tu Web 2025</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- === MODALES FUERA DE LA TABLA === -->
+    @foreach ($historial as $registro)
+        <!-- Modal Ver -->
+        <div class="modal fade" id="verHistorialModal{{ $registro->id_historial }}" tabindex="-1" role="dialog"
+            aria-labelledby="verHistorialModalLabel{{ $registro->id_historial }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header modal-header-custom border-0">
+                        <div class="w-100">
+                            <div class="text-center">
+                                <h5 class="m-0 font-weight-bold"
+                                    id="verHistorialModalLabel{{ $registro->id_historial }}">
+                                    Detalles de Reinscripción
+                                </h5>
+                                <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                                    Información completa del historial académico
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                            style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body modal-body-custom p-4">
+                        <div class="form-container p-4 bg-white rounded shadow-sm border">
+
+                            {{-- Información del Alumno --}}
+                            <div class="card shadow mb-4 border-0">
+                                <div class="card-header py-3 text-white card-header-custom">
+                                    <h6 class="m-0 font-weight-bold text-danger">
+                                        <i class="fas fa-user-graduate mr-2"></i>
+                                        Información del Alumno
+                                    </h6>
+                                </div>
+                                <div class="card-body1 p-4">
+                                    <div class="row mb-3">
+                                        <div class="col-md-8">
+                                            <h6 class="font-weight-bold text-primary mb-1">
+                                                @if ($registro->alumno)
+                                                    {{ $registro->alumno->datosPersonales->nombres ?? 'N/A' }}
+                                                    {{ $registro->alumno->datosPersonales->primer_apellido ?? '' }}
+                                                    {{ $registro->alumno->datosPersonales->segundo_apellido ?? '' }}
+                                                @else
+                                                    <span class="text-muted">Alumno no disponible</span>
+                                                @endif
+                                            </h6>
+                                            <p class="text-muted mb-0 small">
+                                                <i class="fas fa-id-card mr-1"></i>Matrícula:
+                                                <strong>{{ $registro->alumno->datosAcademicos->matricula ?? 'N/A' }}</strong>
+                                                <span class="mx-2">|</span>
+                                                <i class="fas fa-graduation-cap mr-1"></i>Carrera:
+                                                <strong>{{ $registro->alumno->datosAcademicos->carrera->nombre ?? 'N/A' }}</strong>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4 text-right">
+                                            <span class="badge badge-lg badge-info">
+                                                <i class="fas fa-calendar-check mr-1"></i>
+                                                {{ $registro->fecha_inscripcion ? \Carbon\Carbon::parse($registro->fecha_inscripcion)->format('d/m/Y') : 'N/A' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Datos de Período y Grupo --}}
+                            <div class="card shadow mb-4 border-0">
+                                <div class="card-header py-3 text-white card-header-custom">
+                                    <h6 class="m-0 font-weight-bold text-danger">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Información del Período
+                                    </h6>
+                                </div>
+                                <div class="card-body1 p-4">
+                                    <div class="row">
+                                        @php
+                                            $primeraAsignacion = $registro->asignacion1;
+                                            $grupo = $primeraAsignacion->grupo ?? null;
+                                            $periodo = $primeraAsignacion->periodoEscolar ?? null;
+                                            $num = $primeraAsignacion->materia->numeroPeriodo->numero ?? null;
+                                            $tipo =
+                                                $primeraAsignacion->materia->numeroPeriodo->tipoPeriodo->nombre ?? null;
+                                        @endphp
+
+                                        <!-- NÚMERO DE PERÍODO -->
+                                        <div class="col-md-4 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Número de Período:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                @if ($num)
+                                                    {{ $num }}°
+                                                    @if ($tipo)
+                                                        {{ $tipo }}
+                                                    @endif
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Grupo:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ $grupo->nombre ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Período Escolar:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ $periodo->nombre ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Status --}}
+                            <div class="card shadow mb-4 border-0">
+                                <div class="card-header py-3 text-white card-header-custom">
+                                    <h6 class="m-0 font-weight-bold text-danger">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        Estado de la Inscripción
+                                    </h6>
+                                </div>
+                                <div class="card-body1 p-4">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">
+                                                <i class="fas fa-play-circle mr-1"></i>Status Inicio:
+                                            </label>
+                                            <div class="text-success d-block font-weight-bold">
+                                                {{ $registro->statusInicio->nombre ?? 'Sin definir' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">
+                                                <i class="fas fa-flag-checkered mr-1"></i>Status Terminación:
+                                            </label>
+                                            <div class="text-warning d-block font-weight-bold">
+                                                {{ $registro->statusTerminacion->nombre ?? 'Pendiente' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Materias/Asignaciones --}}
+                            @php
+                                $asignaciones = [];
+                                for ($i = 1; $i <= 10; $i++) {
+                                    $asignacion = $registro->{"asignacion$i"};
+                                    if ($asignacion && $asignacion->materia) {
+                                        $asignaciones[] = $asignacion;
+                                    }
+                                }
+                            @endphp
+
+                            @if (count($asignaciones) > 0)
+                                <div class="card shadow border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-book-open mr-2"></i>
+                                            Materias Cursadas ({{ count($asignaciones) }})
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover mb-0">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th width="50" class="text-center">#</th>
+                                                        <th>Materia</th>
+                                                        <th>Docente</th>
+                                                        <th class="text-center">Horas</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($asignaciones as $index => $asignacion)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <span
+                                                                    class="badge badge-secondary">{{ $index + 1 }}</span>
+                                                            </td>
+                                                            <td>
+                                                                <strong>{{ $asignacion->materia->nombre }}</strong>
+                                                                @if ($asignacion->materia->clave)
+                                                                    <br>
+                                                                    <small class="text-muted">
+                                                                        Clave: {{ $asignacion->materia->clave }}
+                                                                    </small>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($asignacion->docente)
+                                                                    {{ $asignacion->docente->nombre_completo }}
+                                                                @else
+                                                                    <span class="text-muted">Sin asignar</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="badge badge-info">
+                                                                    {{ $asignacion->materia->horas ?? 0 }}h
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                                <tfoot class="bg-light">
+                                                    <tr>
+                                                        <td colspan="3" class="text-right"><strong>Total de
+                                                                horas:</strong></td>
+                                                        <td class="text-center">
+                                                            <strong class="text-primary">
+                                                                {{ collect($asignaciones)->sum(fn($a) => $a->materia->horas ?? 0) }}h
+                                                            </strong>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="alert alert-warning text-center">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    No hay materias asignadas en este registro
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer modal-footer-custom border-top">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times mr-2"></i>Cerrar
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
+                            data-target="#editarHistorialModal{{ $registro->id_historial }}">
+                            <i class="fas fa-edit mr-2"></i>Editar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Modal Editar -->
+        <!-- Modal Editar -->
+        <div class="modal fade" id="editarHistorialModal{{ $registro->id_historial }}" tabindex="-1"
+            role="dialog" aria-labelledby="editarHistorialModalLabel{{ $registro->id_historial }}"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header modal-header-custom border-0">
+                        <div class="w-100">
+                            <div class="text-center">
+                                <h5 class="m-0 font-weight-bold"
+                                    id="editarHistorialModalLabel{{ $registro->id_historial }}">
+                                    Editar Reinscripción
+                                </h5>
+                                <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                                    Modifica la información del historial académico
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                            style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body modal-body-custom p-4">
+                        <form action="{{ route('historial.update', $registro->id_historial) }}" method="POST"
+                            id="formEditarHistorial{{ $registro->id_historial }}">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="form-container p-4 bg-white rounded shadow-sm border">
+
+                                {{-- Información del Alumno --}}
+                                <div class="card shadow mb-4 border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-user-graduate mr-2"></i>
+                                            Información del Alumno
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <strong>Alumno:</strong>
+                                                </label>
+                                                <input type="text" class="form-control" readonly
+                                                    value="{{ optional($registro->alumno->datosPersonales)->nombres ?? 'N/A' }} {{ optional($registro->alumno->datosPersonales)->primer_apellido ?? '' }} {{ optional($registro->alumno->datosPersonales)->segundo_apellido ?? '' }} ({{ $registro->alumno->datosAcademicos->matricula ?? 'N/A' }})">
+                                                <input type="hidden" name="id_alumno"
+                                                    value="{{ $registro->id_alumno }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Datos de Reinscripción --}}
+                                <div class="card shadow mb-4 border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-calendar-alt mr-2"></i>
+                                            Datos de Reinscripción
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <!-- Fecha de Inscripción -->
+                                            <div class="col-md-12 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <i class="fas fa-calendar-check mr-1"></i>
+                                                    Fecha de Inscripción <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="date" name="fecha_inscripcion"
+                                                    value="{{ $registro->fecha_inscripcion ? \Carbon\Carbon::parse($registro->fecha_inscripcion)->format('Y-m-d') : '' }}"
+                                                    class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Estado de la Inscripción --}}
+                                <div class="card shadow mb-4 border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            Estado de la Inscripción
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <!-- Status Inicio -->
+                                            <div class="col-md-6 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <i class="fas fa-play-circle mr-1"></i>
+                                                    Status Inicio <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="id_status_inicio" class="form-control" required>
+                                                    <option value="">Selecciona...</option>
+                                                    @foreach ($historialStatus as $status)
+                                                        <option value="{{ $status->id_historial_status }}"
+                                                            {{ $registro->id_status_inicio == $status->id_historial_status ? 'selected' : '' }}>
+                                                            {{ $status->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Status Terminación -->
+                                            <div class="col-md-6 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <i class="fas fa-flag-checkered mr-1"></i>
+                                                    Status Terminación
+                                                </label>
+                                                <select name="id_status_terminacion" class="form-control">
+                                                    <option value="">Selecciona...</option>
+                                                    @foreach ($historialStatus as $status)
+                                                        <option value="{{ $status->id_historial_status }}"
+                                                            {{ $registro->id_status_terminacion == $status->id_historial_status ? 'selected' : '' }}>
+                                                            {{ $status->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i> Opcional
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Materias Asignadas --}}
+                                <div class="card shadow border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-book-open mr-2"></i>
+                                            Materias Asignadas
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <i class="fas fa-list mr-1"></i>
+                                                    Selecciona las materias <span class="text-danger">*</span>
+                                                </label>
+
+                                                {{-- Contenedor con scroll para los checkboxes --}}
+                                                <div class="border rounded p-3 bg-light"
+                                                    style="max-height: 300px; overflow-y: auto;">
+                                                    @php
+                                                        // Obtener IDs de asignaciones actuales
+                                                        $asignacionesActuales = $registro->asignaciones
+                                                            ->pluck('id_asignacion')
+                                                            ->toArray();
+                                                    @endphp
+
+                                                    @foreach ($registro->asignaciones as $asignacion)
+                                                        <div class="custom-control custom-checkbox mb-2">
+                                                            <input type="checkbox" class="custom-control-input"
+                                                                name="materias[]"
+                                                                value="{{ $asignacion->id_asignacion }}"
+                                                                id="materia_{{ $registro->id_historial }}_{{ $asignacion->id_asignacion }}"
+                                                                {{ in_array($asignacion->id_asignacion, $asignacionesActuales) ? 'checked' : '' }}>
+                                                            <label class="custom-control-label"
+                                                                for="materia_{{ $registro->id_historial }}_{{ $asignacion->id_asignacion }}">
+                                                                <strong>{{ $asignacion->materia->nombre ?? 'N/A' }}</strong>
+                                                                <br>
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-user mr-1"></i>
+                                                                    {{ optional($asignacion->docente->datosPersonales)->nombres ?? 'N/A' }}
+                                                                    {{ optional($asignacion->docente->datosPersonales)->primer_apellido ?? '' }}
+                                                                    @if ($asignacion->materia->clave)
+                                                                        | <i class="fas fa-key mr-1"></i>Clave:
+                                                                        {{ $asignacion->materia->clave }}
+                                                                    @endif
+                                                                    @if ($asignacion->materia->horas)
+                                                                        | <i
+                                                                            class="fas fa-clock mr-1"></i>{{ $asignacion->materia->horas }}h
+                                                                    @endif
+                                                                </small>
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+
+                                                <small class="text-muted d-block mt-2">
+                                                    <i class="fas fa-info-circle"></i> Máximo 10 materias.
+                                                    <span class="font-weight-bold"
+                                                        id="contador_{{ $registro->id_historial }}">
+                                                        {{ count($asignacionesActuales) }}
+                                                    </span> seleccionada(s)
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer modal-footer-custom border-top">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times mr-2"></i>Cancelar
+                        </button>
+                        <button type="submit" form="formEditarHistorial{{ $registro->id_historial }}"
+                            class="btn btn-success">
+                            <i class="fas fa-save mr-2"></i>Guardar Cambios
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endforeach
+    <!-- -------------------------------------------------------------- -->
+
+    <!-- Modal PROMOCION -->
+    <div class="modal fade" id="modalReinscripcionMasiva" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header modal-header-custom border-0">
+                    <div class="w-100 text-center">
+                        <h5 class="mb-0 font-weight-bold">
+                            👨‍🎓 Promoción de alumnos
+                        </h5>
+                        <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                            Asigne estatus múltiples para alumnos de un grupo
+                        </p>
+                    </div>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                        style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formReinscripcionMasiva" method="POST"
+                        action="{{ route('historial.store-masivo') }}">
+                        @csrf
+                        <div class="form-container p-4 bg-white rounded shadow-sm border">
+                            <div class="card shadow mb-2 border-0">
+                                <div class="card-header py-3  text-white card-header-custom">
+                                    <h6 class="m-0 font-weight-bold">
+                                        <i class="fas fa-users"></i> Seleccione el Período Escolar y Grupo
+                                    </h6>
+                                </div>
+                                <div class="card-body1">
+                                    <div class="row ">
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">Período Escolar <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="id_periodo_escolar" id="periodoEscolarMasivo"
+                                                class="form-control" required>
+                                                <option value="">-- Selecciona un período --</option>
+                                                @foreach ($periodosAbiertos as $periodo)
+                                                    <option value="{{ $periodo->id_periodo_escolar }}">
+                                                        {{ $periodo->nombre }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">Grupo <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="id_grupo_actual" id="grupoActualMasivo"
+                                                class="form-control" required>
+                                                <option value="">-- Selecciona un grupo --</option>
+                                                @foreach ($grupos as $grupo)
+                                                    <option value="{{ $grupo->id_grupo }}">
+                                                        {{ $grupo->nombre }} -
+                                                        {{ $grupo->carrera->nombre ?? 'N/A' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">Número de Periodo</label>
+                                            <input type="text" id="numeroPeriodoDisplay" class="form-control"
+                                                readonly placeholder="Se autorellenará">
+                                            <input type="hidden" name="id_numero_periodo"
+                                                id="id_numero_periodo_masivo">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">Fecha de Inscripción</label>
+                                            <input type="date" name="fecha_inscripcion" class="form-control"
+                                                value="{{ date('Y-m-d') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Panel de configuración rápida -->
+                            <div class="alert alert-light border mb-3" id="panelConfigRapida" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <select id="statusTerminacionMasivo" class="form-control form-control-sm">
+                                            <option value="">-- Status Terminación (Aplicar a seleccionados) --
+                                            </option>
+                                            @foreach ($historialStatus as $status)
+                                                <option value="{{ $status->id_historial_status }}">
+                                                    {{ $status->nombre }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btnAplicarRapido"
+                                            class="btn btn-sm btn-info btn-block">
+                                            <i class="fas fa-check mr-1"></i> Aplicar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="contenedorAlumnos" style="display: none;">
+                                <h6 class="font-weight-bold mb-2">
+                                    <i class="fas fa-user-graduate mr-2"></i>Alumnos del Grupo
+                                    <button type="button" id="btnSeleccionarTodos"
+                                        class="btn btn-sm btn-outline-secondary float-right">
+                                        Seleccionar Todos
+                                    </button>
+                                </h6>
+                                <div id="listaAlumnos"
+                                    style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                                    <div class="text-center py-3 text-muted">Selecciona grupo y período</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="alumnos_json" id="alumnosJsonInput">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </button>
+                    <button type="button" id="btnGuardarMasivo" class="btn btn-success" disabled>
+                        <i class="fas fa-save mr-1"></i> Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Reinscripción Masiva -->
+    <div class="modal fade" id="modalReinscripcionMasivaAvanzada" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header modal-header-custom border-0">
+                    <div class="w-100 text-center">
+                        <h5 class="mb-0 font-weight-bold">
+                            👨‍🎓 Reinscripción Masiva de alumnos
+                        </h5>
+                        <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                            Reinscribe múltiples alumnos
+                        </p>
+                    </div>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                        style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formReinscripcionMasivaAvanzada" method="POST"
+                        action="{{ route('historial.store-masivo-avanzado') }}">
+                        @csrf
+                        <div class="form-container p-4 bg-white rounded shadow-sm border">
+                            <!-- Origen: de dónde vienen los alumnos -->
+                            <div class="card shadow mb-2 border-0">
+                                <div class="card-header py-3  text-white card-header-custom">
+                                    <h6 class="m-0 font-weight-bold">
+                                        🔍 Período Escolar y Grupo Anterior</b>
+                                    </h6>
+                                </div>
+                                <div class="card-body1">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>Período Escolar (Origen) <span class="text-danger">*</span></label>
+                                            <select name="id_periodo_origen" id="periodoOrigen" class="form-control"
+                                                required>
+                                                <option value="">-- Selecciona período --</option>
+                                                @if ($ultimoPeriodoCerrado)
+                                                    <option value="{{ $ultimoPeriodoCerrado->id_periodo_escolar }}">
+                                                        {{ $ultimoPeriodoCerrado->nombre }}
+                                                    </option>
+                                                @else
+                                                    <option disabled>No hay periodos cerrados</option>
+                                                @endif
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Grupo (Origen) <span class="text-danger">*</span></label>
+                                            <select name="id_grupo_origen" id="grupoOrigen" class="form-control"
+                                                required>
+                                                <option value="">-- Selecciona grupo --</option>
+                                                @foreach ($gruposcerrado as $g)
+                                                    <option value="{{ $g->id_grupo }}">{{ $g->nombre }} -
+                                                        {{ $g->carrera->nombre ?? 'N/A' }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Destino: a dónde se reinscriben -->
+                            <div class="card shadow mb-2 border-0">
+                                <div class="card-header py-3  text-white card-header-custom">
+                                    <h6 class="m-0 font-weight-bold">
+                                        🎯 Destino: Nuevo período de reinscripción</b>
+                                    </h6>
+                                </div>
+                                <div class="card-body1">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>Período Escolar (Destino) <span class="text-danger">*</span></label>
+                                            <select name="id_periodo_destino" id="periodoDestino"
+                                                class="form-control" required>
+                                                <option value="">-- Selecciona período --</option>
+                                                @foreach ($periodosAbiertos as $p)
+                                                    <option value="{{ $p->id_periodo_escolar }}">
+                                                        {{ $p->nombre }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Grupo (Destino) <span class="text-danger">*</span></label>
+                                            <select name="id_grupo_destino" id="grupoDestino" class="form-control"
+                                                required>
+                                                <option value="">-- Selecciona grupo --</option>
+                                                @foreach ($grupos as $g)
+                                                    <option value="{{ $g->id_grupo }}">{{ $g->nombre }} -
+                                                        {{ $g->carrera->nombre ?? 'N/A' }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Número de Período (Autorellenado)</label>
+                                            <input type="text" id="numeroPeriodoDestinoDisplay"
+                                                class="form-control" readonly placeholder="Se autorellenará">
+                                            <input type="hidden" name="id_numero_periodo_destino"
+                                                id="id_numero_periodo_destino">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Fecha de Inscripción</label>
+                                            <input type="date" name="fecha_inscripcion" class="form-control"
+                                                value="{{ date('Y-m-d') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alumnos y Materias -->
+                            <div id="contenedorAlumnosAvanzado" style="display: none;">
+                                <h6 class="font-weight-bold mb-3">
+                                    <i class="fas fa-user-graduate mr-2"></i>Alumnos del Origen
+                                </h6>
+                                <div id="listaAlumnosAvanzado"
+                                    style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                                    <div class="text-center py-3 text-muted">Selecciona origen y destino</div>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="alumnos_json" id="alumnosJsonAvanzado">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </button>
+                    <button type="button" id="btnGuardarAvanzado" class="btn btn-primary" disabled>
+                        <i class="fas fa-save mr-1"></i> Guardar Reinscripciones
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Reinscripción -->
+    <div class="modal fade" id="nuevaReinscripcionModal" tabindex="-1" role="dialog"
+        aria-labelledby="nuevaReinscripcionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header modal-header-custom border-0">
+                    <div class="w-100 text-center">
+                        <h5 class="mb-0 font-weight-bold">
+                            👨‍🎓 Nueva Inscripcion o Reinscripcion
+                        </h5>
+                        <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                            Inscribe o reinscribe un alumno
+                        </p>
+                    </div>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                        style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar bg-success" id="progressBar" role="progressbar"
+                                style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted" id="progressText">Completa los campos requeridos</small>
+                    </div>
+                    <form action="{{ route('historial.store') }}" method="POST" id="formNuevaReinscripcion">
+                        @csrf
+                        <!-- Paso 1: Alumno -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-header bg-white border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-primary mr-2">1</span><b>Búsqueda de Alumno</b>
+                                    <span class="ml-auto" id="checkAlumno"><i
+                                            class="fas fa-circle text-muted"></i></span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label class="font-weight-bold">Matrícula</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span class="input-group-text"><i
+                                                        class="fas fa-search"></i></span></div>
+                                            <input type="text" id="buscarMatricula" class="form-control"
+                                                placeholder="Ej. 20230015" autofocus>
+                                            <div class="input-group-append">
+                                                <button type="button" id="btnBuscarAlumno" class="btn btn-primary">
+                                                    <i class="fas fa-search mr-1"></i> Buscar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">Presiona Enter o clic en Buscar</small>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <label class="font-weight-bold">Alumno Seleccionado <span
+                                                class="text-danger">*</span></label>
+                                        <div class="alert alert-secondary mb-0" id="alumnoInfo"
+                                            style="display: none;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="mr-3"><i
+                                                        class="fas fa-user-circle fa-3x text-primary"></i></div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1" id="nombreAlumnoDisplay"></h6>
+                                                    <small class="text-muted"><i class="fas fa-id-card mr-1"></i><span
+                                                            id="matriculaDisplay"></span></small>
+                                                    <div class="mt-1">
+                                                        <span class="badge badge-info mr-1"
+                                                            id="carreraDisplay"></span>
+                                                        <span class="badge badge-secondary" id="grupoDisplay"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="id_alumno" id="id_alumno">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Datos de reinscripción -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-header bg-white border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-primary mr-2">2</span><b>Datos de Reinscripción</b>
+                                    <span class="ml-auto" id="checkDatos"><i
+                                            class="fas fa-circle text-muted"></i></span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold">Período Escolar <span
+                                                class="text-danger">*</span></label>
+                                        <select name="id_periodo_escolar" id="periodoSelect"
+                                            class="form-control custom-select" required>
+                                            <option value="">-- Selecciona un período --</option>
+                                            @foreach ($periodosAbiertos as $periodo)
+                                                <option value="{{ $periodo->id_periodo_escolar }}">
+                                                    {{ $periodo->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold">Grupo <span
+                                                class="text-danger">*</span></label>
+                                        <select name="id_grupo" id="grupoSelect" class="form-control custom-select"
+                                            required>
+                                            <option value="">-- Selecciona un grupo --</option>
+                                            @foreach ($grupos as $grupo)
+                                                <option value="{{ $grupo->id_grupo }}">{{ $grupo->nombre }} -
+                                                    {{ $grupo->carrera->nombre ?? 'N/A' }}
+                                                    ({{ $grupo->turno->nombre ?? 'N/A' }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold">Número de Periodo <span
+                                                class="text-danger">*</span></label>
+                                        <select name="id_numero_periodo" id="numeroPeriodoSelect" required
+                                            style="pointer-events: none;">
+                                            <option value="">-- Selecciona primero grupo --</option>
+                                            @foreach ($numerosPeriodo as $numeroPeriodo)
+                                                <option value="{{ $numeroPeriodo->id_numero_periodo }}">
+                                                    {{ $numeroPeriodo->tipoPeriodo->nombre ?? 'N/A' }} - Período
+                                                    {{ $numeroPeriodo->numero }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold">Fecha de Inscripción</label>
+                                        <input type="date" name="fecha_inscripcion" id="fechaInscripcion"
+                                            class="form-control" value="{{ date('Y-m-d') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Asignaciones -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-header bg-white border-bottom">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge badge-primary mr-2">3</span><b>Asignaciones de Docentes</b>
+                                        <span class="ml-2 badge badge-pill badge-info"
+                                            id="contadorAsignaciones">0/8</span>
+                                    </div>
+                                    <span id="checkAsignaciones"><i class="fas fa-circle text-muted"></i></span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info mb-3"><i class="fas fa-info-circle mr-2"></i>
+                                    <strong>Instrucciones:</strong> Las asignaciones se cargarán automáticamente al
+                                    seleccionar el grupo y período escolar.
+                                </div>
+                                <div id="loadingAsignaciones" class="text-center py-4" style="display: none;">
+                                    <div class="spinner-border text-primary" role="status"><span
+                                            class="sr-only">Cargando...</span></div>
+                                    <p class="mt-2 text-muted">Cargando asignaciones disponibles...</p>
+                                </div>
+                                <div id="mensajeSeleccionPrevia" class="alert alert-warning">
+                                    Selecciona un grupo y período escolar para cargar las asignaciones disponibles.
+                                </div>
+                                <div id="asignacionesContainer" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label class="font-weight-bold">
+                                                <i class="fas fa-list mr-2"></i>Asignaciones Disponibles
+                                                <span class="badge badge-primary" id="totalAsignaciones">0
+                                                    materias</span>
+                                            </label>
+                                            <small class="text-muted">Selecciona hasta 8 materias</small>
+                                            <div id="listaAsignacionesDisponibles" class="border rounded p-3 bg-white"
+                                                style="max-height: 400px; overflow-y: auto;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="card border-success">
+                                                <div
+                                                    class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                                    <div><i class="fas fa-check-double mr-2"></i>Asignaciones
+                                                        Seleccionadas<span class="badge badge-light ml-2"
+                                                            id="contadorSeleccionadas">0</span></div>
+                                                    <button type="button" id="btnLimpiarAsignaciones"
+                                                        class="btn btn-sm btn-light" style="display: none;"><i
+                                                            class="fas fa-times mr-1"></i> Limpiar</button>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div id="listaAsignacionesSeleccionadas" class="p-2"
+                                                        style="min-height: 100px; max-height: 200px; overflow-y: auto;">
+                                                        <div class="text-center text-muted py-4">
+                                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                            <p class="mb-0">No hay asignaciones seleccionadas</p>
+                                                            <small>Marca los checkboxes para seleccionar
+                                                                materias</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="asignaciones" id="asignacionesInput">
+                                </div>
+                                <div id="sinAsignaciones" class="alert alert-warning" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i> No hay asignaciones disponibles.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 4: Status -->
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-header bg-white border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-primary mr-2">4</span><b>Status Académico (Opcional)</b>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="font-weight-bold">Status Inicio</label>
+                                        <select name="id_status_inicio" class="form-control custom-select">
+                                            <option value="">-- Selecciona --</option>
+                                            @foreach ($historialStatus as $status)
+                                                <option value="{{ $status->id_historial_status }}">
+                                                    {{ $status->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="font-weight-bold">Status Terminación</label>
+                                        <select name="id_status_terminacion" class="form-control custom-select">
+                                            <option value="">-- Selecciona --</option>
+                                            @foreach ($historialStatus as $status)
+                                                <option value="{{ $status->id_historial_status }}">
+                                                    {{ $status->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="datos" id="datosAdicionales">
+                        <div class="modal-footer border-top">
+                            <button type="button" class="btn btn-light" data-dismiss="modal"><i
+                                    class="fas fa-times mr-1"></i> Cancelar</button>
+                            <button type="submit" class="btn btn-success" id="btnGuardar" disabled><i
+                                    class="fas fa-save mr-1"></i> Guardar Reinscripción</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Scripts -->
+    <script src="{{ asset('libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('libs/sbadmin/js/sb-admin-2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inyectar datos desde Blade
+            window.appData = {
+                historialStatus: @json($historialStatus),
+                historialStatus: @json($historialStatus)
+            };
+
+            // Datos globales
+            let alumnosOrigen = [];
+            let materiasDestino = [];
+
+            // Elementos del DOM
+            const periodoOrigen = document.getElementById('periodoOrigen');
+            const grupoOrigen = document.getElementById('grupoOrigen');
+            const periodoDestino = document.getElementById('periodoDestino');
+            const grupoDestino = document.getElementById('grupoDestino');
+            const numeroPeriodoDisplay = document.getElementById('numeroPeriodoDestinoDisplay');
+            const idNumeroPeriodoInput = document.getElementById('id_numero_periodo_destino');
+            const listaAlumnos = document.getElementById('listaAlumnosAvanzado');
+            const contenedorAlumnos = document.getElementById('contenedorAlumnosAvanzado');
+            const panelConfigRapida = document.getElementById('panelConfigRapida');
+            const btnGuardar = document.getElementById('btnGuardarAvanzado');
+            const form = document.getElementById('formReinscripcionMasivaAvanzada');
+            const alumnosJsonInput = document.getElementById('alumnosJsonAvanzado');
+
+            // Cargar datos cuando cambien origen o destino
+            function cargarDatos() {
+                const idGrupoOrigen = grupoOrigen?.value;
+                const idPeriodoOrigen = periodoOrigen?.value;
+                const idGrupoDestino = grupoDestino?.value;
+                const idPeriodoDestino = periodoDestino?.value;
+
+                if (!idGrupoOrigen || !idPeriodoOrigen || !idGrupoDestino || !idPeriodoDestino) {
+                    listaAlumnos.innerHTML =
+                        '<div class="text-center py-3 text-muted">Selecciona todos los campos</div>';
+                    contenedorAlumnos.style.display = 'none';
+                    if (panelConfigRapida) panelConfigRapida.style.display = 'none';
+                    return;
+                }
+
+                listaAlumnos.innerHTML =
+                    '<div class="text-center py-3"><div class="spinner-border text-primary"></div></div>';
+
+                // Cargar en paralelo
+                Promise.all([
+                        fetch(`/historial/obtener-alumnos-grupo`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                id_grupo: idGrupoOrigen,
+                                id_periodo: idPeriodoOrigen
+                            })
+                        }).then(r => r.json()),
+                        fetch(`/asignaciones/disponibles?grupo=${idGrupoDestino}&periodo=${idPeriodoDestino}`)
+                        .then(r => r.json())
+                    ])
+                    .then(([alumnosRes, materiasRes]) => {
+                        if (!alumnosRes.success || !materiasRes.success) throw new Error('Error al cargar');
+
+                        // Guardar materias del destino
+                        materiasDestino = materiasRes.asignaciones || [];
+                        const idNumeroPeriodo = materiasRes.id_numero_periodo;
+
+                        if (idNumeroPeriodo) {
+                            idNumeroPeriodoInput.value = idNumeroPeriodo;
+                            fetch(`/historial/obtener-tipo-periodo/${idNumeroPeriodo}`)
+                                .then(r => r.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        numeroPeriodoDisplay.value =
+                                            `${data.numero} - ${data.tipo_periodo}`;
+                                    } else {
+                                        numeroPeriodoDisplay.value = `Periodo ${idNumeroPeriodo}`;
+                                    }
+                                })
+                                .catch(() => {
+                                    numeroPeriodoDisplay.value = `Periodo ${idNumeroPeriodo}`;
+                                });
+                        } else {
+                            idNumeroPeriodoInput.value = '';
+                            numeroPeriodoDisplay.value = 'No definido';
+                        }
+
+                        // Guardar alumnos del origen CON status
+                        alumnosOrigen = alumnosRes.alumnos.map(a => ({
+                            id: a.id,
+                            matricula: a.matricula,
+                            nombre: a.nombre,
+                            status_origen: a.status_inicio_nombre || 'Sin status',
+                            status_terminacion_anterior: a.status_terminacion_nombre ||
+                                'Sin status',
+                            id_status_terminacion_anterior: a
+                                .id_status_terminacion,
+                            selected: false,
+                            statusInicio: a.id_status_terminacion ||
+                                '',
+                            statusTerminacion: '',
+                            materias: materiasDestino.map(m => m.id_asignacion)
+                        }));
+
+                        renderAlumnos();
+                        contenedorAlumnos.style.display = 'block';
+                        if (panelConfigRapida) panelConfigRapida.style.display = 'block';
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        listaAlumnos.innerHTML =
+                            '<div class="alert alert-danger text-center">Error al cargar datos</div>';
+                    });
+            }
+
+            function renderAlumnos() {
+                if (alumnosOrigen.length === 0) {
+                    listaAlumnos.innerHTML =
+                        '<div class="text-center py-3 text-muted">No hay alumnos en el origen</div>';
+                    return;
+                }
+
+                // Generar opciones de status
+                const opcionesInicio = window.appData.historialStatus.map(s =>
+                    `<option value="${s.id_historial_status}">${s.nombre}</option>`
+                ).join('');
+                const opcionesTerminacion = window.appData.historialStatus.map(s =>
+                    `<option value="${s.id_historial_status}">${s.nombre}</option>`
+                ).join('');
+
+                // Verificar si todos están seleccionados
+                const todosSeleccionados = alumnosOrigen.every(a => a.selected);
+
+                // Header con botón de seleccionar todos
+                let html = `
+                <div class="mb-3 p-3 border rounded" style="background: #f8f9fa;">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnSeleccionarTodosAlumnos">
+                        <i class="fas fa-${todosSeleccionados ? 'square' : 'check-square'}"></i> 
+                        ${todosSeleccionados ? 'Deseleccionar Todas' : 'Seleccionar Todas'}
+                    </button>
+                    <small class="text-muted ml-2">Total: ${alumnosOrigen.length} alumnos</small>
+                </div>
+                `;
+
+                alumnosOrigen.forEach((alumno, i) => {
+                    // Badge con los dos status anteriores
+                    const badgeInicio = alumno.status_origen ?
+                        `<span class="badge badge-secondary mr-1" title="Status Inicio Anterior">${alumno.status_origen}</span>` :
+                        '';
+                    const badgeTerminacion = alumno.status_terminacion_anterior ?
+                        `<span class="badge badge-success" title="Status con el que terminó">${alumno.status_terminacion_anterior}</span>` :
+                        '';
+
+                    html += `
+            <div class="mb-3 p-3 border rounded" style="background: ${alumno.selected ? '#e3f2fd' : '#fff'};">
+                <div class="form-check mb-2">
+                    <input class="form-check-input alumno-check" type="checkbox" 
+                           id="alumno_${i}" data-index="${i}" ${alumno.selected ? 'checked' : ''}>
+                    <label class="form-check-label font-weight-bold" for="alumno_${i}">
+                        ${alumno.nombre} <small class="text-muted">(${alumno.matricula})</small>
+                    </label>
+                    <div class="mt-1">
+                        <small class="text-muted">Período anterior:</small>
+                        ${badgeInicio}
+                        <i class="fas fa-arrow-right text-muted mx-1"></i>
+                        ${badgeTerminacion}
+                    </div>
+                </div>
+                
+                <!-- Status -->
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <label class="small text-muted">
+                            Status Inicio (Nuevo Período) <span class="text-danger">*</span>
+                            <i class="fas fa-sync-alt text-success ml-1" title="Autorrellenado con status de terminación anterior"></i>
+                        </label>
+                        <select class="form-control form-control-sm status-inicio" data-index="${i}" 
+                                ${!alumno.selected ? 'disabled' : ''}>
+                            <option value="">-- Selecciona --</option>
+                            ${opcionesInicio}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted">Status Terminación (Nuevo Período)</label>
+                        <select class="form-control form-control-sm status-terminacion" data-index="${i}" 
+                                ${!alumno.selected ? 'disabled' : ''}>
+                            <option value="">-- Opcional --</option>
+                            ${opcionesTerminacion}
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Materias -->
+                <div>
+                    <small class="text-muted">
+                        <i class="fas fa-book mr-1"></i>Materias del nuevo período: ${alumno.materias.length}
+                    </small>
+                    <button type="button" class="btn btn-sm btn-outline-primary ml-2 btn-editar-materias" 
+                            data-index="${i}" ${!alumno.selected ? 'disabled' : ''}>
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                </div>
+            </div>`;
+                });
+                listaAlumnos.innerHTML = html;
+
+                // Restaurar valores de status
+                alumnosOrigen.forEach((a, i) => {
+                    if (a.statusInicio) {
+                        const selectInicio = document.querySelector(`.status-inicio[data-index="${i}"]`);
+                        if (selectInicio) selectInicio.value = a.statusInicio;
+                    }
+                    if (a.statusTerminacion) {
+                        const selectTerminacion = document.querySelector(
+                            `.status-terminacion[data-index="${i}"]`);
+                        if (selectTerminacion) selectTerminacion.value = a.statusTerminacion;
+                    }
+                });
+
+                // Evento para botón de seleccionar todos
+                document.getElementById('btnSeleccionarTodosAlumnos')?.addEventListener('click', function() {
+                    const todosSeleccionados = alumnosOrigen.every(a => a.selected);
+                    const seleccionar = !todosSeleccionados;
+
+                    alumnosOrigen.forEach((a, i) => {
+                        a.selected = seleccionar;
+
+                        // Actualizar checkboxes individuales
+                        const checkbox = document.getElementById(`alumno_${i}`);
+                        if (checkbox) checkbox.checked = seleccionar;
+
+                        // Habilitar/deshabilitar controles
+                        const selectInicio = document.querySelector(
+                            `.status-inicio[data-index="${i}"]`);
+                        const selectTerminacion = document.querySelector(
+                            `.status-terminacion[data-index="${i}"]`);
+                        const btnMaterias = document.querySelector(
+                            `.btn-editar-materias[data-index="${i}"]`);
+
+                        if (selectInicio) selectInicio.disabled = !seleccionar;
+                        if (selectTerminacion) selectTerminacion.disabled = !seleccionar;
+                        if (btnMaterias) btnMaterias.disabled = !seleccionar;
+                    });
+
+                    // Actualizar texto e ícono del botón
+                    this.innerHTML = seleccionar ?
+                        '<i class="fas fa-square"></i> Deseleccionar Todas' :
+                        '<i class="fas fa-check-square"></i> Seleccionar Todas';
+
+                    renderAlumnos();
+                    validar();
+                });
+
+                // Asignar eventos a checkboxes individuales
+                document.querySelectorAll('.alumno-check').forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        const i = parseInt(this.dataset.index);
+                        alumnosOrigen[i].selected = this.checked;
+
+                        // Habilitar/deshabilitar controles
+                        const selectInicio = document.querySelector(
+                            `.status-inicio[data-index="${i}"]`);
+                        const selectTerminacion = document.querySelector(
+                            `.status-terminacion[data-index="${i}"]`);
+                        const btnMaterias = document.querySelector(
+                            `.btn-editar-materias[data-index="${i}"]`);
+
+                        selectInicio.disabled = !this.checked;
+                        selectTerminacion.disabled = !this.checked;
+                        btnMaterias.disabled = !this.checked;
+
+                        // Actualizar botón de seleccionar todos
+                        const todosSeleccionados = alumnosOrigen.every(a => a.selected);
+                        const btnTodos = document.getElementById('btnSeleccionarTodosAlumnos');
+                        if (btnTodos) {
+                            btnTodos.innerHTML = todosSeleccionados ?
+                                '<i class="fas fa-square"></i> Deseleccionar Todas' :
+                                '<i class="fas fa-check-square"></i> Seleccionar Todas';
+                        }
+
+                        validar();
+                    });
+                });
+
+                document.querySelectorAll('.status-inicio').forEach(sel => {
+                    sel.addEventListener('change', function() {
+                        const i = parseInt(this.dataset.index);
+                        alumnosOrigen[i].statusInicio = this.value;
+                        validar();
+                    });
+                });
+
+                document.querySelectorAll('.status-terminacion').forEach(sel => {
+                    sel.addEventListener('change', function() {
+                        const i = parseInt(this.dataset.index);
+                        alumnosOrigen[i].statusTerminacion = this.value;
+                    });
+                });
+
+                document.querySelectorAll('.btn-editar-materias').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const i = parseInt(this.dataset.index);
+                        editarMaterias(i);
+                    });
+                });
+
+                validar();
+            }
+
+            function editarMaterias(i) {
+                const alumno = alumnosOrigen[i];
+                const seleccionadas = new Set(alumno.materias);
+
+                let opciones = materiasDestino.map(m => {
+                    const checked = seleccionadas.has(m.id_asignacion) ? 'checked' : '';
+                    return `
+                <div class="form-check">
+                    <input class="form-check-input materia-check" type="checkbox" 
+                           id="materia_${i}_${m.id_asignacion}" 
+                           value="${m.id_asignacion}" ${checked}>
+                    <label class="form-check-label small" for="materia_${i}_${m.id_asignacion}">
+                        ${m.materia_nombre} - ${m.docente_nombre}
+                    </label>
+                </div>`;
+                }).join('');
+
+                const modal = document.createElement('div');
+                modal.className = 'modal fade';
+                modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Materias para ${alumno.nombre}</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                        ${opciones}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnGuardarMaterias">Guardar</button>
+                    </div>
+                </div>
+            </div>`;
+
+                document.body.appendChild(modal);
+                $(modal).modal('show');
+
+                document.getElementById('btnGuardarMaterias').addEventListener('click', () => {
+                    const checkboxes = modal.querySelectorAll('.materia-check:checked');
+                    alumno.materias = Array.from(checkboxes).map(cb => parseInt(cb.value));
+                    $(modal).modal('hide');
+                    renderAlumnos();
+                });
+
+                $(modal).on('hidden.bs.modal', () => modal.remove());
+            }
+
+            function validar() {
+                const seleccionados = alumnosOrigen.filter(a => a.selected);
+                const validos = seleccionados.filter(a => a.statusInicio && a.materias.length > 0);
+                btnGuardar.disabled = validos.length === 0;
+            }
+
+            // Configuración rápida
+            document.getElementById('btnAplicarRapido')?.addEventListener('click', () => {
+                const inicio = document.getElementById('statusInicioMasivo')?.value;
+                const terminacion = document.getElementById('statusTerminacionMasivo')?.value;
+
+                if (!inicio && !terminacion) {
+                    alert('Selecciona al menos un status');
+                    return;
+                }
+
+                const seleccionados = alumnosOrigen.filter(a => a.selected);
+                if (seleccionados.length === 0) {
+                    alert('Selecciona al menos un alumno');
+                    return;
+                }
+
+                seleccionados.forEach(alumno => {
+                    if (inicio) alumno.statusInicio = inicio;
+                    if (terminacion) alumno.statusTerminacion = terminacion;
+                });
+
+                renderAlumnos();
+            });
+
+            // Guardar
+            btnGuardar?.addEventListener('click', () => {
+                const seleccionados = alumnosOrigen.filter(a => a.selected);
+
+                if (seleccionados.length === 0) {
+                    alert('Selecciona al menos un alumno');
+                    return;
+                }
+
+                const sinStatus = seleccionados.filter(a => !a.statusInicio);
+                if (sinStatus.length > 0) {
+                    alert(`${sinStatus.length} alumno(s) no tienen status de inicio`);
+                    return;
+                }
+
+                const sinMaterias = seleccionados.filter(a => a.materias.length === 0);
+                if (sinMaterias.length > 0) {
+                    alert(`${sinMaterias.length} alumno(s) no tienen materias asignadas`);
+                    return;
+                }
+
+                const data = seleccionados.map(a => ({
+                    id_alumno: a.id,
+                    statusInicio: a.statusInicio,
+                    statusTerminacion: a.statusTerminacion || null,
+                    materias: a.materias.slice(0, 10)
+                }));
+
+                alumnosJsonInput.value = JSON.stringify(data);
+
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Guardando...';
+
+                form.submit();
+            });
+
+            // Eventos de cambio
+            if (grupoOrigen) grupoOrigen.addEventListener('change', cargarDatos);
+            if (periodoOrigen) periodoOrigen.addEventListener('change', cargarDatos);
+            if (grupoDestino) grupoDestino.addEventListener('change', cargarDatos);
+            if (periodoDestino) periodoDestino.addEventListener('change', cargarDatos);
+
+            // Reset al cerrar modal
+            $('#modalReinscripcionMasivaAvanzada').on('hidden.bs.modal', () => {
+                form?.reset();
+                alumnosOrigen = [];
+                materiasDestino = [];
+                listaAlumnos.innerHTML =
+                    '<div class="text-center py-3 text-muted">Selecciona todos los campos</div>';
+                contenedorAlumnos.style.display = 'none';
+                if (panelConfigRapida) panelConfigRapida.style.display = 'none';
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<i class="fas fa-save mr-1"></i> Guardar';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ===== BÚSQUEDA EN TABLA =====
+            const searchInput = document.getElementById('searchInput');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+
+                    // Normaliza lo que escribe el usuario
+                    const searchTerm = e.target.value
+                        .toLowerCase()
+                        .replace(/\s+/g, ' ')
+                        .trim();
+
+                    const table = document.getElementById('teachersTable');
+                    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                    for (let row of rows) {
+
+                        // Normaliza el texto real de la fila
+                        const text = row.textContent
+                            .toLowerCase()
+                            .replace(/\s+/g, ' ')
+                            .trim();
+
+                        if (text.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Variables globales
+            let asignacionesSeleccionadas = [];
+            let asignacionesDisponibles = [];
+
+            // === DOM Elements ===
+            const buscarMatricula = document.getElementById('buscarMatricula');
+            const btnBuscarAlumno = document.getElementById('btnBuscarAlumno');
+            const idAlumno = document.getElementById('id_alumno');
+            const alumnoInfo = document.getElementById('alumnoInfo');
+            const nombreAlumnoDisplay = document.getElementById('nombreAlumnoDisplay');
+            const matriculaDisplay = document.getElementById('matriculaDisplay');
+            const carreraDisplay = document.getElementById('carreraDisplay');
+            const grupoDisplay = document.getElementById('grupoDisplay');
+            const grupoSelect = document.getElementById('grupoSelect');
+            const periodoSelect = document.getElementById('periodoSelect');
+            const numeroPeriodoSelect = document.getElementById('numeroPeriodoSelect');
+            const listaAsignacionesDisponibles = document.getElementById('listaAsignacionesDisponibles');
+            const listaAsignacionesSeleccionadas = document.getElementById('listaAsignacionesSeleccionadas');
+            const asignacionesInput = document.getElementById('asignacionesInput');
+            const totalAsignaciones = document.getElementById('totalAsignaciones');
+            const contadorAsignaciones = document.getElementById('contadorAsignaciones');
+            const btnLimpiarAsignaciones = document.getElementById('btnLimpiarAsignaciones');
+            const loadingAsignaciones = document.getElementById('loadingAsignaciones');
+            const asignacionesContainer = document.getElementById('asignacionesContainer');
+            const mensajeSeleccionPrevia = document.getElementById('mensajeSeleccionPrevia');
+            const sinAsignaciones = document.getElementById('sinAsignaciones');
+            const form = document.getElementById('formNuevaReinscripcion');
+            const btnGuardar = document.getElementById('btnGuardar');
+
+            // === Funciones ===
+            function mostrarAlerta(mensaje, tipo = 'info') {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: tipo,
+                        title: mensaje,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else {
+                    alert(mensaje);
+                }
+            }
+
+            function validarFormulario() {
+                const esValido = idAlumno.value && grupoSelect.value && periodoSelect.value &&
+                    numeroPeriodoSelect.value && asignacionesSeleccionadas.length > 0;
+                btnGuardar.disabled = !esValido;
+                actualizarBarraProgreso();
+                actualizarChecks();
+            }
+
+            function actualizarBarraProgreso() {
+                const campos = [idAlumno.value, grupoSelect.value, periodoSelect.value, numeroPeriodoSelect.value,
+                    asignacionesSeleccionadas.length > 0
+                ];
+                const progreso = (campos.filter(Boolean).length / 5) * 100;
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+                if (!progressBar || !progressText) return;
+
+                progressBar.style.width = progreso + '%';
+                if (progreso === 100) {
+                    progressText.textContent = '¡Formulario completo! Listo para guardar';
+                    progressText.className = 'text-success font-weight-bold';
+                } else {
+                    progressText.textContent =
+                        `Progreso: ${Math.round(progreso)}% - Completa los campos requeridos`;
+                    progressText.className = 'text-muted';
+                }
+            }
+
+            function actualizarChecks() {
+                const checkAlumno = document.getElementById('checkAlumno');
+                const checkDatos = document.getElementById('checkDatos');
+                const checkAsignaciones = document.getElementById('checkAsignaciones');
+                if (checkAlumno) checkAlumno.innerHTML = idAlumno.value ?
+                    '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-circle text-muted"></i>';
+                if (checkDatos) checkDatos.innerHTML = (grupoSelect.value && periodoSelect.value &&
+                        numeroPeriodoSelect.value) ?
+                    '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-circle text-muted"></i>';
+                if (checkAsignaciones) checkAsignaciones.innerHTML = asignacionesSeleccionadas.length > 0 ?
+                    '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-circle text-muted"></i>';
+            }
+
+            function buscarAlumno() {
+                const matricula = buscarMatricula.value.trim();
+                if (!matricula) return mostrarAlerta('Ingresa una matrícula', 'warning');
+                btnBuscarAlumno.disabled = true;
+                btnBuscarAlumno.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+                fetch(`/buscar-alumno?matricula=${encodeURIComponent(matricula)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            idAlumno.value = data.id_alumno;
+                            nombreAlumnoDisplay.textContent = data.nombre;
+                            matriculaDisplay.textContent = matricula;
+                            carreraDisplay.textContent = data.carrera;
+                            alumnoInfo.style.display = 'block';
+                        } else {
+                            idAlumno.value = '';
+                            alumnoInfo.style.display = 'none';
+                            mostrarAlerta(data.message || 'Alumno no encontrado', 'info');
+                        }
+                        // ✅ Esto es todo. Nada más.
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        mostrarAlerta('Error al buscar alumno', 'error');
+                        idAlumno.value = '';
+                        alumnoInfo.style.display = 'none';
+                    })
+                    .finally(() => {
+                        btnBuscarAlumno.disabled = false;
+                        btnBuscarAlumno.innerHTML = '<i class="fas fa-search mr-1"></i> Buscar';
+                        validarFormulario();
+                    });
+            }
+
+            function cargarAsignaciones() {
+                const idGrupo = grupoSelect.value;
+                const idPeriodo = periodoSelect.value;
+
+                // Solo continuar si ambos están seleccionados
+                if (!idGrupo || !idPeriodo) {
+                    resetearAsignaciones();
+                    if (numeroPeriodoSelect) numeroPeriodoSelect.value = '';
+                    return;
+                }
+
+                loadingAsignaciones.style.display = 'block';
+                asignacionesContainer.style.display = 'none';
+                mensajeSeleccionPrevia.style.display = 'none';
+                sinAsignaciones.style.display = 'none';
+
+                fetch(`/asignaciones/disponibles?grupo=${idGrupo}&periodo=${idPeriodo}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && data.asignaciones) {
+                            asignacionesDisponibles = data.asignaciones;
+                            mostrarAsignaciones();
+
+                            // ✅ AUTORELLENAR NÚMERO DE PERÍODO desde la respuesta
+                            if (numeroPeriodoSelect && data.id_numero_periodo) {
+                                numeroPeriodoSelect.value = data.id_numero_periodo;
+                            } else {
+                                numeroPeriodoSelect.value = '';
+                            }
+                        } else {
+                            resetearAsignaciones();
+                            sinAsignaciones.style.display = 'block';
+                            if (numeroPeriodoSelect) numeroPeriodoSelect.value = '';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error al cargar asignaciones:', err);
+                        resetearAsignaciones();
+                        sinAsignaciones.style.display = 'block';
+                        if (numeroPeriodoSelect) numeroPeriodoSelect.value = '';
+                    })
+                    .finally(() => {
+                        loadingAsignaciones.style.display = 'none';
+                        validarFormulario();
+                    });
+            }
+
+            function mostrarAsignaciones() {
+                listaAsignacionesDisponibles.innerHTML = '';
+                totalAsignaciones.textContent = `${asignacionesDisponibles.length} materias`;
+                asignacionesDisponibles.forEach(asignacion => {
+                    const isSelected = asignacionesSeleccionadas.some(a => a.id_asignacion === asignacion
+                        .id_asignacion);
+                    const div = document.createElement('div');
+                    div.className = `asignacion-card ${isSelected ? 'selected' : ''}`;
+                    div.innerHTML = `
+                        <div class="d-flex align-items-start">
+                            <input type="checkbox" class="asignacion-checkbox" id="asignacion_${asignacion.id_asignacion}" ${isSelected ? 'checked' : ''}>
+                            <div class="materia-info">
+                                <label class="materia-nombre">${asignacion.materia_nombre || 'Sin nombre'}</label>
+                                <div class="materia-detalle"><strong>Docente:</strong> ${asignacion.docente_nombre || 'No asignado'}</div>
+                                <div class="materia-detalle"><strong>Horas:</strong> ${asignacion.horas_semana || '0'} hrs/semana</div>
+                            </div>
+                            ${isSelected ? '<div class="asignacion-indicador"><i class="fas fa-check-circle text-success"></i></div>' : ''}
+                        </div>
+                    `;
+                    div.querySelector('.asignacion-checkbox').addEventListener('change', () =>
+                        toggleAsignacion(asignacion.id_asignacion));
+                    listaAsignacionesDisponibles.appendChild(div);
+                });
+                asignacionesContainer.style.display = 'block';
+                actualizarVistaSeleccionadas();
+                validarFormulario();
+            }
+
+
+
+            function actualizarVistaSeleccionadas() {
+                listaAsignacionesSeleccionadas.innerHTML = '';
+                if (asignacionesSeleccionadas.length === 0) {
+                    listaAsignacionesSeleccionadas.innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p class="mb-0">No hay asignaciones seleccionadas</p>
+                            <small>Haz clic en las materias para seleccionarlas</small>
+                        </div>
+                    `;
+                    btnLimpiarAsignaciones.style.display = 'none';
+                } else {
+                    asignacionesSeleccionadas.forEach((asignacion, i) => {
+                        const div = document.createElement('div');
+                        div.className = 'asignacion-seleccionada-item';
+                        div.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="flex-grow-1">
+                                    <strong>${i + 1}. ${asignacion.materia_nombre || 'Sin nombre'}</strong><br>
+                                    <small class="text-muted"><i class="fas fa-user-tie mr-1"></i>${asignacion.docente_nombre || 'No asignado'}</small>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="toggleAsignacion(${asignacion.id_asignacion})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        listaAsignacionesSeleccionadas.appendChild(div);
+                    });
+                    btnLimpiarAsignaciones.style.display = 'block';
+                }
+                contadorAsignaciones.textContent = `${asignacionesSeleccionadas.length}/8`;
+            }
+
+            function toggleAsignacion(idAsignacion) {
+                const index = asignacionesSeleccionadas.findIndex(a => a.id_asignacion === idAsignacion);
+                if (index > -1) {
+                    asignacionesSeleccionadas.splice(index, 1);
+                } else {
+                    if (asignacionesSeleccionadas.length >= 8) {
+                        mostrarAlerta('Máximo 8 asignaciones permitidas', 'warning');
+                        return;
+                    }
+                    const asignacion = asignacionesDisponibles.find(a => a.id_asignacion === idAsignacion);
+                    if (asignacion) asignacionesSeleccionadas.push(asignacion);
+                }
+
+                mostrarAsignaciones();
+                actualizarVistaSeleccionadas();
+                asignacionesInput.value = JSON.stringify(asignacionesSeleccionadas.map(a => a.id_asignacion));
+
+                // ✅ NUEVO: Autorellenar número de período desde la primera materia seleccionada
+                actualizarNumeroPeriodoDesdeAsignaciones();
+            }
+
+            function resetearAsignaciones() {
+                asignacionesSeleccionadas = [];
+                asignacionesDisponibles = [];
+                asignacionesContainer.style.display = 'none';
+                mensajeSeleccionPrevia.style.display = 'block';
+                sinAsignaciones.style.display = 'none';
+                asignacionesInput.value = '[]';
+                actualizarVistaSeleccionadas();
+                contadorAsignaciones.textContent = '0/8';
+            }
+
+            function limpiarAsignaciones() {
+                if (confirm(`¿Limpiar todas las ${asignacionesSeleccionadas.length} asignaciones?`)) {
+                    asignacionesSeleccionadas = [];
+                    mostrarAsignaciones();
+                    asignacionesInput.value = '[]';
+                    validarFormulario();
+                }
+            }
+
+            // === Eventos ===
+            btnBuscarAlumno.addEventListener('click', buscarAlumno);
+            buscarMatricula.addEventListener('keypress', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    buscarAlumno();
+                }
+            });
+
+            grupoSelect.addEventListener('change', cargarAsignaciones);
+            periodoSelect.addEventListener('change', cargarAsignaciones);
+            numeroPeriodoSelect.addEventListener('change', validarFormulario);
+            btnLimpiarAsignaciones.addEventListener('click', limpiarAsignaciones);
+
+            // === Modal reset ===
+            $('#nuevaReinscripcionModal').on('hidden.bs.modal', () => {
+                form.reset();
+                idAlumno.value = '';
+                alumnoInfo.style.display = 'none';
+                resetearAsignaciones();
+                document.querySelectorAll('.fas.fa-check-circle').forEach(el => {
+                    el.parentNode.innerHTML = '<i class="fas fa-circle text-muted"></i>';
+                });
+                document.getElementById('progressBar').style.width = '0%';
+                document.getElementById('progressText').textContent = 'Completa los campos requeridos';
+                btnGuardar.disabled = true;
+            });
+
+            // Exponer funciones globales
+            window.toggleAsignacion = toggleAsignacion;
+        });
+    </script>
+    <script>
+        window.appData = {
+            historialStatus: @json($historialStatus)
+        };
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inyectar status desde Blade
+            window.appData = {
+                historialStatus: @json($historialStatus),
+                historialStatus: @json($historialStatus)
+            };
+
+            // Elementos del DOM
+            const periodoSelect = document.getElementById('periodoEscolarMasivo');
+            const grupoSelect = document.getElementById('grupoActualMasivo');
+            const numeroPeriodoDisplay = document.getElementById('numeroPeriodoDisplay');
+            const idNumeroPeriodoInput = document.getElementById('id_numero_periodo_masivo');
+            const listaAlumnos = document.getElementById('listaAlumnos');
+            const contenedorAlumnos = document.getElementById('contenedorAlumnos');
+            const panelConfigRapida = document.getElementById('panelConfigRapida');
+            const btnGuardar = document.getElementById('btnGuardarMasivo');
+            const alumnosJsonInput = document.getElementById('alumnosJsonInput');
+            let alumnosCargados = [];
+
+            // Cargar datos al cambiar grupo o período
+            function cargarDatos() {
+                const idGrupo = grupoSelect.value;
+                const idPeriodo = periodoSelect.value;
+                if (!idGrupo || !idPeriodo) {
+                    resetearVista();
+                    return;
+                }
+
+                listaAlumnos.innerHTML =
+                    '<div class="text-center py-3"><div class="spinner-border text-info"></div></div>';
+
+                Promise.all([
+                        fetch(`/historial/obtener-alumnos-grupo`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                id_grupo: idGrupo,
+                                id_periodo: idPeriodo
+                            })
+                        }).then(r => r.json()),
+                        fetch(`/historial/obtener-materias-grupo`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                id_grupo: idGrupo,
+                                id_periodo: idPeriodo
+                            })
+                        }).then(r => r.json())
+                    ])
+                    .then(([alumnosRes, materiasRes]) => {
+                        if (!alumnosRes.success || !materiasRes.success) throw new Error('Error al cargar');
+
+                        // ✅ Autorellenar número de período
+                        const idNumeroPeriodo = materiasRes.materias.length > 0 ?
+                            materiasRes.materias[0].id_numero_periodo :
+                            null;
+
+                        if (idNumeroPeriodo) {
+                            idNumeroPeriodoInput.value = idNumeroPeriodo;
+
+                            fetch(`/historial/obtener-tipo-periodo/${idNumeroPeriodo}`)
+                                .then(r => r.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        numeroPeriodoDisplay.value =
+                                            `${data.numero} - ${data.tipo_periodo}`;
+                                    } else {
+                                        numeroPeriodoDisplay.value = `Periodo ${idNumeroPeriodo}`;
+                                    }
+                                })
+                                .catch(() => {
+                                    numeroPeriodoDisplay.value = `Periodo ${idNumeroPeriodo}`;
+                                });
+                        } else {
+                            idNumeroPeriodoInput.value = '';
+                            numeroPeriodoDisplay.value = 'No detectado';
+                        }
+
+                        // ✅ Cargar alumnos con sus status
+                        alumnosCargados = alumnosRes.alumnos.map(a => ({
+                            id: a.id,
+                            matricula: a.matricula,
+                            nombre: a.nombre,
+                            id_historial: a.id_historial,
+                            status_inicio_nombre: a.status_inicio_nombre,
+                            id_status_terminacion: a.id_status_terminacion || '',
+                            selected: false
+                        }));
+
+                        renderAlumnos();
+                        contenedorAlumnos.style.display = 'block';
+                        panelConfigRapida.style.display = 'block';
+                    })
+                    .catch(err => {
+                        listaAlumnos.innerHTML =
+                            '<div class="alert alert-danger text-center">Error al cargar datos</div>';
+                    });
+            }
+
+            function resetearVista() {
+                listaAlumnos.innerHTML =
+                    '<div class="text-center py-3 text-muted">Selecciona grupo y período</div>';
+                contenedorAlumnos.style.display = 'none';
+                panelConfigRapida.style.display = 'none';
+                if (idNumeroPeriodoInput) idNumeroPeriodoInput.value = '';
+                if (numeroPeriodoDisplay) numeroPeriodoDisplay.value = '';
+            }
+
+            // Renderizar alumnos
+            function renderAlumnos() {
+                if (alumnosCargados.length === 0) {
+                    listaAlumnos.innerHTML =
+                        '<div class="text-center py-3 text-muted">No hay alumnos en este grupo</div>';
+                    return;
+                }
+
+                const opcionesTerminacion = window.appData.historialStatus.map(s =>
+                    `<option value="${s.id_historial_status}">${s.nombre}</option>`
+                ).join('');
+
+                let html = '';
+                alumnosCargados.forEach((a, i) => {
+                    html += `
+            <div class="mb-2 p-2 border rounded" style="background: ${a.selected ? '#e3f2fd' : '#fff'};">
+                <div class="form-check mb-2">
+                    <input class="form-check-input alumno-check" type="checkbox" data-index="${i}" ${a.selected ? 'checked' : ''}>
+                    <label class="form-check-label font-weight-bold">${a.nombre} (${a.matricula})</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="small text-muted">Status Inicio</label>
+                        <input type="text" class="form-control form-control-sm bg-light" value="${a.status_inicio_nombre}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted">Status Terminación</label>
+                        <select class="form-control form-control-sm status-terminacion" data-index="${i}" ${!a.selected ? 'disabled' : ''}>
+                            <option value="">-- Selecciona --</option>
+                            ${opcionesTerminacion}
+                        </select>
+                    </div>
+                </div>
+            </div>`;
+                });
+                listaAlumnos.innerHTML = html;
+
+                // Restaurar valores previos
+                alumnosCargados.forEach((a, i) => {
+                    if (a.id_status_terminacion) {
+                        const select = document.querySelector(`.status-terminacion[data-index="${i}"]`);
+                        if (select) select.value = a.id_status_terminacion;
+                    }
+                });
+
+                // Reasignar eventos
+                document.querySelectorAll('.alumno-check').forEach(cb => {
+                    cb.addEventListener('change', toggleAlumno);
+                });
+                document.querySelectorAll('.status-terminacion').forEach(sel => {
+                    sel.addEventListener('change', actualizarStatus);
+                });
+            }
+
+            // Manejo de eventos
+            function toggleAlumno(e) {
+                const i = e.target.dataset.index;
+                alumnosCargados[i].selected = e.target.checked;
+                document.querySelector(`.status-terminacion[data-index="${i}"]`).disabled = !e.target.checked;
+                validar();
+            }
+
+            function actualizarStatus(e) {
+                const i = e.target.dataset.index;
+                alumnosCargados[i].id_status_terminacion = e.target.value;
+                validar();
+            }
+
+            function validar() {
+                const seleccionados = alumnosCargados.filter(a => a.selected);
+                const validos = seleccionados.filter(a => a.id_status_terminacion);
+                btnGuardar.disabled = validos.length === 0;
+            }
+
+            // 🔧 APLICAR CONFIGURACIÓN MASIVA - VERSIÓN CORRECTA SIN DUPLICADOS
+            const btnAplicarRapido = document.getElementById('btnAplicarRapido');
+            if (btnAplicarRapido) {
+                // Remover listeners previos si existen
+                const newBtn = btnAplicarRapido.cloneNode(true);
+                btnAplicarRapido.parentNode.replaceChild(newBtn, btnAplicarRapido);
+
+                // Agregar el listener ÚNICO
+                newBtn.addEventListener('click', function() {
+                    // Limpiar mensajes previos
+                    const mensajePrevio = document.getElementById('mensajeAplicarRapido');
+                    if (mensajePrevio) mensajePrevio.remove();
+
+                    const terminacion = document.getElementById('statusTerminacionMasivo')?.value;
+
+                    // Validar status
+                    if (!terminacion) {
+                        mostrarMensaje('Por favor, selecciona un Status de Terminación', 'warning');
+                        return;
+                    }
+
+                    // Contar seleccionados
+                    const seleccionados = alumnosCargados.filter(a => a.selected);
+
+                    // Validar que haya seleccionados
+                    if (seleccionados.length === 0) {
+                        mostrarMensaje('Por favor, selecciona al menos un alumno', 'warning');
+                        return;
+                    }
+
+                    // Aplicar cambios
+                    alumnosCargados.forEach(a => {
+                        if (a.selected) {
+                            a.id_status_terminacion = terminacion;
+                        }
+                    });
+
+                    // Actualizar vista
+                    renderAlumnos();
+                    validar();
+
+                    // Confirmación
+                    const nombreStatus = document.querySelector('#statusTerminacionMasivo option:checked')
+                        ?.text || '';
+                    mostrarMensaje(
+                        `✅ Status "${nombreStatus}" aplicado a ${seleccionados.length} alumno(s)`,
+                        'success');
+                });
+            }
+
+            // Función para mostrar mensajes dentro del modal
+            function mostrarMensaje(texto, tipo) {
+                // Remover mensaje anterior si existe
+                const mensajePrevio = document.getElementById('mensajeAplicarRapido');
+                if (mensajePrevio) mensajePrevio.remove();
+
+                // Crear el mensaje
+                const tipoClase = tipo === 'success' ? 'alert-success' : 'alert-warning';
+                const icono = tipo === 'success' ? '✅' : '⚠️';
+
+                const mensaje = document.createElement('div');
+                mensaje.id = 'mensajeAplicarRapido';
+                mensaje.className = `alert ${tipoClase} alert-dismissible fade show mt-2 mb-0`;
+                mensaje.innerHTML = `
+                    <strong>${icono}</strong> ${texto}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                `;
+
+                // Insertar después del panel de configuración rápida
+                panelConfigRapida.insertAdjacentElement('afterend', mensaje);
+
+                // Auto-ocultar después de 5 segundos (solo para mensajes de éxito)
+                if (tipo === 'success') {
+                    setTimeout(() => {
+                        if (mensaje.parentNode) {
+                            mensaje.classList.remove('show');
+                            setTimeout(() => mensaje.remove(), 150);
+                        }
+                    }, 5000);
+                }
+            }
+
+            // Seleccionar todos
+            document.getElementById('btnSeleccionarTodos')?.addEventListener('click', () => {
+                const todos = alumnosCargados.every(a => a.selected);
+                alumnosCargados.forEach(a => a.selected = !todos);
+                renderAlumnos();
+                if (document.getElementById('btnSeleccionarTodos')) {
+                    document.getElementById('btnSeleccionarTodos').textContent = !todos ?
+                        'Deseleccionar Todos' : 'Seleccionar Todos';
+                }
+                validar();
+            });
+
+            // Guardar
+            btnGuardar?.addEventListener('click', () => {
+                const seleccionados = alumnosCargados.filter(a => a.selected);
+                if (seleccionados.length === 0) return;
+
+                const data = seleccionados.map(a => ({
+                    id_historial: a.id_historial,
+                    id_status_terminacion: a.id_status_terminacion
+                }));
+
+                alumnosJsonInput.value = JSON.stringify(data);
+                document.getElementById('formReinscripcionMasiva').submit();
+            });
+
+            // Eventos
+            grupoSelect?.addEventListener('change', cargarDatos);
+            periodoSelect?.addEventListener('change', cargarDatos);
+
+            // Reset al cerrar
+            $('#modalReinscripcionMasiva').on('hidden.bs.modal', () => {
+                document.getElementById('formReinscripcionMasiva')?.reset();
+                alumnosCargados = [];
+                resetearVista();
+                btnGuardar.disabled = true;
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // === Elementos del DOM para el modal de Inscripción Primera Vez ===
+            const carreraSelect = document.getElementById('carreraPrimeraVez');
+            const generacionSelect = document.getElementById('generacionPrimeraVez');
+            const listaAlumnos = document.getElementById('listaAlumnosPrimeraVez');
+            const contenedorAlumnos = document.getElementById('contenedorAlumnosPrimeraVez');
+            const periodoSelect = document.getElementById('periodoPrimeraVez');
+            const grupoSelect = document.getElementById('grupoPrimeraVez');
+            const loadingAsignaciones = document.getElementById('loadingAsignacionesPrimera');
+            const asignacionesContainer = document.getElementById('asignacionesContainerPrimera');
+            const listaAsignaciones = document.getElementById('listaAsignacionesPrimera');
+            const mensajeAsignaciones = document.getElementById('mensajeAsignacionesPrimera');
+            const asignacionesInput = document.getElementById('asignacionesPrimeraInput');
+            const alumnosJsonInput = document.getElementById('alumnosJsonPrimera');
+            const btnGuardar = document.getElementById('btnGuardarPrimeraVez');
+            const numeroPeriodoDisplay = document.getElementById('numeroPeriodoPrimeraDisplay');
+            const idNumeroPeriodoInput = document.getElementById('id_numero_periodo_primera');
+
+            let alumnosDisponibles = [];
+            let asignacionesDisponibles = [];
+            let asignacionesSeleccionadas = [];
+
+            // === Cargar alumnos al cambiar CARRERA + GENERACIÓN ===
+            function cargarAlumnosPrimeraVez() {
+                const idCarrera = carreraSelect?.value;
+                const idGeneracion = generacionSelect?.value;
+
+                if (!idCarrera || !idGeneracion) {
+                    listaAlumnos.innerHTML =
+                        '<div class="text-center py-2 text-muted">Selecciona carrera y generación</div>';
+                    contenedorAlumnos.style.display = 'none';
+                    resetAsignaturas();
+                    validarGuardado();
+                    return;
+                }
+
+                listaAlumnos.innerHTML =
+                    '<div class="text-center py-2"><div class="spinner-border text-primary"></div></div>';
+                fetch(`/historial/alumnos-primera-vez?carrera=${idCarrera}&generacion=${idGeneracion}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alumnosDisponibles = data.alumnos;
+                            renderAlumnosPrimera();
+                            contenedorAlumnos.style.display = 'block';
+                        } else {
+                            listaAlumnos.innerHTML =
+                                '<div class="text-center text-danger py-2">No se encontraron alumnos</div>';
+                            contenedorAlumnos.style.display = 'none';
+                        }
+                    })
+                    .catch(() => {
+                        listaAlumnos.innerHTML =
+                            '<div class="text-center text-danger py-2">Error al cargar alumnos</div>';
+                    })
+                    .finally(() => {
+                        validarGuardado();
+                    });
+            }
+
+            carreraSelect?.addEventListener('change', cargarAlumnosPrimeraVez);
+            generacionSelect?.addEventListener('change', cargarAlumnosPrimeraVez);
+
+            // === Renderizar lista de alumnos ===
+            function renderAlumnosPrimera() {
+                if (alumnosDisponibles.length === 0) {
+                    listaAlumnos.innerHTML = '<div class="text-center py-2 text-muted">No hay alumnos</div>';
+                    return;
+                }
+                let html = '';
+                alumnosDisponibles.forEach((a, i) => {
+                    html += `
+                <div class="form-check mb-2">
+                    <input class="form-check-input alumno-check-primera" type="checkbox" id="alumno_pv_${a.id}" data-id="${a.id}">
+                    <label class="form-check-label" for="alumno_pv_${a.id}">
+                        ${a.nombre} (${a.matricula})
+                    </label>
+                </div>
+            `;
+                });
+                listaAlumnos.innerHTML = html;
+
+                // Asignar eventos
+                document.querySelectorAll('.alumno-check-primera').forEach(cb => {
+                    cb.addEventListener('change', validarGuardado);
+                });
+                document.getElementById('btnSeleccionarTodosPrimera')?.addEventListener('click', function() {
+                    const todos = document.querySelectorAll('.alumno-check-primera');
+                    const seleccionar = !Array.from(todos).every(cb => cb.checked);
+                    todos.forEach(cb => cb.checked = seleccionar);
+                    validarGuardado();
+                });
+            }
+
+            // === Cargar asignaciones al cambiar PERÍODO o GRUPO ===
+            function cargarAsignacionesPrimera() {
+                const idPeriodo = periodoSelect?.value;
+                const idGrupo = grupoSelect?.value;
+                if (!idPeriodo || !idGrupo) {
+                    resetAsignaturas();
+                    return;
+                }
+
+                loadingAsignaciones.style.display = 'block';
+                asignacionesContainer.style.display = 'none';
+                mensajeAsignaciones.style.display = 'none';
+
+                fetch(`/asignaciones/disponibles?grupo=${idGrupo}&periodo=${idPeriodo}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            asignacionesDisponibles = data.asignaciones || [];
+                            idNumeroPeriodoInput.value = data.id_numero_periodo || '';
+                            if (data.id_numero_periodo) {
+                                fetch(`/historial/obtener-tipo-periodo/${data.id_numero_periodo}`)
+                                    .then(r => r.json())
+                                    .then(d => {
+                                        if (d.success) {
+                                            numeroPeriodoDisplay.value = `${d.numero} - ${d.tipo_periodo}`;
+                                        } else {
+                                            numeroPeriodoDisplay.value =
+                                            `Período ${data.id_numero_periodo}`;
+                                        }
+                                    });
+                            }
+                            renderAsignacionesPrimera();
+                            asignacionesContainer.style.display = 'block';
+                        } else {
+                            resetAsignaturas();
+                        }
+                    })
+                    .catch(() => resetAsignaturas())
+                    .finally(() => loadingAsignaciones.style.display = 'none');
+            }
+
+            periodoSelect?.addEventListener('change', cargarAsignacionesPrimera);
+            grupoSelect?.addEventListener('change', cargarAsignacionesPrimera);
+
+            // === Renderizar asignaciones ===
+            function renderAsignacionesPrimera() {
+                listaAsignaciones.innerHTML = '';
+                asignacionesDisponibles.forEach(a => {
+                    const checked = asignacionesSeleccionadas.includes(a.id_asignacion);
+                    const div = document.createElement('div');
+                    div.className = 'form-check mb-2';
+                    div.innerHTML = `
+                <input class="form-check-input asignacion-check-primera" type="checkbox" 
+                    id="asignacion_pv_${a.id_asignacion}" ${checked ? 'checked' : ''} value="${a.id_asignacion}">
+                <label class="form-check-label small" for="asignacion_pv_${a.id_asignacion}">
+                    ${a.materia_nombre} - ${a.docente_nombre}
+                </label>
+            `;
+                    listaAsignaciones.appendChild(div);
+                });
+                // Asignar eventos
+                document.querySelectorAll('.asignacion-check-primera').forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        if (this.checked) {
+                            if (asignacionesSeleccionadas.length >= 8) {
+                                this.checked = false;
+                                alert('Máximo 8 asignaciones permitidas.');
+                                return;
+                            }
+                            asignacionesSeleccionadas.push(parseInt(this.value));
+                        } else {
+                            asignacionesSeleccionadas = asignacionesSeleccionadas.filter(id =>
+                                id !== parseInt(this.value));
+                        }
+                        asignacionesInput.value = JSON.stringify(asignacionesSeleccionadas);
+                        validarGuardado();
+                    });
+                });
+            }
+
+            // === Resetear asignaturas ===
+            function resetAsignaturas() {
+                asignacionesDisponibles = [];
+                asignacionesSeleccionadas = [];
+                listaAsignaciones.innerHTML = '';
+                asignacionesInput.value = '[]';
+                mensajeAsignaciones.style.display = 'block';
+                asignacionesContainer.style.display = 'none';
+            }
+
+            // === Validar si se puede guardar ===
+            function validarGuardado() {
+                const alumnosSeleccionados = Array.from(document.querySelectorAll('.alumno-check-primera:checked'))
+                    .map(cb => parseInt(cb.dataset.id));
+                const hayAsignaciones = asignacionesSeleccionadas.length > 0;
+                const hayAlumnos = alumnosSeleccionados.length > 0;
+                const periodoValido = periodoSelect?.value && grupoSelect?.value;
+
+                btnGuardar.disabled = !(hayAlumnos && hayAsignaciones && periodoValido);
+                alumnosJsonInput.value = JSON.stringify(alumnosSeleccionados);
+            }
+        });
+        // === Enviar formulario al hacer clic en el botón de guardar ===
+        document.getElementById('btnGuardarPrimeraVez')?.addEventListener('click', function() {
+            if (!this.disabled) {
+                document.getElementById('formInscripcionPrimeraVez').submit();
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Espera un poco para asegurar que todos los modales existan
+            setTimeout(function() {
+                $('.modal').each(function() {
+                    // Inicializa el modal con las opciones deseadas
+                    $(this).modal({
+                        backdrop: 'static',
+                        keyboard: false,
+                        show: false // no mostrar al cargar
+                    });
+                });
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
