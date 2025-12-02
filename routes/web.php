@@ -28,6 +28,7 @@ use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\CiclosEscolaresController;
+use App\Http\Controllers\GeneracionController;
 
 Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])
     ->middleware('guest')
@@ -163,6 +164,8 @@ Route::middleware(['auth', 'role.level:4'])->group(function () {
     return view('layouts.admin');
 })->name('admin');
 
+Route::resource('generaciones', GeneracionController::class);
+
     // Catálogos
     Route::get('/catalogos', [CatalogosController::class, 'index'])->name('catalogos.index');
     Route::post('/catalogos', [CatalogosController::class, 'store'])->name('catalogos.store');
@@ -288,6 +291,7 @@ Route::get('/historial/alumnos-primera-vez', [HistorialController::class, 'getAl
     Route::post('/calificaciones/guardar-masivo', [CalificacionController::class, 'storeMasivo'])->name('calificaciones.storeMasivo');
 Route::resource('calificaciones', CalificacionController::class);
     // Docentes
+    
     Route::resource('docentes', DocentesController::class);
     Route::get('/docentes', [DocentesController::class, 'index'])->name('docente.index');
 

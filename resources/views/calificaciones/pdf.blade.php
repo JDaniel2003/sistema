@@ -17,11 +17,11 @@
 <body>
 
 <div class="text-center mb-3">
-    <h2>Matriz de Calificaciones</h2>
+    <h2>Acta de Calificaciones</h2>
     <p><strong>Materia:</strong> {{ $materiaNombre }}</p>
     <p><strong>Grupo:</strong> {{ $grupoNombre }}</p>
     <p><strong>Período:</strong> {{ $periodoNombre }}</p>
-    <p><strong>Total alumnos:</strong> <strong>{{ $totalAlumnos }}</strong></p>
+    {{--<p><strong>Total alumnos:</strong> <strong>{{ $totalAlumnos }}</strong></p>--}}
 </div>
 
 <table>
@@ -74,6 +74,14 @@
         @endforeach
     </tbody>
 </table>
+
+<div class="firma-section text-center">
+    <div class="firma-line">
+        <p><strong>_________________________________________</strong></p>
+        <p><strong>Firma del Docente</strong></p>
+        <p>{{ $docenteNombre }}</p>
+    </div>
+</div>
 
 </body>
 </html>

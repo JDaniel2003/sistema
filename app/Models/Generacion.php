@@ -15,5 +15,7 @@ class Generacion extends Model
 
     protected $fillable = [
         'nombre',
+        'anio_inicio',
+        'anio_fin',
     ];
 }

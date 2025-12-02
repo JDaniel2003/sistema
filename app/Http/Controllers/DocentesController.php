@@ -7,400 +7,350 @@ use App\Models\Docente;
 use App\Models\DatosDocente;
 use App\Models\Genero;
 use App\Models\DomicilioDocente;
-use App\Models\Usuario; // Cambiado de User a Usuario
+use App\Models\Usuario;
 use App\Models\Distrito;
 use App\Models\Estado;
 use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class DocentesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-   public function index(Request $request)
-{
-    // Obtener parámetro "mostrar"
-    $mostrar = $request->get('mostrar', 10);
+    public function index()
+    {
+        $docentes = Docente::with(['datosDocentes.domicilioDocente', 'datosDocentes.genero', 'datosDocentes.abreviatura', 'usuario.rol'])->get();
+        $generos = Genero::all();
+        $distritos = Distrito::all();
+        $estados = Estado::all();
+        $roles = Rol::all();
+        $abreviaturas = Abreviatura::all();
 
-    // Construcción base del query
-    $query = Docente::with(['datosDocentes', 'usuario'])->orderByDesc('id_docente');
-
-    // Si el usuario selecciona "todo"
-    if ($mostrar === 'todo') {
-        $docentes = $query->get();
-    } else {
-        // Cantidad por página
-        $perPage = is_numeric($mostrar) ? (int) $mostrar : 10;
-
-        $docentes = $query->paginate($perPage)->appends($request->all());
+        return view('docente.index', compact('docentes', 'generos', 'distritos', 'estados', 'roles', 'abreviaturas'));
     }
 
-    // Datos complementarios
-    $generos = Genero::all();
-    $distritos = Distrito::all();
-    $estados = Estado::all();
-    $usuarios = Usuario::with('rol')->get();
-    $roles = Rol::all();
-    $abreviaturas = Abreviatura::all();
-
-    return view('docente.index', compact(
-        'docentes',
-        'generos',
-        'distritos',
-        'estados',
-        'usuarios',
-        'roles',
-        'abreviaturas'
-    ));
-}
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-{
-    $generos = Genero::all();
-    $distritos = Distrito::all();
-    $estados = Estado::all();
-    $usuarios = Usuario::with('rol')->get();
-    $roles = Rol::all();
-    $abreviaturas = Abreviatura::all(); // Agregar esta línea
-    
-    return view('docentes.create', compact('generos', 'distritos', 'estados', 'usuarios', 'roles', 'abreviaturas'));
-}
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
-{
-    $request->validate([
-        // Datos del docente (tabla docentes)
-        'especialidad' => 'required|string|max:100',
-        'datos' => 'nullable|json',
-        'id_usuario' => 'nullable|exists:usuarios,id_usuario',
-        
-        // Datos personales (tabla datos_docentes)
-        'datos_docentes.nombre' => 'required|string|max:100',
-        'datos_docentes.apellido_paterno' => 'required|string|max:50',
-        'datos_docentes.apellido_materno' => 'nullable|string|max:50',
-        'datos_docentes.edad' => 'nullable|integer|min:18|max:100',
-        'datos_docentes.id_genero' => 'required|exists:generos,id_genero',
-        'datos_docentes.id_abreviatura' => 'nullable|exists:abreviaturas,id_abreviatura', // NUEVO
-        'datos_docentes.fecha_nacimiento' => 'required|date',
-        'datos_docentes.cedula_profesional' => 'required|string|size:7|unique:datos_docentes,cedula_profesional',
-        'datos_docentes.rfc' => 'required|string|size:13|unique:datos_docentes,rfc',
-        'datos_docentes.telefono' => 'required|string|size:10',
-        'datos_docentes.correo' => 'required|email|max:100|unique:datos_docentes,correo',
-        'datos_docentes.curp' => 'required|string|size:18|unique:datos_docentes,curp',
-        'datos_docentes.numero_seguridad_social' => 'nullable|string|size:11|unique:datos_docentes,numero_seguridad_social',
-        'datos_docentes.datos' => 'nullable|json',
-        
-        // Domicilio (tabla domicilios_docentes)
-        'domicilio_docente.calle' => 'required|string|max:100',
-        'domicilio_docente.numero_exterior' => 'nullable|string|max:4',
-        'domicilio_docente.numero_interior' => 'nullable|string|max:4',
-        'domicilio_docente.codigo_postal' => 'nullable|string|size:5',
-        'domicilio_docente.id_distrito' => 'nullable|exists:distritos,id_distrito',
-        'domicilio_docente.id_estado' => 'required|exists:estado,id_estado',
-        'domicilio_docente.municipio' => 'required|string|max:100',
-        'domicilio_docente.colonia' => 'required|string|max:100',
-        'domicilio_docente.datos' => 'nullable|json',
-        
-        // Validaciones para crear usuario (opcional)
-        'usuario.username' => 'nullable|string|max:50|unique:usuarios,username',
-        'usuario.password' => 'nullable|required_with:usuario.username|string|min:8|confirmed',
-        'usuario.password_confirmation' => 'nullable',
-        'usuario.id_rol' => 'nullable|exists:roles,id_rol',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        // 1. Crear domicilio
-        $domicilio = DomicilioDocente::create([
-            'calle' => $request->input('domicilio_docente.calle'),
-            'numero_exterior' => $request->input('domicilio_docente.numero_exterior'),
-            'numero_interior' => $request->input('domicilio_docente.numero_interior'),
-            'codigo_postal' => $request->input('domicilio_docente.codigo_postal'),
-            'id_distrito' => $request->input('domicilio_docente.id_distrito'),
-            'id_estado' => $request->input('domicilio_docente.id_estado'),
-            'municipio' => $request->input('domicilio_docente.municipio'),
-            'colonia' => $request->input('domicilio_docente.colonia'),
-            'datos' => $request->input('domicilio_docente.datos'),
-        ]);
-
-        // 2. Crear datos del docente
-        $datosDocente = DatosDocente::create([
-            'nombre' => $request->input('datos_docentes.nombre'),
-            'apellido_paterno' => $request->input('datos_docentes.apellido_paterno'),
-            'apellido_materno' => $request->input('datos_docentes.apellido_materno'),
-            'edad' => $request->input('datos_docentes.edad'),
-            'id_genero' => $request->input('datos_docentes.id_genero'),
-            'id_abreviatura' => $request->input('datos_docentes.id_abreviatura'), // NUEVO
-            'fecha_nacimiento' => $request->input('datos_docentes.fecha_nacimiento'),
-            'cedula_profesional' => $request->input('datos_docentes.cedula_profesional'),
-            'rfc' => $request->input('datos_docentes.rfc'),
-            'telefono' => $request->input('datos_docentes.telefono'),
-            'correo' => $request->input('datos_docentes.correo'),
-            'curp' => $request->input('datos_docentes.curp'),
-            'id_domicilio_docente' => $domicilio->id_domicilio_docente,
-            'numero_seguridad_social' => $request->input('datos_docentes.numero_seguridad_social'),
-            'datos' => $request->input('datos_docentes.datos'),
-        ]);
-
-        // 3. Crear usuario si se proporcionaron los datos
-        $idUsuario = $request->input('id_usuario');
-        
-        if ($request->filled('usuario.username') && $request->filled('usuario.password')) {
-            $usuario = Usuario::create([
-                'username' => $request->input('usuario.username'),
-                'password' => Hash::make($request->input('usuario.password')),
-                'id_rol' => $request->input('usuario.id_rol', 3),
-            ]);
-            
-            $idUsuario = $usuario->id_usuario;
-        }
-
-        // 4. Crear docente
-        $docente = Docente::create([
-            'id_datos_docentes' => $datosDocente->id_datos_docentes,
-            'id_usuario' => $idUsuario,
-            'especialidad' => $request->input('especialidad'),
-            'datos' => $request->input('datos'),
-        ]);
-
-        DB::commit();
-
-        return redirect()->route('docente.index')
-            ->with('success', 'Docente registrado exitosamente.' . 
-                   ($idUsuario && $request->filled('usuario.username') ? ' Se creó el usuario asociado.' : ''));
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return redirect()->back()
-            ->withInput()
-            ->with('error', 'Error al registrar el docente: ' . $e->getMessage());
-    }
-}
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
     {
-        $docente = Docente::with([
-            'datosDocentes.genero',
-            'datosDocentes.domicilioDocente',
-            'usuario'
-        ])->findOrFail($id);
-        
-        return view('docente.show', compact('docente'));
-    }
+        // Validaciones personalizadas
+        $messages = [
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+            'size' => 'El campo :attribute debe tener exactamente :size caracteres.',
+            'unique' => 'El :attribute ya está registrado en el sistema.',
+            'email' => 'Debe ingresar un correo electrónico válido.',
+            'date' => 'Debe ingresar una fecha válida.',
+            'integer' => 'El campo :attribute debe ser un número entero.',
+            'exists' => 'El valor seleccionado no es válido.',
+            'confirmed' => 'La confirmación de contraseña no coincide.',
+            'regex' => 'El formato del campo :attribute no es válido.',
+            'numeric' => 'El campo :attribute debe ser numérico.',
+            'digits' => 'El campo :attribute debe tener :digits dígitos.',
+            'alpha' => 'El campo :attribute solo debe contener letras.',
+            'before' => 'La fecha debe ser anterior a hoy.',
+        ];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $docente = Docente::with([
-            'datosDocentes.domicilioDocente',
-            'usuario'
-        ])->findOrFail($id);
-        
-        $generos = Genero::all();
-        $distritos = Distrito::all();
-        $estados = Estado::all();
-        $usuarios = Usuario::with('rol')->get(); // Cambiado a Usuario
-        
-        return view('docentes.edit', compact('docente', 'generos', 'distritos', 'estados', 'usuarios'));
-    }
+        $attributes = [
+            'especialidad' => 'especialidad',
+            'datos_docentes.nombre' => 'nombre',
+            'datos_docentes.apellido_paterno' => 'apellido paterno',
+            'datos_docentes.apellido_materno' => 'apellido materno',
+            'datos_docentes.fecha_nacimiento' => 'fecha de nacimiento',
+            'datos_docentes.edad' => 'edad',
+            'datos_docentes.id_genero' => 'género',
+            'datos_docentes.id_abreviatura' => 'título/abreviatura',
+            'datos_docentes.cedula_profesional' => 'cédula profesional',
+            'datos_docentes.rfc' => 'RFC',
+            'datos_docentes.curp' => 'CURP',
+            'datos_docentes.telefono' => 'teléfono',
+            'datos_docentes.correo' => 'correo electrónico',
+            'datos_docentes.numero_seguridad_social' => 'número de seguridad social',
+            'domicilio_docente.calle' => 'calle',
+            'domicilio_docente.colonia' => 'colonia',
+            'domicilio_docente.municipio' => 'municipio',
+            'domicilio_docente.id_estado' => 'estado',
+            'domicilio_docente.numero_exterior' => 'número exterior',
+            'domicilio_docente.numero_interior' => 'número interior',
+            'domicilio_docente.codigo_postal' => 'código postal',
+            'domicilio_docente.id_distrito' => 'distrito',
+            'usuario.username' => 'nombre de usuario',
+            'usuario.password' => 'contraseña',
+            'usuario.id_rol' => 'rol',
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $docente = Docente::with('datosDocentes')->findOrFail($id);
-
-        $request->validate([
-            // Datos del docente (tabla docentes)
+        $validated = $request->validate([
+            // Docente
             'especialidad' => 'required|string|max:100',
-            'datos' => 'nullable|json',
-            'id_usuario' => 'nullable|exists:usuarios,id_usuario', // Cambiado a 'usuarios'
             
-            // Datos personales (tabla datos_docentes)
-            'datos_docentes.nombre' => 'required|string|max:100',
-            'datos_docentes.apellido_paterno' => 'required|string|max:50',
-            'datos_docentes.apellido_materno' => 'nullable|string|max:50',
-            'datos_docentes.edad' => 'nullable|integer|min:18|max:100',
+            // Datos personales
+            'datos_docentes.nombre' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'datos_docentes.apellido_paterno' => 'required|string|max:50|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'datos_docentes.apellido_materno' => 'nullable|string|max:50|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'datos_docentes.fecha_nacimiento' => 'required|date|before:today',
+            'datos_docentes.edad' => 'required|integer|min:18|max:100',
             'datos_docentes.id_genero' => 'required|exists:generos,id_genero',
-            'datos_docentes.fecha_nacimiento' => 'required|date',
-            'datos_docentes.cedula_profesional' => 'required|string|size:7|unique:datos_docentes,cedula_profesional,' . $docente->id_datos_docentes . ',id_datos_docentes',
-            'datos_docentes.rfc' => 'required|string|size:13|unique:datos_docentes,rfc,' . $docente->id_datos_docentes . ',id_datos_docentes',
-            'datos_docentes.telefono' => 'required|string|size:10',
-            'datos_docentes.correo' => 'required|email|max:100|unique:datos_docentes,correo,' . $docente->id_datos_docentes . ',id_datos_docentes',
-            'datos_docentes.curp' => 'required|string|size:18|unique:datos_docentes,curp,' . $docente->id_datos_docentes . ',id_datos_docentes',
-            'datos_docentes.numero_seguridad_social' => 'nullable|string|size:11|unique:datos_docentes,numero_seguridad_social,' . $docente->id_datos_docentes . ',id_datos_docentes',
-            'datos_docentes.datos' => 'nullable|json',
+            'datos_docentes.id_abreviatura' => 'nullable|exists:abreviaturas,id_abreviatura',
+            'datos_docentes.cedula_profesional' => 'nullable|string|size:7|unique:datos_docentes,cedula_profesional|regex:/^[0-9]+$/',
+            'datos_docentes.rfc' => 'nullable|string|size:13|unique:datos_docentes,rfc|regex:/^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/',
+            'datos_docentes.curp' => 'nullable|string|size:18|unique:datos_docentes,curp|regex:/^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[0-9A-Z][0-9]$/',
+            'datos_docentes.telefono' => 'required|string|size:10|regex:/^[0-9]+$/',
+            'datos_docentes.correo' => 'required|email|max:100|unique:datos_docentes,correo',
+            'datos_docentes.numero_seguridad_social' => 'nullable|string|size:11|unique:datos_docentes,numero_seguridad_social|regex:/^[0-9]+$/',
             
-            // Domicilio (tabla domicilios_docentes)
+            // Domicilio
             'domicilio_docente.calle' => 'required|string|max:100',
-            'domicilio_docente.numero_exterior' => 'nullable|string|max:4',
-            'domicilio_docente.numero_interior' => 'nullable|string|max:4',
-            'domicilio_docente.codigo_postal' => 'nullable|string|size:5',
-            'domicilio_docente.id_distrito' => 'nullable|exists:distritos,id_distrito',
-            'domicilio_docente.id_estado' => 'required|exists:estados,id_estado',
-            'domicilio_docente.municipio' => 'required|string|max:100',
             'domicilio_docente.colonia' => 'required|string|max:100',
-            'domicilio_docente.datos' => 'nullable|json',
-        ]);
-
-        DB::beginTransaction();
-
-        try {
-            // 1. Actualizar o crear domicilio
-            if ($docente->datosDocentes->id_domicilio_docente) {
-                // Actualizar domicilio existente
-                DomicilioDocente::where('id_domicilio_docente', $docente->datosDocentes->id_domicilio_docente)
-                    ->update([
-                        'calle' => $request->input('domicilio_docente.calle'),
-                        'numero_exterior' => $request->input('domicilio_docente.numero_exterior'),
-                        'numero_interior' => $request->input('domicilio_docente.numero_interior'),
-                        'codigo_postal' => $request->input('domicilio_docente.codigo_postal'),
-                        'id_distrito' => $request->input('domicilio_docente.id_distrito'),
-                        'id_estado' => $request->input('domicilio_docente.id_estado'),
-                        'municipio' => $request->input('domicilio_docente.municipio'),
-                        'colonia' => $request->input('domicilio_docente.colonia'),
-                        'datos' => $request->input('domicilio_docente.datos'),
-                    ]);
-            } else {
-                // Crear nuevo domicilio
-                $domicilio = DomicilioDocente::create([
-                    'calle' => $request->input('domicilio_docente.calle'),
-                    'numero_exterior' => $request->input('domicilio_docente.numero_exterior'),
-                    'numero_interior' => $request->input('domicilio_docente.numero_interior'),
-                    'codigo_postal' => $request->input('domicilio_docente.codigo_postal'),
-                    'id_distrito' => $request->input('domicilio_docente.id_distrito'),
-                    'id_estado' => $request->input('domicilio_docente.id_estado'),
-                    'municipio' => $request->input('domicilio_docente.municipio'),
-                    'colonia' => $request->input('domicilio_docente.colonia'),
-                    'datos' => $request->input('domicilio_docente.datos'),
-                ]);
-                $docente->datosDocentes->id_domicilio_docente = $domicilio->id_domicilio_docente;
-                $docente->datosDocentes->save();
-            }
-
-            // 2. Actualizar datos del docente
-            $docente->datosDocentes->update([
-                'nombre' => $request->input('datos_docentes.nombre'),
-                'apellido_paterno' => $request->input('datos_docentes.apellido_paterno'),
-                'apellido_materno' => $request->input('datos_docentes.apellido_materno'),
-                'edad' => $request->input('datos_docentes.edad'),
-                'id_genero' => $request->input('datos_docentes.id_genero'),
-                'fecha_nacimiento' => $request->input('datos_docentes.fecha_nacimiento'),
-                'cedula_profesional' => $request->input('datos_docentes.cedula_profesional'),
-                'rfc' => $request->input('datos_docentes.rfc'),
-                'telefono' => $request->input('datos_docentes.telefono'),
-                'correo' => $request->input('datos_docentes.correo'),
-                'curp' => $request->input('datos_docentes.curp'),
-                'numero_seguridad_social' => $request->input('datos_docentes.numero_seguridad_social'),
-                'datos' => $request->input('datos_docentes.datos'),
-            ]);
-
-            // 3. Actualizar docente
-            $docente->update([
-                'especialidad' => $request->input('especialidad'),
-                'id_usuario' => $request->input('id_usuario'),
-                'datos' => $request->input('datos'),
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('docentes.index')
-                ->with('success', 'Docente actualizado exitosamente.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Error al actualizar el docente: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        DB::beginTransaction();
-
-        try {
-            $docente = Docente::with('datosDocentes')->findOrFail($id);
+            'domicilio_docente.municipio' => 'required|string|max:100',
+            'domicilio_docente.id_estado' => 'required|exists:estado,id_estado',
+            'domicilio_docente.numero_exterior' => 'nullable|string|max:10',
+            'domicilio_docente.numero_interior' => 'nullable|string|max:10',
+            'domicilio_docente.codigo_postal' => 'nullable|string|size:5|regex:/^[0-9]+$/',
+            'domicilio_docente.id_distrito' => 'nullable|exists:distritos,id_distrito',
             
-            // Guardar IDs antes de eliminar
-            $datosDocenteId = $docente->id_datos_docentes;
-            $domicilioId = $docente->datosDocentes->id_domicilio_docente ?? null;
-            $usuarioId = $docente->id_usuario;
+            // Usuario (opcional pero con validaciones condicionales)
+            'usuario.username' => 'nullable|string|max:50|unique:usuarios,username|regex:/^[a-zA-Z0-9_]+$/',
+            'usuario.password' => 'nullable|required_with:usuario.username|string|min:8|confirmed',
+            'usuario.id_rol' => 'nullable|required_with:usuario.username|exists:roles,id_rol',
+        ], $messages, $attributes);
 
-            // 1. Eliminar docente
-            $docente->delete();
+        DB::beginTransaction();
+        try {
+            // Crear domicilio
+            $domicilio = DomicilioDocente::create($validated['domicilio_docente']);
 
-            // 2. Eliminar datos del docente
-            if ($datosDocenteId) {
-                DatosDocente::destroy($datosDocenteId);
+            // Crear datos personales
+            $datosDocente = DatosDocente::create(array_merge(
+                $validated['datos_docentes'],
+                ['id_domicilio_docente' => $domicilio->id_domicilio_docente]
+            ));
+
+            // Crear usuario (opcional)
+            $idUsuario = null;
+            if (!empty($validated['usuario']['username']) && !empty($validated['usuario']['password'])) {
+                $usuario = Usuario::create([
+                    'username' => $validated['usuario']['username'],
+                    'password' => Hash::make($validated['usuario']['password']),
+                    'id_rol' => $validated['usuario']['id_rol'] ?? 3,
+                ]);
+                $idUsuario = $usuario->id_usuario;
             }
 
-            // 3. Eliminar domicilio si existe
-            if ($domicilioId) {
-                DomicilioDocente::destroy($domicilioId);
-            }
-
-            // NOTA: No eliminamos el usuario para evitar problemas de integridad
-            // con otras partes del sistema
+            // Crear docente
+            Docente::create([
+                'id_datos_docentes' => $datosDocente->id_datos_docentes,
+                'id_usuario' => $idUsuario,
+                'especialidad' => $validated['especialidad'],
+            ]);
 
             DB::commit();
-
-            return redirect()->route('docentes.index')
-                ->with('success', 'Docente eliminado exitosamente.');
+            return redirect()->route('docente.index')->with('success', '✓ Docente registrado exitosamente.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Error al eliminar el docente: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Error al registrar el docente: ' . $e->getMessage()])->withInput();
         }
     }
 
-    /**
-     * Buscar docentes por nombre o cédula
-     */
-    public function buscar(Request $request)
+    public function update(Request $request, $id)
     {
-        $busqueda = $request->input('busqueda');
-        
-        $docentes = Docente::with(['datosDocentes', 'usuario'])
-            ->whereHas('datosDocentes', function($query) use ($busqueda) {
-                $query->where('nombre', 'LIKE', "%{$busqueda}%")
-                      ->orWhere('apellido_paterno', 'LIKE', "%{$busqueda}%")
-                      ->orWhere('apellido_materno', 'LIKE', "%{$busqueda}%")
-                      ->orWhere('cedula_profesional', 'LIKE', "%{$busqueda}%")
-                      ->orWhere('rfc', 'LIKE', "%{$busqueda}%");
-            })
-            ->orWhere('especialidad', 'LIKE', "%{$busqueda}%")
-            ->get();
+        $docente = Docente::with('datosDocentes.domicilioDocente', 'usuario')->findOrFail($id);
+        $datos = $docente->datosDocentes;
 
-        // También necesitamos pasar las variables para el modal
-        $generos = Genero::all();
-        $distritos = Distrito::all();
-        $estados = Estado::all();
-        $usuarios = Usuario::with('rol')->get(); // Cambiado a Usuario
+        // Mensajes personalizados
+        $messages = [
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+            'size' => 'El campo :attribute debe tener exactamente :size caracteres.',
+            'unique' => 'El :attribute ya está registrado en el sistema.',
+            'email' => 'Debe ingresar un correo electrónico válido.',
+            'date' => 'Debe ingresar una fecha válida.',
+            'integer' => 'El campo :attribute debe ser un número entero.',
+            'exists' => 'El valor seleccionado no es válido.',
+            'confirmed' => 'La confirmación de contraseña no coincide.',
+            'regex' => 'El formato del campo :attribute no es válido.',
+            'before' => 'La fecha debe ser anterior a hoy.',
+        ];
 
-        return view('docentes.index', compact('docentes', 'generos', 'distritos', 'estados', 'usuarios'));
+        $attributes = [
+            'especialidad' => 'especialidad',
+            'datos_docentes.nombre' => 'nombre',
+            'datos_docentes.apellido_paterno' => 'apellido paterno',
+            'datos_docentes.apellido_materno' => 'apellido materno',
+            'datos_docentes.fecha_nacimiento' => 'fecha de nacimiento',
+            'datos_docentes.edad' => 'edad',
+            'datos_docentes.id_genero' => 'género',
+            'datos_docentes.id_abreviatura' => 'título/abreviatura',
+            'datos_docentes.cedula_profesional' => 'cédula profesional',
+            'datos_docentes.rfc' => 'RFC',
+            'datos_docentes.curp' => 'CURP',
+            'datos_docentes.telefono' => 'teléfono',
+            'datos_docentes.correo' => 'correo electrónico',
+            'datos_docentes.numero_seguridad_social' => 'número de seguridad social',
+            'domicilio_docente.calle' => 'calle',
+            'domicilio_docente.colonia' => 'colonia',
+            'domicilio_docente.municipio' => 'municipio',
+            'domicilio_docente.id_estado' => 'estado',
+            'usuario.username' => 'nombre de usuario',
+            'usuario.password' => 'contraseña',
+        ];
+
+        $validated = $request->validate([
+            'especialidad' => 'required|string|max:100',
+
+            'datos_docentes.nombre' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'datos_docentes.apellido_paterno' => 'required|string|max:50|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'datos_docentes.apellido_materno' => 'nullable|string|max:50|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'datos_docentes.fecha_nacimiento' => 'required|date|before:today',
+            'datos_docentes.edad' => 'required|integer|min:18|max:100',
+            'datos_docentes.id_genero' => 'required|exists:generos,id_genero',
+            'datos_docentes.id_abreviatura' => 'nullable|exists:abreviaturas,id_abreviatura',
+
+            'datos_docentes.cedula_profesional' => [
+                'nullable',
+                'string',
+                'size:7',
+                'regex:/^[0-9]+$/',
+                Rule::unique('datos_docentes', 'cedula_profesional')->ignore($datos->id_datos_docentes, 'id_datos_docentes')
+            ],
+
+            'datos_docentes.rfc' => [
+                'nullable',
+                'string',
+                'size:13',
+                'regex:/^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/',
+                Rule::unique('datos_docentes', 'rfc')->ignore($datos->id_datos_docentes, 'id_datos_docentes')
+            ],
+
+            'datos_docentes.curp' => [
+                'nullable',
+                'string',
+                'size:18',
+                'regex:/^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[0-9A-Z][0-9]$/',
+                Rule::unique('datos_docentes', 'curp')->ignore($datos->id_datos_docentes, 'id_datos_docentes')
+            ],
+
+            'datos_docentes.correo' => [
+                'required',
+                'email',
+                'max:100',
+                Rule::unique('datos_docentes', 'correo')->ignore($datos->id_datos_docentes, 'id_datos_docentes')
+            ],
+
+            'datos_docentes.telefono' => 'required|string|size:10|regex:/^[0-9]+$/',
+
+            'datos_docentes.numero_seguridad_social' => [
+                'nullable',
+                'string',
+                'size:11',
+                'regex:/^[0-9]+$/',
+                Rule::unique('datos_docentes', 'numero_seguridad_social')->ignore($datos->id_datos_docentes, 'id_datos_docentes')
+            ],
+
+            'domicilio_docente.calle' => 'required|string|max:100',
+            'domicilio_docente.colonia' => 'required|string|max:100',
+            'domicilio_docente.municipio' => 'required|string|max:100',
+            'domicilio_docente.id_estado' => 'required|exists:estado,id_estado',
+            'domicilio_docente.numero_exterior' => 'nullable|string|max:10',
+            'domicilio_docente.numero_interior' => 'nullable|string|max:10',
+            'domicilio_docente.codigo_postal' => 'nullable|string|size:5|regex:/^[0-9]+$/',
+            'domicilio_docente.id_distrito' => 'nullable|exists:distritos,id_distrito',
+
+            'usuario.username' => [
+                'nullable',
+                'string',
+                'max:50',
+                'regex:/^[a-zA-Z0-9_]+$/',
+                Rule::unique('usuarios', 'username')->ignore($docente->usuario?->id_usuario ?? 0, 'id_usuario')
+            ],
+
+            'usuario.password' => 'nullable|string|min:8|confirmed',
+            'usuario.id_rol' => 'nullable|exists:roles,id_rol',
+        ], $messages, $attributes);
+
+        DB::beginTransaction();
+        try {
+            // Actualizar domicilio
+            $domicilio = $datos->domicilioDocente;
+            if ($domicilio) {
+                $domicilio->update($validated['domicilio_docente']);
+            } else {
+                $domicilio = DomicilioDocente::create($validated['domicilio_docente']);
+                $datos->id_domicilio_docente = $domicilio->id_domicilio_docente;
+                $datos->save();
+            }
+
+            // Actualizar datos personales
+            $datos->update($validated['datos_docentes']);
+
+            // Actualizar o crear usuario
+            if (!empty($validated['usuario']['username'])) {
+                $usuario = $docente->usuario;
+
+                if ($usuario) {
+                    // Actualizar usuario existente
+                    $usuarioData = [
+                        'username' => $validated['usuario']['username'],
+                        'id_rol' => $validated['usuario']['id_rol'] ?? $usuario->id_rol,
+                    ];
+
+                    if (!empty($validated['usuario']['password'])) {
+                        $usuarioData['password'] = Hash::make($validated['usuario']['password']);
+                    }
+
+                    $usuario->update($usuarioData);
+                } else {
+                    // Crear nuevo usuario
+                    if (!empty($validated['usuario']['password'])) {
+                        $nuevo = Usuario::create([
+                            'username' => $validated['usuario']['username'],
+                            'password' => Hash::make($validated['usuario']['password']),
+                            'id_rol' => $validated['usuario']['id_rol'] ?? 3,
+                        ]);
+                        $docente->id_usuario = $nuevo->id_usuario;
+                    }
+                }
+            }
+
+            // Actualizar docente
+            $docente->update([
+                'especialidad' => $validated['especialidad'],
+            ]);
+
+            DB::commit();
+            return redirect()->route('docente.index')->with('success', '✓ Docente actualizado exitosamente.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al actualizar el docente: ' . $e->getMessage()])->withInput();
+        }
     }
-    
-    
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
+            $docente = Docente::with('datosDocentes.domicilioDocente')->findOrFail($id);
+            $datosDocente = $docente->datosDocentes;
+            $domicilio = $datosDocente->domicilioDocente;
+
+            // Eliminar en orden correcto
+            $docente->delete();
+            $datosDocente->delete();
+            
+            if ($domicilio) {
+                $domicilio->delete();
+            }
+
+            DB::commit();
+            return redirect()->route('docentes.index')->with('success', '✓ Docente eliminado exitosamente.');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al eliminar el docente: ' . $e->getMessage()]);
+        }
+    }
 }

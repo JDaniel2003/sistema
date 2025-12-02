@@ -1203,6 +1203,8 @@ public function exportarPDF(Request $request)
         }
 
         $asignacion = AsignacionDocente::with('materia')->find($idAsignacion);
+        $asignacion = AsignacionDocente::with(['materia', 'docente.datosDocentes'])->find($idAsignacion);
+
         $grupo = Grupo::find($idGrupo);
         $periodo = PeriodoEscolar::find($idPeriodo);
 
@@ -1210,6 +1212,7 @@ public function exportarPDF(Request $request)
     'alumnos' => $data['alumnos'],
     'unidades' => $data['unidades'],
     'materiaNombre' => $asignacion->materia->nombre ?? 'N/A',
+    'docenteNombre' => optional($asignacion->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A',
     'grupoNombre' => $grupo->nombre ?? 'N/A',
     'periodoNombre' => $periodo->nombre ?? 'N/A',
     'totalAlumnos' => count($data['alumnos']) // ← Añadido

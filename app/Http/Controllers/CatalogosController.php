@@ -250,7 +250,7 @@ $tiposPeriodos = TipoPeriodo::all();
     {
         $tabla = $request->input('tabla');
         $model = $this->getModel($tabla);
-        $data = $request->only(['nombre', 'nombres', 'duracion', 'descripcion', 'incorporacion', 'clave','numero','abreviatura', 'id_tipo_periodo','nivel']);
+        $data = $request->only(['nombre', 'nombres', 'duracion', 'descripcion', 'incorporacion', 'clave','numero','abreviatura', 'id_tipo_periodo','nivel','anio_inicio','anio_fin']);
         $model::create($data);
 
         return back()
@@ -262,7 +262,7 @@ $tiposPeriodos = TipoPeriodo::all();
     {
         $tabla = $request->input('tabla');
         $model = $this->getModel($tabla)::find($id);
-        $model->update($request->only(['nombre', 'nombres', 'duracion', 'descripcion', 'incorporacion', 'clave','numero','abreviatura', 'id_tipo_periodo','nivel']));
+        $model->update($request->only(['nombre', 'nombres', 'duracion', 'descripcion', 'incorporacion', 'clave','numero','abreviatura', 'id_tipo_periodo','nivel','anio_inicio','anio_fin']));
 
         return back()
             ->with('success', 'Registro actualizado correctamente.')

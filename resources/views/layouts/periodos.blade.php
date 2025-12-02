@@ -551,9 +551,9 @@
 
             // Duraciones por tipo de período (configurables)
             const duracionesPeriodos = {
-                '1': 6,  // Semestre: 6 meses
-                '2': 3,  // Trimestre: 3 meses
-                '3': 4,  // Cuatrimestre: 4 meses
+               '1': 6,   // Semestre: 6 meses
+                '2': 4,  // Cuatrimestre: 4 meses
+                '3': 3,  // trimestre: 3 meses
                 '4': 2,  // Bimestre: 2 meses
                 '5': 12  // Anual: 12 meses
             };

@@ -16,17 +16,32 @@
     <link rel="icon" type="image/png" href="{{ asset('libs/sbadmin/img/up_logo.png') }}">
     <!-- Custom styles -->
     <link href="{{ asset('libs/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <style>
+        .invalid-feedback {
+            display: block !important;
+            font-size: 0.875rem;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        .modal-body .alert {
+            margin: 10px;
+        }
+    </style>
 </head>
 
 <body id="page-top">
     <!-- Top Header -->
     <div class="bg-danger text-white1 text-center py-2">
         <div class="d-flex justify-content-between align-items-center px-4">
-
             <h4 class="mb-0" style="text-align: center;">SISTEMA DE CONTROL ESCOLAR</h4>
-
         </div>
     </div>
+    
     <!-- Logout Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel"
         aria-hidden="true">
@@ -87,6 +102,7 @@
         </div>
     </nav>
 
+
     <!-- Page Wrapper -->
     <div id="wrapper">
         <div id="content-wrapper" class="d-flex flex-column">
@@ -105,37 +121,8 @@
                                     <i class="fas fa-user-plus"></i> Nuevo Docente
                                 </button>
                             </div>
-                            <div class="container mb-4 d-flex justify-content-center">
-                                <div class="p-3 border rounded bg-light d-inline-block shadow-sm">
-                                    <form method="GET" action="{{ route('docente.index') }}"
-                                        class="d-flex flex-wrap gap-2 align-items-center">
 
-                                        <div style="width: 500px;">
-                                            <input type="text" id="searchInput"
-                                                class="form-control form-control-sm" placeholder="🔍 Buscar">
-                                        </div>
-                                        <select name="mostrar" onchange="this.form.submit()"
-                                            class="form-control form-control-sm w-auto">
-                                            <option value="10" {{ request('mostrar') == 10 ? 'selected' : '' }}>10
-                                            </option>
-                                            <option value="13" {{ request('mostrar') == 13 ? 'selected' : '' }}>13
-                                            </option>
-                                            <option value="25" {{ request('mostrar') == 25 ? 'selected' : '' }}>25
-                                            </option>
-                                            <option value="50" {{ request('mostrar') == 50 ? 'selected' : '' }}>50
-                                            </option>
-                                            <option value="todo"
-                                                {{ request('mostrar') == 'todo' ? 'selected' : '' }}>Todo</option>
-                                        </select>
-                                        <a href="{{ route('docente.index', ['mostrar' => 'todo']) }}"
-                                            class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-                                            <i class="fas fa-list me-1"></i> Mostrar todo
-                                        </a>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- Alertas -->
+                            <!-- Alertas específicas para esta página -->
                             @if (session('success'))
                                 <div class="alert alert-success">{{ session('success') }}</div>
                             @endif
@@ -143,7 +130,7 @@
                             <!-- Tabla de Docentes -->
                             <div class="card-body1">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center " id="teachersTable">
+                                    <table class="table table-bordered table-hover text-center">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th>Nombre Completo</th>
@@ -221,9 +208,7 @@
                                                                         <div class="col-md-10">
                                                                             <h4
                                                                                 class="mb-2 font-weight-bold text-danger">
-                                                                                {{ $docente->datosDocentes->nombre ?? 'N/A' }}
-                                                                                {{ $docente->datosDocentes->apellido_paterno ?? '' }}
-                                                                                {{ $docente->datosDocentes->apellido_materno ?? '' }}
+                                                                                {{ $docente->datosDocentes->nombre_con_abreviatura ?? 'N/A' }}
                                                                             </h4>
                                                                             <div class="row">
                                                                                 <div class="col-md-4">
@@ -240,7 +225,7 @@
                                                                                 <div class="col-md-4">
                                                                                     <small
                                                                                         class="text-muted text-uppercase d-block">Título</small>
-                                                                                    <strong>{{ $docente->datosDocentes->abreviatura?->titulo ?? 'Sin título' }}</strong>
+                                                                                    <strong>{{ $docente->datosDocentes->abreviatura->nombre ?? 'Sin título' }}</strong>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -321,11 +306,11 @@
                                                                                         <div class="font-weight-bold">
                                                                                             {{ $docente->datosDocentes->numero_seguridad_social ?? 'No registrado' }}
                                                                                         </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                                                     <!-- Domicilio -->
                                                                     <div class="mb-4">
@@ -429,6 +414,21 @@
                                                             </div>
                                                             <div class="modal-body p-3"
                                                                 style="background-color: #f8f9fa;">
+                                                                <!-- Mostrar errores de validación dentro del modal -->
+                                                                @if ($errors->any() && session('edit_modal_id') == $docente->id_docente)
+                                                                    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                                                        <h6 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Errores de validación:</h6>
+                                                                        <ul class="mb-0">
+                                                                            @foreach ($errors->all() as $error)
+                                                                                <li>{{ $error }}</li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                @endif
+                                                                
                                                                 <div
                                                                     class="form-container p-4 bg-white rounded shadow-sm border">
                                                                     <form
@@ -436,6 +436,8 @@
                                                                         method="POST">
                                                                         @csrf
                                                                         @method('PUT')
+                                                                        <input type="hidden" name="edit_modal_id" value="{{ $docente->id_docente }}">
+                                                                        
                                                                         <div class="accordion"
                                                                             id="editarAccordion{{ $docente->id_docente }}">
                                                                             <!-- Datos Personales -->
@@ -469,9 +471,12 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[nombre]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.nombre') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.nombre', $docente->datosDocentes->nombre) }}"
                                                                                                     required>
+                                                                                                @error('datos_docentes.nombre')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-4 mb-2">
                                                                                                 <label
@@ -480,9 +485,12 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[apellido_paterno]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.apellido_paterno') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.apellido_paterno', $docente->datosDocentes->apellido_paterno) }}"
                                                                                                     required>
+                                                                                                @error('datos_docentes.apellido_paterno')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-4 mb-2">
                                                                                                 <label
@@ -490,8 +498,11 @@
                                                                                                     Materno</label>
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[apellido_materno]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.apellido_materno') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.apellido_materno', $docente->datosDocentes->apellido_materno) }}">
+                                                                                                @error('datos_docentes.apellido_materno')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
@@ -502,8 +513,11 @@
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[cedula_profesional]"
                                                                                                     maxlength="7"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.cedula_profesional') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.cedula_profesional', $docente->datosDocentes->cedula_profesional) }}">
+                                                                                                @error('datos_docentes.cedula_profesional')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
@@ -511,8 +525,11 @@
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[rfc]"
                                                                                                     maxlength="13"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.rfc') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.rfc', $docente->datosDocentes->rfc) }}">
+                                                                                                @error('datos_docentes.rfc')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
@@ -520,8 +537,11 @@
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[curp]"
                                                                                                     maxlength="18"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.curp') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.curp', $docente->datosDocentes->curp) }}">
+                                                                                                @error('datos_docentes.curp')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
@@ -530,9 +550,12 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="text"
                                                                                                     name="especialidad"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('especialidad') is-invalid @enderror"
                                                                                                     value="{{ old('especialidad', $docente->especialidad) }}"
                                                                                                     required>
+                                                                                                @error('especialidad')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
@@ -543,8 +566,12 @@
                                                                                                     Nacimiento</label>
                                                                                                 <input type="date"
                                                                                                     name="datos_docentes[fecha_nacimiento]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm fecha-nacimiento-editar @error('datos_docentes.fecha_nacimiento') is-invalid @enderror"
+                                                                                                    data-target="#edad-editar-{{ $docente->id_docente }}"
                                                                                                     value="{{ old('datos_docentes.fecha_nacimiento', $docente->datosDocentes->fecha_nacimiento) }}">
+                                                                                                @error('datos_docentes.fecha_nacimiento')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-2 mb-2">
                                                                                                 <label
@@ -552,9 +579,14 @@
                                                                                                 <input type="number"
                                                                                                     name="datos_docentes[edad]"
                                                                                                     min="18"
-                                                                                                    id="edad_create"max="100"
-                                                                                                    class="form-control form-control-sm"
-                                                                                                    value="{{ old('datos_docentes.edad', $docente->datosDocentes->edad) }}">
+                                                                                                    id="edad-editar-{{ $docente->id_docente }}"
+                                                                                                    max="100"
+                                                                                                    class="form-control form-control-sm edad-calculada @error('datos_docentes.edad') is-invalid @enderror"
+                                                                                                    value="{{ old('datos_docentes.edad', $docente->datosDocentes->edad) }}"
+                                                                                                    readonly>
+                                                                                                @error('datos_docentes.edad')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
@@ -563,7 +595,7 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <select
                                                                                                     name="datos_docentes[id_genero]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.id_genero') is-invalid @enderror"
                                                                                                     required>
                                                                                                     <option
                                                                                                         value="">
@@ -577,13 +609,16 @@
                                                                                                         </option>
                                                                                                     @endforeach
                                                                                                 </select>
+                                                                                                @error('datos_docentes.id_genero')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-4 mb-2">
                                                                                                 <label
                                                                                                     class="form-label-custom small mb-1">Título/Abreviatura</label>
                                                                                                 <select
                                                                                                     name="datos_docentes[id_abreviatura]"
-                                                                                                    class="form-control form-control-sm">
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.id_abreviatura') is-invalid @enderror">
                                                                                                     <option
                                                                                                         value="">
                                                                                                         -- Sin título --
@@ -598,6 +633,9 @@
                                                                                                         </option>
                                                                                                     @endforeach
                                                                                                 </select>
+                                                                                                @error('datos_docentes.id_abreviatura')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
@@ -609,8 +647,11 @@
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[numero_seguridad_social]"
                                                                                                     maxlength="11"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.numero_seguridad_social') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.numero_seguridad_social', $docente->datosDocentes->numero_seguridad_social) }}">
+                                                                                                @error('datos_docentes.numero_seguridad_social')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-5 mb-2">
                                                                                                 <label
@@ -619,9 +660,12 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="email"
                                                                                                     name="datos_docentes[correo]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.correo') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.correo', $docente->datosDocentes->correo) }}"
                                                                                                     required>
+                                                                                                @error('datos_docentes.correo')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
@@ -631,9 +675,12 @@
                                                                                                 <input type="text"
                                                                                                     name="datos_docentes[telefono]"
                                                                                                     maxlength="10"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('datos_docentes.telefono') is-invalid @enderror"
                                                                                                     value="{{ old('datos_docentes.telefono', $docente->datosDocentes->telefono) }}"
                                                                                                     required>
+                                                                                                @error('datos_docentes.telefono')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -671,9 +718,12 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="text"
                                                                                                     name="domicilio_docente[calle]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.calle') is-invalid @enderror"
                                                                                                     value="{{ old('domicilio_docente.calle', $docente->datosDocentes->domicilioDocente?->calle) }}"
                                                                                                     required>
+                                                                                                @error('domicilio_docente.calle')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-2 mb-2">
                                                                                                 <label
@@ -682,8 +732,11 @@
                                                                                                 <input type="text"
                                                                                                     name="domicilio_docente[numero_exterior]"
                                                                                                     maxlength="4"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.numero_exterior') is-invalid @enderror"
                                                                                                     value="{{ old('domicilio_docente.numero_exterior', $docente->datosDocentes->domicilioDocente?->numero_exterior) }}">
+                                                                                                @error('domicilio_docente.numero_exterior')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-2 mb-2">
                                                                                                 <label
@@ -692,8 +745,11 @@
                                                                                                 <input type="text"
                                                                                                     name="domicilio_docente[numero_interior]"
                                                                                                     maxlength="4"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.numero_interior') is-invalid @enderror"
                                                                                                     value="{{ old('domicilio_docente.numero_interior', $docente->datosDocentes->domicilioDocente?->numero_interior) }}">
+                                                                                                @error('domicilio_docente.numero_interior')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-4 mb-2">
                                                                                                 <label
@@ -702,9 +758,12 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="text"
                                                                                                     name="domicilio_docente[colonia]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.colonia') is-invalid @enderror"
                                                                                                     value="{{ old('domicilio_docente.colonia', $docente->datosDocentes->domicilioDocente?->colonia) }}"
                                                                                                     required>
+                                                                                                @error('domicilio_docente.colonia')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
@@ -715,16 +774,19 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <input type="text"
                                                                                                     name="domicilio_docente[municipio]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.municipio') is-invalid @enderror"
                                                                                                     value="{{ old('domicilio_docente.municipio', $docente->datosDocentes->domicilioDocente?->municipio) }}"
                                                                                                     required>
+                                                                                                @error('domicilio_docente.municipio')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
                                                                                                     class="form-label-custom small mb-1">Distrito</label>
                                                                                                 <select
                                                                                                     name="domicilio_docente[id_distrito]"
-                                                                                                    class="form-control form-control-sm">
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.id_distrito') is-invalid @enderror">
                                                                                                     <option
                                                                                                         value="">
                                                                                                         -- Selecciona --
@@ -737,6 +799,9 @@
                                                                                                         </option>
                                                                                                     @endforeach
                                                                                                 </select>
+                                                                                                @error('domicilio_docente.id_distrito')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-3 mb-2">
                                                                                                 <label
@@ -745,7 +810,7 @@
                                                                                                         class="text-danger">*</span></label>
                                                                                                 <select
                                                                                                     name="domicilio_docente[id_estado]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.id_estado') is-invalid @enderror"
                                                                                                     required>
                                                                                                     <option
                                                                                                         value="">
@@ -759,6 +824,9 @@
                                                                                                         </option>
                                                                                                     @endforeach
                                                                                                 </select>
+                                                                                                @error('domicilio_docente.id_estado')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-2 mb-2">
                                                                                                 <label
@@ -766,8 +834,11 @@
                                                                                                 <input type="text"
                                                                                                     name="domicilio_docente[codigo_postal]"
                                                                                                     maxlength="5"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('domicilio_docente.codigo_postal') is-invalid @enderror"
                                                                                                     value="{{ old('domicilio_docente.codigo_postal', $docente->datosDocentes->domicilioDocente?->codigo_postal) }}">
+                                                                                                @error('domicilio_docente.codigo_postal')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -803,9 +874,12 @@
                                                                                                     class="form-label-custom small mb-1">Usuario</label>
                                                                                                 <input type="text"
                                                                                                     name="usuario[username]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('usuario.username') is-invalid @enderror"
                                                                                                     value="{{ old('usuario.username', $docente->usuario?->username) }}"
                                                                                                     placeholder="Dejar vacío para no modificar">
+                                                                                                @error('usuario.username')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-4 mb-2">
                                                                                                 <label
@@ -813,8 +887,11 @@
                                                                                                     Contraseña</label>
                                                                                                 <input type="password"
                                                                                                     name="usuario[password]"
-                                                                                                    class="form-control form-control-sm"
+                                                                                                    class="form-control form-control-sm @error('usuario.password') is-invalid @enderror"
                                                                                                     placeholder="Dejar vacío para no cambiar">
+                                                                                                @error('usuario.password')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                             <div class="col-md-4 mb-2">
                                                                                                 <label
@@ -822,7 +899,10 @@
                                                                                                     Contraseña</label>
                                                                                                 <input type="password"
                                                                                                     name="usuario[password_confirmation]"
-                                                                                                    class="form-control form-control-sm">
+                                                                                                    class="form-control form-control-sm @error('usuario.password_confirmation') is-invalid @enderror">
+                                                                                                @error('usuario.password_confirmation')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="row">
@@ -831,7 +911,7 @@
                                                                                                     class="form-label-custom small mb-1">Rol</label>
                                                                                                 <select
                                                                                                     name="usuario[id_rol]"
-                                                                                                    class="form-control form-control-sm">
+                                                                                                    class="form-control form-control-sm @error('usuario.id_rol') is-invalid @enderror">
                                                                                                     <option
                                                                                                         value="">
                                                                                                         -- Mantener
@@ -845,6 +925,9 @@
                                                                                                         </option>
                                                                                                     @endforeach
                                                                                                 </select>
+                                                                                                @error('usuario.id_rol')
+                                                                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                                                                @enderror
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -920,6 +1003,9 @@
                     </button>
                 </div>
                 <div class="modal-body p-3" style="background-color: #f8f9fa;">
+                    <!-- Mostrar errores de validación dentro del modal -->
+                    
+                    
                     <div class="form-container p-4 bg-white rounded shadow-sm border">
                         <form action="{{ route('docentes.store') }}" method="POST">
                             @csrf
@@ -943,22 +1029,31 @@
                                                     <label class="form-label-custom small mb-1">Nombre <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="datos_docentes[nombre]"
-                                                        class="form-control form-control-sm" placeholder="Nombre"
-                                                        required>
+                                                        class="form-control form-control-sm @error('datos_docentes.nombre') is-invalid @enderror" placeholder="Nombre"
+                                                        value="{{ old('datos_docentes.nombre') }}" required>
+                                                    @error('datos_docentes.nombre')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Apellido Paterno <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="datos_docentes[apellido_paterno]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Apellido paterno" required>
+                                                        class="form-control form-control-sm @error('datos_docentes.apellido_paterno') is-invalid @enderror"
+                                                        placeholder="Apellido paterno" value="{{ old('datos_docentes.apellido_paterno') }}" required>
+                                                    @error('datos_docentes.apellido_paterno')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Apellido
                                                         Materno</label>
                                                     <input type="text" name="datos_docentes[apellido_materno]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Apellido materno">
+                                                        class="form-control form-control-sm @error('datos_docentes.apellido_materno') is-invalid @enderror"
+                                                        placeholder="Apellido materno" value="{{ old('datos_docentes.apellido_materno') }}">
+                                                    @error('datos_docentes.apellido_materno')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -966,67 +1061,98 @@
                                                     <label class="form-label-custom small mb-1">Cédula
                                                         Profesional</label>
                                                     <input type="text" name="datos_docentes[cedula_profesional]"
-                                                        maxlength="7" class="form-control form-control-sm"
-                                                        placeholder="7 caracteres">
+                                                        maxlength="7" class="form-control form-control-sm @error('datos_docentes.cedula_profesional') is-invalid @enderror"
+                                                        placeholder="7 caracteres" value="{{ old('datos_docentes.cedula_profesional') }}">
+                                                    @error('datos_docentes.cedula_profesional')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">RFC</label>
                                                     <input type="text" name="datos_docentes[rfc]" maxlength="13"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="13 caracteres">
+                                                        class="form-control form-control-sm @error('datos_docentes.rfc') is-invalid @enderror"
+                                                        placeholder="13 caracteres" value="{{ old('datos_docentes.rfc') }}">
+                                                    @error('datos_docentes.rfc')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">CURP</label>
                                                     <input type="text" name="datos_docentes[curp]" maxlength="18"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="18 caracteres">
+                                                        class="form-control form-control-sm @error('datos_docentes.curp') is-invalid @enderror"
+                                                        placeholder="18 caracteres" value="{{ old('datos_docentes.curp') }}">
+                                                    @error('datos_docentes.curp')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">Especialidad <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="especialidad"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Especialidad" required>
+                                                        class="form-control form-control-sm @error('especialidad') is-invalid @enderror"
+                                                        placeholder="Especialidad" value="{{ old('especialidad') }}" required>
+                                                    @error('especialidad')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">Fecha de
                                                         Nacimiento</label>
-                                                    <input type="date" name="datos_docentes[fecha_nacimiento]"
-                                                        id="fecha_nacimiento_create"
-                                                        class="form-control form-control-sm" required>
+                                                    <input type="date"
+                                                        name="datos_docentes[fecha_nacimiento]"
+                                                        id="fecha-nacimiento-crear"
+                                                        class="form-control form-control-sm @error('datos_docentes.fecha_nacimiento') is-invalid @enderror"
+                                                        value="{{ old('datos_docentes.fecha_nacimiento') }}">
+                                                    @error('datos_docentes.fecha_nacimiento')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2 mb-2">
                                                     <label class="form-label-custom small mb-1">Edad</label>
-                                                    <input type="number" name="datos_docentes[edad]"
-                                                        id="edad_create" class="form-control form-control-sm"
-                                                        min="18" max="100" readonly>
+                                                    <input type="number"
+                                                        name="datos_docentes[edad]"
+                                                        min="18" max="100"
+                                                        id="edad-crear"
+                                                        class="form-control form-control-sm @error('datos_docentes.edad') is-invalid @enderror"
+                                                        value="{{ old('datos_docentes.edad') }}"
+                                                        readonly>
+                                                    @error('datos_docentes.edad')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
+                                                
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">Género <span
                                                             class="text-danger">*</span></label>
                                                     <select name="datos_docentes[id_genero]"
-                                                        class="form-control form-control-sm" required>
+                                                        class="form-control form-control-sm @error('datos_docentes.id_genero') is-invalid @enderror" required>
                                                         <option value="">-- Selecciona --</option>
                                                         @foreach ($generos as $genero)
-                                                            <option value="{{ $genero->id_genero }}">
+                                                            <option value="{{ $genero->id_genero }}" {{ old('datos_docentes.id_genero') == $genero->id_genero ? 'selected' : '' }}>
                                                                 {{ $genero->nombre }}</option>
                                                         @endforeach
                                                     </select>
+                                                    @error('datos_docentes.id_genero')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label
                                                         class="form-label-custom small mb-1">Título/Abreviatura</label>
                                                     <select name="datos_docentes[id_abreviatura]"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control-sm @error('datos_docentes.id_abreviatura') is-invalid @enderror">
                                                         <option value="">-- Sin título --</option>
                                                         @foreach ($abreviaturas as $abreviatura)
-                                                            <option value="{{ $abreviatura->id_abreviatura }}">
+                                                            <option value="{{ $abreviatura->id_abreviatura }}" {{ old('datos_docentes.id_abreviatura') == $abreviatura->id_abreviatura ? 'selected' : '' }}>
                                                                 {{ $abreviatura->abreviatura }} -
                                                                 {{ $abreviatura->nombre }}</option>
                                                         @endforeach
                                                     </select>
+                                                    @error('datos_docentes.id_abreviatura')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1035,21 +1161,30 @@
                                                         Social</label>
                                                     <input type="text"
                                                         name="datos_docentes[numero_seguridad_social]" maxlength="11"
-                                                        class="form-control form-control-sm" placeholder="11 dígitos">
+                                                        class="form-control form-control-sm @error('datos_docentes.numero_seguridad_social') is-invalid @enderror" placeholder="11 dígitos" value="{{ old('datos_docentes.numero_seguridad_social') }}">
+                                                    @error('datos_docentes.numero_seguridad_social')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-5 mb-2">
                                                     <label class="form-label-custom small mb-1">Correo Electrónico
                                                         <span class="text-danger">*</span></label>
                                                     <input type="email" name="datos_docentes[correo]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="ejemplo@correo.com" required>
+                                                        class="form-control form-control-sm @error('datos_docentes.correo') is-invalid @enderror"
+                                                        placeholder="ejemplo@correo.com" value="{{ old('datos_docentes.correo') }}" required>
+                                                    @error('datos_docentes.correo')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">Teléfono <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="datos_docentes[telefono]"
-                                                        maxlength="10" class="form-control form-control-sm"
-                                                        placeholder="10 dígitos" required>
+                                                        maxlength="10" class="form-control form-control-sm @error('datos_docentes.telefono') is-invalid @enderror"
+                                                        placeholder="10 dígitos" value="{{ old('datos_docentes.telefono') }}" required>
+                                                    @error('datos_docentes.telefono')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
@@ -1073,27 +1208,39 @@
                                                     <label class="form-label-custom small mb-1">Calle <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="domicilio_docente[calle]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Nombre de la calle" required>
+                                                        class="form-control form-control-sm @error('domicilio_docente.calle') is-invalid @enderror"
+                                                        placeholder="Nombre de la calle" value="{{ old('domicilio_docente.calle') }}" required>
+                                                    @error('domicilio_docente.calle')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2 mb-2">
                                                     <label class="form-label-custom small mb-1">N° Ext.</label>
                                                     <input type="text" name="domicilio_docente[numero_exterior]"
-                                                        maxlength="4" class="form-control form-control-sm"
-                                                        placeholder="Núm.">
+                                                        maxlength="4" class="form-control form-control-sm @error('domicilio_docente.numero_exterior') is-invalid @enderror"
+                                                        placeholder="Núm." value="{{ old('domicilio_docente.numero_exterior') }}">
+                                                    @error('domicilio_docente.numero_exterior')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2 mb-2">
                                                     <label class="form-label-custom small mb-1">N° Int.</label>
                                                     <input type="text" name="domicilio_docente[numero_interior]"
-                                                        maxlength="4" class="form-control form-control-sm"
-                                                        placeholder="Int.">
+                                                        maxlength="4" class="form-control form-control-sm @error('domicilio_docente.numero_interior') is-invalid @enderror"
+                                                        placeholder="Int." value="{{ old('domicilio_docente.numero_interior') }}">
+                                                    @error('domicilio_docente.numero_interior')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Colonia <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="domicilio_docente[colonia]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Nombre de la colonia" required>
+                                                        class="form-control form-control-sm @error('domicilio_docente.colonia') is-invalid @enderror"
+                                                        placeholder="Nombre de la colonia" value="{{ old('domicilio_docente.colonia') }}" required>
+                                                    @error('domicilio_docente.colonia')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1101,37 +1248,49 @@
                                                     <label class="form-label-custom small mb-1">Municipio <span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" name="domicilio_docente[municipio]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Nombre del municipio" required>
+                                                        class="form-control form-control-sm @error('domicilio_docente.municipio') is-invalid @enderror"
+                                                        placeholder="Nombre del municipio" value="{{ old('domicilio_docente.municipio') }}" required>
+                                                    @error('domicilio_docente.municipio')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">Distrito</label>
                                                     <select name="domicilio_docente[id_distrito]"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control-sm @error('domicilio_docente.id_distrito') is-invalid @enderror">
                                                         <option value="">-- Selecciona --</option>
                                                         @foreach ($distritos as $distrito)
-                                                            <option value="{{ $distrito->id_distrito }}">
+                                                            <option value="{{ $distrito->id_distrito }}" {{ old('domicilio_docente.id_distrito') == $distrito->id_distrito ? 'selected' : '' }}>
                                                                 {{ $distrito->nombre }}</option>
                                                         @endforeach
                                                     </select>
+                                                    @error('domicilio_docente.id_distrito')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 mb-2">
                                                     <label class="form-label-custom small mb-1">Estado <span
                                                             class="text-danger">*</span></label>
                                                     <select name="domicilio_docente[id_estado]"
-                                                        class="form-control form-control-sm" required>
+                                                        class="form-control form-control-sm @error('domicilio_docente.id_estado') is-invalid @enderror" required>
                                                         <option value="">-- Selecciona --</option>
                                                         @foreach ($estados as $estado)
-                                                            <option value="{{ $estado->id_estado }}">
+                                                            <option value="{{ $estado->id_estado }}" {{ old('domicilio_docente.id_estado') == $estado->id_estado ? 'selected' : '' }}>
                                                                 {{ $estado->nombre }}</option>
                                                         @endforeach
                                                     </select>
+                                                    @error('domicilio_docente.id_estado')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-2 mb-2">
                                                     <label class="form-label-custom small mb-1">C.P.</label>
                                                     <input type="text" name="domicilio_docente[codigo_postal]"
-                                                        maxlength="5" class="form-control form-control-sm"
-                                                        placeholder="00000">
+                                                        maxlength="5" class="form-control form-control-sm @error('domicilio_docente.codigo_postal') is-invalid @enderror"
+                                                        placeholder="00000" value="{{ old('domicilio_docente.codigo_postal') }}">
+                                                    @error('domicilio_docente.codigo_postal')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
@@ -1154,33 +1313,46 @@
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Usuario</label>
                                                     <input type="text" name="usuario[username]"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Nombre de usuario">
+                                                        class="form-control form-control-sm @error('usuario.username') is-invalid @enderror"
+                                                        placeholder="Nombre de usuario" value="{{ old('usuario.username') }}">
+                                                    @error('usuario.username')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Contraseña</label>
                                                     <input type="password" name="usuario[password]"
-                                                        class="form-control form-control-sm"
+                                                        class="form-control form-control-sm @error('usuario.password') is-invalid @enderror"
                                                         placeholder="Mínimo 8 caracteres">
+                                                    @error('usuario.password')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Confirmar
                                                         Contraseña</label>
                                                     <input type="password" name="usuario[password_confirmation]"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control-sm @error('usuario.password_confirmation') is-invalid @enderror">
+                                                    @error('usuario.password_confirmation')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4 mb-2">
                                                     <label class="form-label-custom small mb-1">Rol</label>
                                                     <select name="usuario[id_rol]"
-                                                        class="form-control form-control-sm">
+                                                        class="form-control form-control-sm @error('usuario.id_rol') is-invalid @enderror">
                                                         <option value="">-- Selecciona --</option>
                                                         @foreach ($roles as $rol)
-                                                            <option value="{{ $rol->id_rol }}">{{ $rol->nombre }}
+                                                            <option value="{{ $rol->id_rol }}" {{ old('usuario.id_rol') == $rol->id_rol ? 'selected' : '' }}>
+                                                                {{ $rol->nombre }}
                                                             </option>
                                                         @endforeach
                                                     </select>
+                                                    @error('usuario.id_rol')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
@@ -1213,90 +1385,210 @@
     <script src="{{ asset('libs/sbadmin/js/sb-admin-2.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Función para calcular la edad a partir de la fecha de nacimiento
+            /* ---------- Función para calcular edad ---------- */
             function calcularEdad(fechaNacimiento) {
+                if (!fechaNacimiento) return '';
                 const hoy = new Date();
                 const nacimiento = new Date(fechaNacimiento);
+                if (isNaN(nacimiento)) return '';
                 let edad = hoy.getFullYear() - nacimiento.getFullYear();
                 const mes = hoy.getMonth() - nacimiento.getMonth();
-                if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+                const dia = hoy.getDate() - nacimiento.getDate();
+                
+                if (mes < 0 || (mes === 0 && dia < 0)) {
                     edad--;
                 }
-                return edad >= 0 ? edad : '';
+                
+                return edad >= 0 && edad <= 120 ? edad : '';
             }
 
-            // === Para el modal de CREAR ===
-            const fechaNacCreate = document.getElementById('fecha_nacimiento_create');
-            const edadCreate = document.getElementById('edad_create');
-            if (fechaNacCreate && edadCreate) {
-                fechaNacCreate.addEventListener('change', function() {
-                    edadCreate.value = calcularEdad(this.value);
+            /* ---------- Modal de CREAR docente ---------- */
+            const fechaNacimientoCrear = document.getElementById('fecha-nacimiento-crear');
+            const edadCrear = document.getElementById('edad-crear');
+
+            if (fechaNacimientoCrear && edadCrear) {
+                fechaNacimientoCrear.addEventListener('change', function() {
+                    const edad = calcularEdad(this.value);
+                    edadCrear.value = edad;
+                    
+                    if (edad === '' || edad < 18) {
+                        mostrarError(edadCrear, 'El docente debe ser mayor de 18 años');
+                    } else {
+                        limpiarError(edadCrear);
+                    }
                 });
             }
 
-            // === Para los modales de EDITAR (cada uno tiene su propio id) ===
-            @foreach ($docentes as $docente)
-                const fechaNacEdit{{ $docente->id_docente }} = document.querySelector(
-                    '#editarModal{{ $docente->id_docente }} [name="datos_docentes[fecha_nacimiento]"]');
-                const edadEdit{{ $docente->id_docente }} = document.querySelector(
-                    '#editarModal{{ $docente->id_docente }} [name="datos_docentes[edad]"]');
-                if (fechaNacEdit{{ $docente->id_docente }} && edadEdit{{ $docente->id_docente }}) {
-                    fechaNacEdit{{ $docente->id_docente }}.addEventListener('change', function() {
-                        edadEdit{{ $docente->id_docente }}.value = calcularEdad(this.value);
-                    });
-                }
-            @endforeach
-        });
-    </script>
-
-    <script>
-        // ===== BÚSQUEDA EN TABLA =====
-        const searchInput = document.getElementById('searchInput');
-
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-
-                // Normaliza lo que escribe el usuario
-                const searchTerm = e.target.value
-                    .toLowerCase()
-                    .replace(/\s+/g, ' ')
-                    .trim();
-
-                const table = document.getElementById('teachersTable');
-                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-                for (let row of rows) {
-
-                    // Normaliza el texto real de la fila
-                    const text = row.textContent
-                        .toLowerCase()
-                        .replace(/\s+/g, ' ')
-                        .trim();
-
-                    if (text.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
+            /* ---------- Modal de EDITAR docente ---------- */
+            // Usar delegación de eventos para los modales dinámicos
+            document.addEventListener('change', function(e) {
+                if (e.target && e.target.classList.contains('fecha-nacimiento-editar')) {
+                    const fechaInput = e.target;
+                    const targetId = fechaInput.getAttribute('data-target');
+                    const edadInput = document.querySelector(targetId);
+                    
+                    if (edadInput) {
+                        const edad = calcularEdad(fechaInput.value);
+                        edadInput.value = edad;
+                        
+                        if (edad === '' || edad < 18) {
+                            mostrarError(edadInput, 'El docente debe ser mayor de 18 años');
+                        } else {
+                            limpiarError(edadInput);
+                        }
                     }
                 }
             });
-        }
-    </script>
-    <script>
-        $(document).ready(function() {
-            // Espera un poco para asegurar que todos los modales existan
-            setTimeout(function() {
-                $('.modal').each(function() {
-                    // Inicializa el modal con las opciones deseadas
-                    $(this).modal({
-                        backdrop: 'static',
-                        keyboard: false,
-                        show: false // no mostrar al cargar
-                    });
+
+            /* ---------- Funciones de manejo de errores ---------- */
+            function mostrarError(input, mensaje) {
+                limpiarError(input);
+                input.classList.add('is-invalid');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback d-block';
+                errorDiv.textContent = mensaje;
+                errorDiv.setAttribute('data-error-for', input.name || input.id);
+                input.parentNode.appendChild(errorDiv);
+            }
+
+            function limpiarError(input) {
+                if (!input) return;
+                input.classList.remove('is-invalid');
+                const errorMsg = input.parentNode.querySelector(`[data-error-for="${input.name || input.id}"]`);
+                if (errorMsg) errorMsg.remove();
+            }
+
+            /* ---------- Validaciones de formato ---------- */
+            
+            // Solo números
+            function validarSoloNumeros(input) {
+                input.addEventListener('input', function() { 
+                    this.value = this.value.replace(/[^0-9]/g, ''); 
                 });
-            }, 500);
+            }
+            
+            // Solo letras
+            function validarSoloLetras(input) {
+                input.addEventListener('input', function() { 
+                    this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ''); 
+                });
+            }
+            
+            // RFC
+            function validarRFC(input) {
+                input.addEventListener('input', function() { 
+                    this.value = this.value.toUpperCase().replace(/[^A-ZÑ&0-9]/g, ''); 
+                });
+                input.addEventListener('blur', function() {
+                    if (this.value && this.value.length === 13) {
+                        const rfcPattern = /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/;
+                        if (!rfcPattern.test(this.value)) mostrarError(this, 'Formato de RFC inválido');
+                        else limpiarError(this);
+                    }
+                });
+            }
+            
+            // CURP
+            function validarCURP(input) {
+                input.addEventListener('input', function() { 
+                    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
+                });
+                input.addEventListener('blur', function() {
+                    if (this.value && this.value.length === 18) {
+                        const curpPattern = /^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[0-9A-Z][0-9]$/;
+                        if (!curpPattern.test(this.value)) mostrarError(this, 'Formato de CURP inválido');
+                        else limpiarError(this);
+                    }
+                });
+            }
+            
+            // Email
+            function validarEmail(input) {
+                input.addEventListener('blur', function() {
+                    if (this.value) {
+                        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailPattern.test(this.value)) mostrarError(this, 'Correo electrónico inválido');
+                        else limpiarError(this);
+                    }
+                });
+            }
+            
+            // Teléfono
+            function validarTelefono(input) {
+                input.addEventListener('input', function() { 
+                    this.value = this.value.replace(/[^0-9]/g, ''); 
+                });
+                input.addEventListener('blur', function() {
+                    if (this.value && this.value.length !== 10) 
+                        mostrarError(this, 'El teléfono debe tener 10 dígitos');
+                    else limpiarError(this);
+                });
+            }
+            
+            // Código Postal
+            function validarCodigoPostal(input) {
+                input.addEventListener('input', function() { 
+                    this.value = this.value.replace(/[^0-9]/g, ''); 
+                });
+                input.addEventListener('blur', function() {
+                    if (this.value && this.value.length !== 5) 
+                        mostrarError(this, 'El código postal debe tener 5 dígitos');
+                    else limpiarError(this);
+                });
+            }
+
+            // Aplicar validaciones a los campos
+            document.querySelectorAll('[name="datos_docentes[nombre]"], [name="datos_docentes[apellido_paterno]"], [name="datos_docentes[apellido_materno]"]').forEach(validarSoloLetras);
+            document.querySelectorAll('[name="datos_docentes[telefono]"]').forEach(validarTelefono);
+            document.querySelectorAll('[name="datos_docentes[rfc]"]').forEach(validarRFC);
+            document.querySelectorAll('[name="datos_docentes[curp]"]').forEach(validarCURP);
+            document.querySelectorAll('[name="datos_docentes[correo]"]').forEach(validarEmail);
+            document.querySelectorAll('[name="domicilio_docente[codigo_postal]"]').forEach(validarCodigoPostal);
+            document.querySelectorAll('[name="datos_docentes[cedula_profesional]"]').forEach(validarSoloNumeros);
+            document.querySelectorAll('[name="datos_docentes[numero_seguridad_social]"]').forEach(validarSoloNumeros);
+            
+            // Validar username (solo letras, números y guiones bajos)
+            document.querySelectorAll('[name="usuario[username]"]').forEach(function(el) { 
+                el.addEventListener('input', function() { 
+                    this.value = this.value.replace(/[^a-zA-Z0-9_]/g, ''); 
+                }); 
+            });
+
+            // Limpiar errores al escribir
+            document.querySelectorAll('input, select, textarea').forEach(input => {
+                input.addEventListener('input', function() { 
+                    if (this.classList.contains('is-invalid')) limpiarError(this); 
+                });
+            });
+
+            // Validación al enviar formularios
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const invalid = form.querySelectorAll('.is-invalid');
+                    if (invalid.length > 0) {
+                        e.preventDefault();
+                        invalid[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        invalid[0].focus();
+                        alert('Por favor corrige los errores antes de enviar el formulario.');
+                    }
+                });
+            });
+
+            // Autoabrir modal si hay errores de validación
+            @if($errors->any())
+                @if(session('edit_modal_id'))
+                    // Si hay un ID de modal de edición en sesión, abrir ese modal
+                    const editModal = document.getElementById('editarDocenteModal{{ session("edit_modal_id") }}');
+                    if (editModal) {
+                        $(editModal).modal('show');
+                    }
+                @else
+                    // Si no hay ID de edición, abrir modal de creación
+                    $('#nuevoDocenteModal').modal('show');
+                @endif
+            @endif
+
         });
     </script>
 </body>
-
 </html>

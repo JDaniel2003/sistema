@@ -2932,6 +2932,16 @@
                                                                             placeholder="Nombre de la generación"
                                                                             required minlength="3" maxlength="100">
                                                                     </div>
+                                                                    <div class="form-group mr-2 mb-2">
+                                                                        <input type="date" name="anio_inicio"
+                                                                            class="form-control"
+                                                                            placeholder="Fecha Inicio">
+                                                                    </div>
+                                                                    <div class="form-group mr-2 mb-2">
+                                                                        <input type="date" name="anio_fin"
+                                                                            class="form-control"
+                                                                            placeholder="Fecha Fin">
+                                                                    </div>
                                                                     <button type="button"
                                                                         class="btn btn-success mb-2"
                                                                         data-toggle="modal"
@@ -2946,6 +2956,8 @@
                                                             <thead class="thead-dark text-center">
                                                                 <tr>
                                                                     <th>Nombre</th>
+                                                                    <th>Fecha Inicio</th>
+                                                                    <th>Fecha Fin</th>
                                                                     <th style="width: 150px;">Acciones</th>
                                                                 </tr>
                                                             </thead>
@@ -2966,6 +2978,18 @@
                                                                                     value="{{ $generacion->nombre }}"
                                                                                     required minlength="3"
                                                                                     maxlength="100">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="date" name="anio_inicio"
+                                                                                    class="form-control"
+                                                                                    value="{{ $generacion->anio_inicio }}"
+                                                                                    >
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="date" name="anio_fin"
+                                                                                    class="form-control"
+                                                                                    value="{{ $generacion->anio_fin }}"
+                                                                                    >
                                                                             </td>
                                                                             <td class="d-flex">
                                                                                 <button type="button"

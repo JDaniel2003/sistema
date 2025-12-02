@@ -102,50 +102,57 @@ if ($request->filled('fecha_fin')) {
 ]);
 
 
-    // 2️⃣ Obtener duración del tipo de período
-    $tipo = TipoPeriodo::findOrFail($request->id_tipo_periodo);
-    $duracionMeses = (int)$tipo->duracion; // ejemplo: 6 = semestre, 3 = trimestre, etc.
+   // 2️⃣ Obtener duración del tipo de período desde la BD
+$tipo = TipoPeriodo::findOrFail($request->id_tipo_periodo);
+$duracionMesesBD = (int)$tipo->duracion; // ej: 6, 4, 3, etc.
 
-    // 3️⃣ Calcular fechas usando Carbon
-    $fechaInicio = \Carbon\Carbon::parse($request->fecha_inicio);
-    $fechaFin = \Carbon\Carbon::parse($request->fecha_fin);
+// ⭐ Si es semestre (6 meses en BD), permitir 5 o 6
+if ($duracionMesesBD === 6) {
+    $duracionesValidas = [5, 6];
+} else {
+    // Para los demás, validar exactamente lo que dice la BD
+    $duracionesValidas = [$duracionMesesBD];
+}
 
-    // 📅 Validar que la fecha fin sea posterior a la fecha inicio
-    if ($fechaFin->lte($fechaInicio)) {
-        return back()
-            ->withErrors([
-                'fecha_fin' => 'La fecha de fin debe ser posterior a la fecha de inicio.'
-            ])
-            ->withInput();
-    }
+// 3️⃣ Calcular fechas usando Carbon
+$fechaInicio = \Carbon\Carbon::parse($request->fecha_inicio);
+$fechaFin = \Carbon\Carbon::parse($request->fecha_fin);
 
-    // 📊 Calcular diferencia en meses considerando solo año y mes (ignorando días)
-    $mesInicio = $fechaInicio->month;
-    $anioInicio = $fechaInicio->year;
-    $mesFin = $fechaFin->month;
-    $anioFin = $fechaFin->year;
-    
-    // Fórmula: (año_fin - año_inicio) * 12 + (mes_fin - mes_inicio) + 1
-    // El +1 es porque contamos ambos meses (inicio y fin)
-    $mesesReales = (($anioFin - $anioInicio) * 12) + ($mesFin - $mesInicio) + 1;
-    
-    // 🔍 Validar que la duración en meses coincida exactamente
-    if ($mesesReales !== $duracionMeses) {
-        // Calcular el mes esperado de finalización
-        $mesFinEsperado = $fechaInicio->copy()->addMonths($duracionMeses - 1);
-        $nombreMesEsperado = ucfirst($mesFinEsperado->translatedFormat('F \d\e Y'));
-        
-        return back()
-    ->withErrors([
-        'fecha_fin' => sprintf(
-            'La duración del período debe ser de %d meses, pero actualmente estás ingresando %d meses.',
-            $duracionMeses,
-            $mesesReales
-        )
-    ])
-    ->withInput();
+// 📅 Validar que la fecha fin sea posterior a la fecha inicio
+if ($fechaFin->lte($fechaInicio)) {
+    return back()
+        ->withErrors([
+            'fecha_fin' => 'La fecha de fin debe ser posterior a la fecha de inicio.'
+        ])
+        ->withInput();
+}
 
-    }
+// 📊 Calcular diferencia en meses considerando solo año y mes (ignorando días)
+$mesInicio = $fechaInicio->month;
+$anioInicio = $fechaInicio->year;
+$mesFin = $fechaFin->month;
+$anioFin = $fechaFin->year;
+
+// Fórmula: (año_fin - año_inicio) * 12 + (mes_fin - mes_inicio) + 1
+$mesesReales = (($anioFin - $anioInicio) * 12) + ($mesFin - $mesInicio) + 1;
+
+// 🔍 Validar que la duración en meses coincida con las permitidas
+if (!in_array($mesesReales, $duracionesValidas)) {
+
+    // Construir mensaje adecuado
+    $textoDuraciones = implode(" o ", $duracionesValidas);
+
+    return back()
+        ->withErrors([
+            'fecha_fin' => sprintf(
+                'La duración del período debe ser de %s meses, pero actualmente estás ingresando %d meses.',
+                $textoDuraciones,
+                $mesesReales
+            )
+        ])
+        ->withInput();
+}
+
 
 
     // 4️⃣ Crear período
@@ -229,49 +236,57 @@ public function calcularFechaFin(Request $request)
 ]);
 
 
-    // 2️⃣ Obtener duración del tipo de período
-    $tipo = TipoPeriodo::findOrFail($request->id_tipo_periodo);
-    $duracionMeses = (int)$tipo->duracion;
+   // 2️⃣ Obtener duración del tipo de período desde la BD
+$tipo = TipoPeriodo::findOrFail($request->id_tipo_periodo);
+$duracionMesesBD = (int)$tipo->duracion; // ej: 6, 4, 3, etc.
 
-    // 3️⃣ Calcular fechas usando Carbon
-    $fechaInicio = \Carbon\Carbon::parse($request->fecha_inicio);
-    $fechaFin = \Carbon\Carbon::parse($request->fecha_fin);
+// ⭐ Si es semestre (6 meses en BD), permitir 5 o 6
+if ($duracionMesesBD === 6) {
+    $duracionesValidas = [5, 6];
+} else {
+    // Para los demás, validar exactamente lo que dice la BD
+    $duracionesValidas = [$duracionMesesBD];
+}
 
-    // 📅 Validar que la fecha fin sea posterior a la fecha inicio
-    if ($fechaFin->lte($fechaInicio)) {
-        return back()
-            ->withErrors([
-                'fecha_fin' => 'La fecha de fin debe ser posterior a la fecha de inicio.'
-            ])
-            ->withInput();
-    }
+// 3️⃣ Calcular fechas usando Carbon
+$fechaInicio = \Carbon\Carbon::parse($request->fecha_inicio);
+$fechaFin = \Carbon\Carbon::parse($request->fecha_fin);
 
-    // 📊 Calcular diferencia en meses (SOLO mes y año, ignorando días)
-    $mesInicio = $fechaInicio->month;
-    $anioInicio = $fechaInicio->year;
-    $mesFin = $fechaFin->month;
-    $anioFin = $fechaFin->year;
-    
-    // Fórmula: (año_fin - año_inicio) * 12 + (mes_fin - mes_inicio) + 1
-    $mesesReales = (($anioFin - $anioInicio) * 12) + ($mesFin - $mesInicio) + 1;
-    
-    // 🔍 Validar que la duración en meses coincida exactamente
-    if ($mesesReales !== $duracionMeses) {
-        // Calcular el mes esperado de finalización
-        $mesFinEsperado = $fechaInicio->copy()->addMonths($duracionMeses - 1);
-        $nombreMesEsperado = ucfirst($mesFinEsperado->translatedFormat('F \d\e Y'));
-        
-        return back()
-    ->withErrors([
-        'fecha_fin' => sprintf(
-            'La duración del período debe ser de %d meses, pero actualmente estás ingresando %d meses.',
-            $duracionMeses,
-            $mesesReales
-        )
-    ])
-    ->withInput();
+// 📅 Validar que la fecha fin sea posterior a la fecha inicio
+if ($fechaFin->lte($fechaInicio)) {
+    return back()
+        ->withErrors([
+            'fecha_fin' => 'La fecha de fin debe ser posterior a la fecha de inicio.'
+        ])
+        ->withInput();
+}
 
-    }
+// 📊 Calcular diferencia en meses considerando solo año y mes (ignorando días)
+$mesInicio = $fechaInicio->month;
+$anioInicio = $fechaInicio->year;
+$mesFin = $fechaFin->month;
+$anioFin = $fechaFin->year;
+
+// Fórmula: (año_fin - año_inicio) * 12 + (mes_fin - mes_inicio) + 1
+$mesesReales = (($anioFin - $anioInicio) * 12) + ($mesFin - $mesInicio) + 1;
+
+// 🔍 Validar que la duración en meses coincida con las permitidas
+if (!in_array($mesesReales, $duracionesValidas)) {
+
+    // Construir mensaje adecuado
+    $textoDuraciones = implode(" o ", $duracionesValidas);
+
+    return back()
+        ->withErrors([
+            'fecha_fin' => sprintf(
+                'La duración del período debe ser de %s meses, pero actualmente estás ingresando %d meses.',
+                $textoDuraciones,
+                $mesesReales
+            )
+        ])
+        ->withInput();
+}
+
 
     // 4️⃣ Actualizar el período
     $periodo = PeriodoEscolar::findOrFail($id);

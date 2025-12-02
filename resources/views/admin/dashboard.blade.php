@@ -94,11 +94,10 @@
 
 
         <div class="collapse navbar-collapse ml-4">
-            <ul class="navbar-nav" style="padding-left: 20%;">
+            <ul class="navbar-nav" style="padding-left: 28%;">
                 <li class="nav-item"><a class="nav-link navbar-active-item px-3 mr-1">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('periodos.index') }}">Períodos Escolares</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('carreras.index') }}">Carreras</a></li>
-                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('materias.index') }}">Materias</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('planes.index') }}">Planes de estudio</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('alumnos.index') }}">Alumnos</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('asignaciones.index') }}">Asignaciones Docentes</a></li>
@@ -321,6 +320,17 @@
                                         style="border-width: 3px; border-radius: 25px;">
                                         <div class="card-body d-flex justify-content-between align-items-center py-4">
                                             <h5 class="card-title font-weight-bold mb-0">CICLOS ESCOLARES</h5>
+                                            <i class="fas fa-clipboard-check fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div onclick="window.location.href='{{ route('generaciones.index') }}'"
+                                    class="col-md-6 col-lg-4 mb-4">
+                                    <div class="logout-link card border-success h-100"
+                                        style="border-width: 3px; border-radius: 25px;">
+                                        <div class="card-body d-flex justify-content-between align-items-center py-4">
+                                            <h5 class="card-title font-weight-bold mb-0">GENERACIONES</h5>
                                             <i class="fas fa-clipboard-check fa-2x text-success"></i>
                                         </div>
                                     </div>
