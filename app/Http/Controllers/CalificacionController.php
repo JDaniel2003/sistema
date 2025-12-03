@@ -61,7 +61,7 @@ class CalificacionController extends Controller
                     $nombreDocente = 'Sin docente';
 
                     if ($docente) {
-                        $nombreDocente = $docente->nombre_completo ??
+                        $nombreDocente = $docente->datosDocentes->nombre_con_abreviatura ??
                             $docente->username ??
                             'Sin nombre';
                     }
@@ -418,7 +418,7 @@ class CalificacionController extends Controller
         // Obtener la última calificación registrada
         $ultimaCalificacion = $calificacionesExistentes->first();
 
-        $esAprobatoria = $calificacionNueva >= 6;
+        $esAprobatoria = $calificacionNueva >= 7;
 
         // 📘 CASO 1: Primera calificación (Ordinario)
         if ($calificacionesExistentes->isEmpty() && $tipoEvaluacion === 'ordinario') {
@@ -440,7 +440,7 @@ class CalificacionController extends Controller
         }
 
         // 📗 CASO 2: Calificación aprobatoria en ordinario - No se modifica
-        if ($ultimaCalificacion && $ultimaCalificacion->calificacion >= 6) {
+        if ($ultimaCalificacion && $ultimaCalificacion->calificacion >= 7) {
             return [
                 'exito' => false,
                 'mensaje' => "Alumno {$idAlumno} ya tiene calificación aprobatoria ({$ultimaCalificacion->calificacion}) en unidad {$idUnidad}"
@@ -457,7 +457,7 @@ class CalificacionController extends Controller
             }
 
             // Verificar que efectivamente reprobó la última evaluación
-            if ($ultimaCalificacion->calificacion >= 6) {
+            if ($ultimaCalificacion->calificacion >= 7) {
                 return [
                     'exito' => false,
                     'mensaje' => "El alumno {$idAlumno} ya aprobó esta unidad con {$ultimaCalificacion->calificacion}"
@@ -492,7 +492,7 @@ class CalificacionController extends Controller
             }
 
             // Verificar que efectivamente reprobó antes
-            if ($ultimaCalificacion->calificacion >= 6) {
+            if ($ultimaCalificacion->calificacion >= 7) {
                 return [
                     'exito' => false,
                     'mensaje' => "El alumno {$idAlumno} ya aprobó esta unidad con {$ultimaCalificacion->calificacion}"
@@ -678,6 +678,7 @@ class CalificacionController extends Controller
                 'id_unidad' => $u->id_unidad,
                 'nombre' => "Unidad {$u->numero_unidad}: {$u->nombre}",
                 'numero_unidad' => $u->numero_unidad
+                
             ]);
 
             // Buscar alumnos
@@ -740,8 +741,8 @@ class CalificacionController extends Controller
                             $hayAlgunaCalif = true;
 
                             if ($califValor != 0) $todasCero = false;
-                            if ($califValor >= 6) $todasReprobadas = false;
-                            if ($tipoMejor === 'Extraordinario' && $califValor < 6) {
+                            if ($califValor >= 7) $todasReprobadas = false;
+                            if ($tipoMejor === 'Extraordinario' && $califValor < 7) {
                                 $alMenosUnaExtraordinarioReprobada = true;
                             }
 
@@ -764,7 +765,7 @@ class CalificacionController extends Controller
                             ];
 
                             // Determinar siguiente evaluación
-                            if ($califValor < 6) {
+                            if ($califValor < 7) {
                                 if ($tipoMejor === 'Ordinario' && $evalRecuperacion) {
                                     $calificaciones[$key]['siguiente_evaluacion'] = $evalRecuperacion;
                                     $calificaciones[$key]['puede_capturar'] = true;
@@ -837,7 +838,18 @@ class CalificacionController extends Controller
                     ];
                 })
                 ->filter()
-                ->sortBy('nombre')
+                ->sortBy(function ($alumno) {
+                $nombreCompleto = $alumno['nombre'];
+                $partes = explode(' ', $nombreCompleto);
+                
+                if (count($partes) >= 2) {
+                    $primerApellido = $partes[count($partes) - 2];
+                    $segundoApellido = $partes[count($partes) - 1];
+                    return $primerApellido . ' ' . $segundoApellido . ' ' . $nombreCompleto;
+                }
+                
+                return $nombreCompleto;
+            })
                 ->values();
 
             return response()->json([
@@ -1187,40 +1199,42 @@ if (!$usuario || !$usuario->docente) {
 }
 
 public function exportarPDF(Request $request)
-    {
-        $idGrupo = $request->query('grupo');
-        $idPeriodo = $request->query('periodo');
-        $idAsignacion = $request->query('materia');
+{
+    $idGrupo = $request->query('grupo');
+    $idPeriodo = $request->query('periodo');
+    $idAsignacion = $request->query('materia');
 
-        if (!$idGrupo || !$idPeriodo || !$idAsignacion) {
-            return redirect()->back()->with('error', 'Faltan parámetros para generar el PDF.');
-        }
-
-        // Reutilizar lógica de obtenerMatrizCompleta
-        $data = $this->obtenerMatrizCompletaData($idGrupo, $idPeriodo, $idAsignacion);
-        if (!$data['success']) {
-            return redirect()->back()->with('error', 'Error al cargar datos para el PDF.');
-        }
-
-        $asignacion = AsignacionDocente::with('materia')->find($idAsignacion);
-        $asignacion = AsignacionDocente::with(['materia', 'docente.datosDocentes'])->find($idAsignacion);
-
-        $grupo = Grupo::find($idGrupo);
-        $periodo = PeriodoEscolar::find($idPeriodo);
-
-       $pdf = PDF::loadView('calificaciones.pdf', [
-    'alumnos' => $data['alumnos'],
-    'unidades' => $data['unidades'],
-    'materiaNombre' => $asignacion->materia->nombre ?? 'N/A',
-    'docenteNombre' => optional($asignacion->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A',
-    'grupoNombre' => $grupo->nombre ?? 'N/A',
-    'periodoNombre' => $periodo->nombre ?? 'N/A',
-    'totalAlumnos' => count($data['alumnos']) // ← Añadido
-])
-        ->setPaper('letter', 'landscape');
-
-        return $pdf->download('calificaciones_' . now()->format('Y-m-d') . '.pdf');
+    if (!$idGrupo || !$idPeriodo || !$idAsignacion) {
+        return redirect()->back()->with('error', 'Faltan parámetros para generar el PDF.');
     }
+
+    $data = $this->obtenerMatrizCompletaData($idGrupo, $idPeriodo, $idAsignacion);
+    if (!$data['success']) {
+        return redirect()->back()->with('error', 'Error al cargar datos para el PDF.');
+    }
+
+    // ✅ CORREGIDO: Solo una consulta
+    $asignacion = AsignacionDocente::with(['materia', 'docente.datosDocentes'])->find($idAsignacion);
+    $grupo = Grupo::find($idGrupo);
+    $periodo = PeriodoEscolar::find($idPeriodo);
+
+    $pdf = PDF::loadView('calificaciones.pdf', [
+        'alumnos' => $data['alumnos'],
+        'unidades' => $data['unidades'],
+        'materiaNombre' => $asignacion->materia->nombre ?? 'N/A',
+        'docenteNombre' => optional($asignacion->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A',
+        'grupoNombre' => $grupo->nombre ?? 'N/A',
+        'periodoNombre' => $periodo->nombre ?? 'N/A',
+        'totalAlumnos' => count($data['alumnos'])
+    ])
+    ->setPaper('letter', 'landscape')
+    ->setOption('margin_top', 10)
+    ->setOption('margin_bottom', 10)
+    ->setOption('margin_left', 10)
+    ->setOption('margin_right', 10);
+
+    return $pdf->download('calificaciones_' . now()->format('Y-m-d') . '.pdf');
+}
 
     // Método auxiliar para reutilizar lógica
     private function obtenerMatrizCompletaData($idGrupo, $idPeriodo, $idAsignacion)
@@ -1260,10 +1274,10 @@ public function exportarPDF(Request $request)
             $evalEspecial = collect($evaluaciones)->firstWhere('tipo', 'Extraordinario Especial');
 
             $unidadesFormateadas = $unidades->map(fn($u) => [
-                'id_unidad' => $u->id_unidad,
-                'nombre' => "Unidad {$u->numero_unidad}: {$u->nombre}",
-                'numero_unidad' => $u->numero_unidad
-            ]);
+    'id_unidad' => $u->id_unidad,
+    'numero_unidad' => $u->numero_unidad,      // ✅ Número separado
+    'nombre_unidad' => $u->nombre,            // ✅ Nombre separado
+]);
 
             $historiales = Historial::with(['alumno.datosPersonales', 'alumno.datosAcademicos'])
                 ->whereHas('alumno')
@@ -1322,8 +1336,8 @@ public function exportarPDF(Request $request)
                             $hayAlgunaCalif = true;
 
                             if ($califValor != 0) $todasCero = false;
-                            if ($califValor >= 6) $todasReprobadas = false;
-                            if ($tipoMejor === 'Extraordinario' && $califValor < 6) {
+                            if ($califValor >= 7) $todasReprobadas = false;
+                            if ($tipoMejor === 'Extraordinario' && $califValor < 7) {
                                 $alMenosUnaExtraordinarioReprobada = true;
                             }
 
@@ -1345,7 +1359,7 @@ public function exportarPDF(Request $request)
                                 'puede_capturar' => false
                             ];
 
-                            if ($califValor < 6) {
+                            if ($califValor < 7) {
                                 if ($tipoMejor === 'Ordinario' && $evalRecuperacion) {
                                     $calificaciones[$key]['siguiente_evaluacion'] = $evalRecuperacion;
                                     $calificaciones[$key]['puede_capturar'] = true;

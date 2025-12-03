@@ -21,30 +21,224 @@
     <link href="{{ asset('libs/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
     <style>
-        .table-calificaciones {
-            font-size: 0.9rem;
+    /* ESTILOS COMPACTOS PARA CAPTURA DE CALIFICACIONES */
+    
+    /* Modal más compacto */
+    .modal-header-custom {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    .modal-body {
+        padding: 0.5rem !important;
+    }
+    
+    .modal-footer-custom {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    /* Filtros compactos */
+    .card.mb-3 .card-header {
+        padding: 0.75rem !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .card.mb-3 .card-body1 {
+        padding: 1rem !important;
+    }
+    
+    .card.mb-3 .form-control {
+        padding: 0.375rem 0.5rem !important;
+        font-size: 0.9rem !important;
+        height: 36px !important;
+    }
+    
+    .card.mb-3 label {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .card.mb-3 .row.mt-3 {
+        margin-top: 1rem !important;
+    }
+    
+    /* Tabla matricial ultra compacta */
+    #tablaCalificaciones th,
+    #tablaCalificaciones td {
+        padding: 4px 3px !important;
+        font-size: 0.82rem !important;
+        line-height: 1.2 !important;
+        vertical-align: middle !important;
+    }
+    
+    /* Celdas sticky más estrechas */
+    #tablaCalificaciones th[style*="position: sticky"] {
+        min-width: 40px !important;
+        left: 0 !important;
+    }
+    
+    #tablaCalificaciones th[style*="position: sticky"] + th {
+        min-width: 90px !important;
+        left: 40px !important;
+    }
+    
+    #tablaCalificaciones th[style*="position: sticky"] + th + th {
+        min-width: 180px !important;
+        left: 130px !important;
+    }
+    
+    /* Inputs de calificación compactos */
+    .calificacion-input-matriz,
+    .calificacion-input-especial {
+        padding: 2px 4px !important;
+        height: 28px !important;
+        font-size: 0.85rem !important;
+        width: 65px !important;
+        margin: 2px auto !important;
+        display: block !important;
+    }
+    
+    /* Badges compactos */
+    #tablaCalificaciones .badge {
+        padding: 0.25em 0.4em !important;
+        font-size: 1.3em !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Textos pequeños */
+    #tablaCalificaciones small {
+        font-size: 0.7rem !important;
+        line-height: 1.1 !important;
+    }
+    
+    /* Encabezados de unidad */
+    .unidad-header {
+        min-width: 140px !important;
+        font-size: 0.8rem !important;
+        padding: 4px 2px !important;
+    }
+    
+    /* Cabecera de tabla */
+    #tablaCalificaciones thead {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Contenedor de tabla con scroll optimizado */
+    #contenedorTabla {
+        max-height: 500px !important;
+        overflow-x: auto !important;
+    }
+    
+    /* Botones pequeños */
+    #btnLimpiarTodo,
+    #btnExportarPDF,
+    #btnGuardarCalificaciones {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Card header compacto */
+    .card-header.text-white {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Card footer compacto */
+    .card-footer.bg-light {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Info materia */
+    #infoMateria {
+        font-size: 0.85rem !important;
+    }
+    
+    /* Total alumnos badge */
+    .badge-light strong {
+        font-size: 0.9rem !important;
+    }
+    
+    /* Espaciado reducido en filas */
+    #tablaCalificaciones tbody tr {
+        height: 38px !important;
+    }
+    
+    /* Separadores más delgados */
+    #tablaCalificaciones hr {
+        margin: 0.25rem 0 !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+    
+    /* Tooltips más compactos */
+    [title] {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Iconos más pequeños */
+    .fa-table, .fa-eraser, .fa-file-pdf, .fa-save {
+        font-size: 0.85em !important;
+    }
+    
+    /* Columnas de promedio y final */
+    .bg-info.text-white,
+    .unidad-header.bg-warning {
+        font-size: 0.8rem !important;
+        min-width: 80px !important;
+    }
+    
+    /* Ajuste para inputs en celdas */
+    #tablaCalificaciones td.text-center {
+        padding: 2px !important;
+    }
+    
+    /* Colores para aprobado/reprobado más sutiles */
+    .unidad-aprobada {
+        background-color: rgba(40, 167, 69, 0.08) !important;
+        border-left: 2px solid #28a745 !important;
+    }
+    
+    .unidad-reprobada {
+        background-color: rgba(220, 53, 69, 0.08) !important;
+        border-left: 2px solid #dc3545 !important;
+    }
+    
+    /* Columna extraordinario especial */
+    #tablaCalificaciones td[style*="background: #fff3cd"] {
+        padding: 2px !important;
+    }
+    
+    /* Botón cargar tabla */
+    #btnCargarMatriz {
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Mensaje de ayuda */
+    small.text-muted {
+        font-size: 0.75rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Ajuste para pantallas pequeñas */
+    @media (max-width: 768px) {
+        #tablaCalificaciones th,
+        #tablaCalificaciones td {
+            font-size: 0.75rem !important;
+            padding: 3px 2px !important;
         }
-
-        .calificacion-alta {
-            background-color: #d4edda;
-            color: #155724;
-            font-weight: bold;
+        
+        .calificacion-input-matriz,
+        .calificacion-input-especial {
+            width: 55px !important;
+            height: 26px !important;
+            font-size: 0.8rem !important;
         }
-
-        .calificacion-media {
-            background-color: #fff3cd;
-            color: #856404;
+        
+        #contenedorTabla {
+            max-height: 400px !important;
         }
-
-        .calificacion-baja {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .bg-primary-custom {
-            background-color: #2c3e50 !important;
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body id="page-top">
@@ -130,8 +324,8 @@
                                         class="d-flex flex-wrap gap-2 align-items-center">
 
                                         <div style="width: 500px;">
-                                            <input type="text" id="searchInput"
-                                                class="form-control form-control-sm" placeholder="🔍 Buscar">
+                                            <input type="text" id="searchInput" class="form-control form-control-sm"
+                                                placeholder="🔍 Buscar">
                                         </div>
 
                                         <!-- Mostrar -->
@@ -202,7 +396,7 @@
                                                         </td>
                                                         <td>{{ $calificacion->unidad->nombre ?? 'N/A' }}</td>
                                                         <td>{{ $calificacion->evaluacion->nombre ?? 'N/A' }}</td>
-                                                     {{--  <td>{{ $calificacion->asignacionDocente->id_asignacion ?? 'N/A' }} --}} 
+                                                        {{--  <td>{{ $calificacion->asignacionDocente->id_asignacion ?? 'N/A' }} --}}
                                                         </td>
                                                         <td class="{{ $clase }}">
                                                             {{ number_format($calificacion->calificacion, 1) }}</td>
@@ -212,25 +406,28 @@
                                                         <td>{{ $calificacion->fecha }}</td>
 
                                                         </td>
-                                                        
+
                                                         <td>
                                                             <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                data-target="#verCalificacionModal{{ $calificacion->id_calificacion }}"
-                                title="Ver detalles">
-                                <i class="fas fa-eye"></i> Ver
-                            </button>
-                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
-                                data-target="#editarCalificacionModal{{ $calificacion->id_calificacion }}"
-                                title="Editar">
-                                <i class="fas fa-edit"></i> Editar
-                            </button>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                                data-target="#eliminarCalificacionModal{{ $calificacion->id_calificacion }}"
-                                title="Eliminar"> 
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </button>
-                        </div>
+                                                                <button type="button" class="btn btn-sm btn-info"
+                                                                    data-toggle="modal"
+                                                                    data-target="#verCalificacionModal{{ $calificacion->id_calificacion }}"
+                                                                    title="Ver detalles">
+                                                                    <i class="fas fa-eye"></i> Ver
+                                                                </button>
+                                                                <button type="button" class="btn btn-sm btn-warning"
+                                                                    data-toggle="modal"
+                                                                    data-target="#editarCalificacionModal{{ $calificacion->id_calificacion }}"
+                                                                    title="Editar">
+                                                                    <i class="fas fa-edit"></i> Editar
+                                                                </button>
+                                                                <button type="button" class="btn btn-sm btn-danger"
+                                                                    data-toggle="modal"
+                                                                    data-target="#eliminarCalificacionModal{{ $calificacion->id_calificacion }}"
+                                                                    title="Eliminar">
+                                                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @empty
@@ -271,11 +468,13 @@
     <div class="modal fade" id="modalCalificarGrupo" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
-                <div class="modal-header modal-header-custom border-0">
+                <div class=" modal-header-custom border-0">
                     <div class="w-100 text-center">
-                        <h5 class="mb-0 font-weight-bold">
-                            <i class="fas fa-graduation-cap mr-2"></i>Captura de Calificaciones
-                        </h5>
+                        <div class="w-100 text-center">
+                        <h5 class="text-danger text-center mb-5"
+                        style="font-size: 1.5rem; font-family: 'Arial Black', Verdana, sans-serif; font-weight: bold;">
+                        <i class="fas fa-graduation-cap mr-2"></i>Captura de Calificaciones</h5>
+                    </div>
                     </div>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
                         style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
@@ -289,7 +488,7 @@
 
                         <!-- Filtros -->
                         <div class="card mb-3">
-                            <div class="card-header bg-light">
+                            <div class="card-header text-danger bg-light">
                                 <strong><i class="fas fa-filter mr-2"></i>Seleccionar Grupo y Materia</strong>
                             </div>
                             <div class="card-body1">
@@ -346,7 +545,7 @@
                             <div class="card">
                                 <div class="card-header text-white d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong><i class="fas fa-table mr-2"></i>Matriz de Calificaciones</strong>
+                                        <strong><i class="fas fa-table mr-2"></i>Tabla de Calificaciones</strong>
                                         <span id="infoMateria" class="ml-3"></span>
                                     </div>
                                     <div>
@@ -392,13 +591,11 @@
                                             Calificaciones del 0 al 10.
                                         </small>
                                         <div>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary mr-2"
-                                                id="btnLimpiarTodo">
-                                                <i class="fas fa-eraser"></i> Limpiar Todo
+                                            
+                                            <button type="button" class="btn btn-sm btn-danger mr-2"
+                                                id="btnExportarPDF" style="display: none;">
+                                                <i class="fas fa-file-pdf mr-1"></i> Exportar a PDF
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-danger mr-2" id="btnExportarPDF" style="display: none;">
-    <i class="fas fa-file-pdf mr-1"></i> Exportar a PDF
-</button>
                                             <button type="button" class="btn btn-sm btn-success"
                                                 id="btnGuardarCalificaciones" disabled>
                                                 <i class="fas fa-save mr-1"></i> Guardar Calificaciones
@@ -416,240 +613,34 @@
         </div>
     </div>
     @foreach ($calificaciones as $calificacion)
-    <!-- Modal Ver Calificación -->
-    <div class="modal fade" id="verCalificacionModal{{ $calificacion->id_calificacion }}" tabindex="-1" role="dialog"
-        aria-labelledby="verCalificacionModalLabel{{ $calificacion->id_calificacion }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header modal-header-custom border-0">
-                    <div class="w-100">
-                        <div class="text-center">
-                            <h5 class="m-0 font-weight-bold" id="verCalificacionModalLabel{{ $calificacion->id_calificacion }}">
-                                Detalles de Calificación
-                            </h5>
-                            <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
-                                Información completa del registro de calificación
-                            </p>
+        <!-- Modal Ver Calificación -->
+        <div class="modal fade" id="verCalificacionModal{{ $calificacion->id_calificacion }}" tabindex="-1"
+            role="dialog" aria-labelledby="verCalificacionModalLabel{{ $calificacion->id_calificacion }}"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header modal-header-custom border-0">
+                        <div class="w-100">
+                            <div class="text-center">
+                                <h5 class="m-0 font-weight-bold"
+                                    id="verCalificacionModalLabel{{ $calificacion->id_calificacion }}">
+                                    Detalles de Calificación
+                                </h5>
+                                <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                                    Información completa del registro de calificación
+                                </p>
+                            </div>
                         </div>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                            style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
-                        style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
 
-                <div class="modal-body modal-body-custom p-4">
-                    <div class="form-container p-4 bg-white rounded shadow-sm border">
-
-                        {{-- Información del Alumno --}}
-                        <div class="card shadow mb-4 border-0">
-                            <div class="card-header py-3 text-white card-header-custom">
-                                <h6 class="m-0 font-weight-bold text-danger">
-                                    <i class="fas fa-user-graduate mr-2"></i>
-                                    Información del Alumno
-                                </h6>
-                            </div>
-                            <div class="card-body1 p-4">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Nombre Completo:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            {{ optional($calificacion->alumno->datosPersonales)->nombres ?? 'N/A' }}
-                                            {{ optional($calificacion->alumno->datosPersonales)->primer_apellido ?? '' }}
-                                            {{ optional($calificacion->alumno->datosPersonales)->segundo_apellido ?? '' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Matrícula:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            {{ $calificacion->alumno->datosAcademicos->matricula ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Información Académica --}}
-                        <div class="card shadow mb-4 border-0">
-                            <div class="card-header py-3 text-white card-header-custom">
-                                <h6 class="m-0 font-weight-bold text-danger">
-                                    <i class="fas fa-book-open mr-2"></i>
-                                    Información Académica
-                                </h6>
-                            </div>
-                            <div class="card-body1 p-4">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Materia:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            {{ $calificacion->asignacionDocente->materia->nombre ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Docente:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            {{ optional($calificacion->asignacionDocente->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Unidad:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            {{ $calificacion->unidad->nombre ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Tipo de Evaluación:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            {{ $calificacion->evaluacion->nombre ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                <label class="text-muted text-uppercase d-block">Grupo:</label>
-                <div class="text-muted d-block font-weight-bold">
-                    {{ optional($calificacion->asignacionDocente->grupo)->nombre ?? 'N/A' }}
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="text-muted text-uppercase d-block">Período Escolar:</label>
-                <div class="text-muted d-block font-weight-bold">
-                    {{ optional($calificacion->asignacionDocente->grupo->periodoEscolar)->nombre ?? 'N/A' }}
-                </div>
-            </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Calificaciones --}}
-                        <div class="card shadow border-0">
-                            <div class="card-header py-3 text-white card-header-custom">
-                                <h6 class="m-0 font-weight-bold text-danger">
-                                    <i class="fas fa-star mr-2"></i>
-                                    Calificaciones y Estado
-                                </h6>
-                            </div>
-                            <div class="card-body1 p-4">
-                                <div class="row">
-                                    <div class="col-md-4 mb-3 text-center">
-                                        <label class="text-muted text-uppercase d-block mb-2">Calificación:</label>
-                                        @php
-                                            $calif = $calificacion->calificacion;
-                                            if ($calif >= 8) {
-                                                $clase = 'badge-success';
-                                            } elseif ($calif >= 7) {
-                                                $clase = 'badge-warning';
-                                            } else {
-                                                $clase = 'badge-danger';
-                                            }
-                                        @endphp
-                                        <h2 class="mb-0">
-                                            <span class="badge {{ $clase }}" style="font-size: 2rem; padding: 1rem;">
-                                                {{ number_format($calificacion->calificacion, 1) }}
-                                            </span>
-                                        </h2>
-                                    </div>
-                                    <div class="col-md-4 mb-3 text-center">
-                                        <label class="text-muted text-uppercase d-block mb-2">Calificación Especial:</label>
-                                        @php
-                                            $califEspecial = $calificacion->calificacion_especial;
-                                            if ($califEspecial) {
-                                                if ($califEspecial >= 8) {
-                                                    $claseEspecial = 'badge-success';
-                                                } elseif ($califEspecial >= 7) {
-                                                    $claseEspecial = 'badge-warning';
-                                                } else {
-                                                    $claseEspecial = 'badge-danger';
-                                                }
-                                            }
-                                        @endphp
-                                        <h2 class="mb-0">
-                                            @if($califEspecial)
-                                                <span class="badge {{ $claseEspecial }}" style="font-size: 2rem; padding: 1rem;">
-                                                    {{ number_format($califEspecial, 1) }}
-                                                </span>
-                                            @else
-                                                <span class="badge badge-secondary" style="font-size: 1.5rem; padding: 0.8rem;">
-                                                    N/A
-                                                </span>
-                                            @endif
-                                        </h2>
-                                    </div>
-                                    <div class="col-md-4 mb-3 text-center">
-                                        <label class="text-muted text-uppercase d-block mb-2">Estado:</label>
-                                        @php
-                                            $califFinal = $calificacion->calificacion_especial ?? $calificacion->calificacion;
-                                        @endphp
-                                        <h2 class="mb-0">
-                                            @if ($califFinal >= 7)
-                                                <span class="badge badge-success" style="font-size: 1.5rem; padding: 0.8rem;">
-                                                    <i class="fas fa-check-circle mr-2"></i>Aprobado
-                                                </span>
-                                            @else
-                                                <span class="badge badge-danger" style="font-size: 1.5rem; padding: 0.8rem;">
-                                                    <i class="fas fa-times-circle mr-2"></i>Reprobado
-                                                </span>
-                                            @endif
-                                        </h2>
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label class="text-muted text-uppercase d-block">Fecha de Registro:</label>
-                                        <div class="text-muted d-block font-weight-bold">
-                                            <i class="fas fa-calendar-alt mr-2"></i>
-                                            {{ $calificacion->fecha ? \Carbon\Carbon::parse($calificacion->fecha)->format('d/m/Y H:i') : 'N/A' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="modal-footer modal-footer-custom border-top">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="fas fa-times mr-2"></i>Cerrar
-                    </button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
-                        data-target="#editarCalificacionModal{{ $calificacion->id_calificacion }}">
-                        <i class="fas fa-edit mr-2"></i>Editar
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Editar Calificación -->
-    <div class="modal fade" id="editarCalificacionModal{{ $calificacion->id_calificacion }}" tabindex="-1" role="dialog"
-        aria-labelledby="editarCalificacionModalLabel{{ $calificacion->id_calificacion }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header modal-header-custom border-0">
-                    <div class="w-100">
-                        <div class="text-center">
-                            <h5 class="m-0 font-weight-bold" id="editarCalificacionModalLabel{{ $calificacion->id_calificacion }}">
-                                Editar Calificación
-                            </h5>
-                            <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
-                                Modifica la información de la calificación
-                            </p>
-                        </div>
-                    </div>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
-                        style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body modal-body-custom p-4">
-                    <form action="{{ route('calificaciones.update', $calificacion->id_calificacion) }}" method="POST" 
-                        id="formEditarCalificacion{{ $calificacion->id_calificacion }}">
-                        @csrf
-                        @method('PUT')
-<input type="hidden" name="id_unidad" value="{{ $calificacion->id_unidad }}">
-<input type="hidden" name="id_evaluacion" value="{{ $calificacion->id_evaluacion }}">
+                    <div class="modal-body modal-body-custom p-4">
                         <div class="form-container p-4 bg-white rounded shadow-sm border">
 
-                            {{-- Información del Alumno (Solo lectura) --}}
+                            {{-- Información del Alumno --}}
                             <div class="card shadow mb-4 border-0">
                                 <div class="card-header py-3 text-white card-header-custom">
                                     <h6 class="m-0 font-weight-bold text-danger">
@@ -659,18 +650,25 @@
                                 </div>
                                 <div class="card-body1 p-4">
                                     <div class="row">
-                                        <div class="col-12 mb-3">
-                                            <label class="text-muted text-uppercase d-block mb-2">
-                                                <strong>Alumno:</strong>
-                                            </label>
-                                            <input type="text" class="form-control" readonly
-                                                value="{{ optional($calificacion->alumno->datosPersonales)->nombres ?? 'N/A' }} {{ optional($calificacion->alumno->datosPersonales)->primer_apellido ?? '' }} ({{ $calificacion->alumno->datosAcademicos->matricula ?? 'N/A' }})">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Nombre Completo:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ optional($calificacion->alumno->datosPersonales)->nombres ?? 'N/A' }}
+                                                {{ optional($calificacion->alumno->datosPersonales)->primer_apellido ?? '' }}
+                                                {{ optional($calificacion->alumno->datosPersonales)->segundo_apellido ?? '' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Matrícula:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ $calificacion->alumno->datosAcademicos->matricula ?? 'N/A' }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Información Académica (Solo lectura) --}}
+                            {{-- Información Académica --}}
                             <div class="card shadow mb-4 border-0">
                                 <div class="card-header py-3 text-white card-header-custom">
                                     <h6 class="m-0 font-weight-bold text-danger">
@@ -682,127 +680,345 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="text-muted text-uppercase d-block">Materia:</label>
-                                            <input type="text" class="form-control" readonly
-                                                value="{{ $calificacion->asignacionDocente->materia->nombre ?? 'N/A' }}">
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ $calificacion->asignacionDocente->materia->nombre ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Docente:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ optional($calificacion->asignacionDocente->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A' }}
+                                            </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="text-muted text-uppercase d-block">Unidad:</label>
-                                            <input type="text" class="form-control" readonly
-                                                value="{{ $calificacion->unidad->nombre ?? 'N/A' }}">
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ $calificacion->unidad->nombre ?? 'N/A' }}
+                                            </div>
                                         </div>
-                                        <div class="col-md-12 mb-3">
-                                            <label class="text-muted text-uppercase d-block">Tipo de Evaluación:</label>
-                                            <input type="text" class="form-control" readonly
-                                                value="{{ $calificacion->evaluacion->nombre ?? 'N/A' }}">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Tipo de
+                                                Evaluación:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ $calificacion->evaluacion->nombre ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Grupo:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ optional($calificacion->asignacionDocente->grupo)->nombre ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Período Escolar:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                {{ optional($calificacion->asignacionDocente->grupo->periodoEscolar)->nombre ?? 'N/A' }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Calificaciones (Editable) --}}
+                            {{-- Calificaciones --}}
                             <div class="card shadow border-0">
                                 <div class="card-header py-3 text-white card-header-custom">
                                     <h6 class="m-0 font-weight-bold text-danger">
                                         <i class="fas fa-star mr-2"></i>
-                                        Calificaciones
+                                        Calificaciones y Estado
                                     </h6>
                                 </div>
                                 <div class="card-body1 p-4">
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="text-muted text-uppercase d-block mb-2">
-                                                <i class="fas fa-pencil-alt mr-1"></i>
-                                                Calificación <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="number" name="calificacion" class="form-control" 
-                                                value="{{ $calificacion->calificacion }}" 
-                                                min="0" max="10" step="0.1" required>
-                                            <small class="text-muted">
-                                                <i class="fas fa-info-circle"></i> Valor entre 0 y 10
-                                            </small>
+                                        <div class="col-md-4 mb-3 text-center">
+                                            <label class="text-muted text-uppercase d-block mb-2">Calificación:</label>
+                                            @php
+                                                $calif = $calificacion->calificacion;
+                                                if ($calif >= 8) {
+                                                    $clase = 'badge-success';
+                                                } elseif ($calif >= 7) {
+                                                    $clase = 'badge-warning';
+                                                } else {
+                                                    $clase = 'badge-danger';
+                                                }
+                                            @endphp
+                                            <h2 class="mb-0">
+                                                <span class="badge {{ $clase }}"
+                                                    style="font-size: 2rem; padding: 1rem;">
+                                                    {{ number_format($calificacion->calificacion, 1) }}
+                                                </span>
+                                            </h2>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="text-muted text-uppercase d-block mb-2">
-                                                <i class="fas fa-star-half-alt mr-1"></i>
-                                                Calificación Especial
-                                            </label>
-                                            <input type="number" name="calificacion_especial" class="form-control" 
-                                                value="{{ $calificacion->calificacion_especial }}" 
-                                                min="0" max="10" step="0.1">
-                                            <small class="text-muted">
-                                                <i class="fas fa-info-circle"></i> Opcional - Extraordinario Especial
-                                            </small>
+                                        <div class="col-md-4 mb-3 text-center">
+                                            <label class="text-muted text-uppercase d-block mb-2">Calificación
+                                                Especial:</label>
+                                            @php
+                                                $califEspecial = $calificacion->calificacion_especial;
+                                                if ($califEspecial) {
+                                                    if ($califEspecial >= 8) {
+                                                        $claseEspecial = 'badge-success';
+                                                    } elseif ($califEspecial >= 7) {
+                                                        $claseEspecial = 'badge-warning';
+                                                    } else {
+                                                        $claseEspecial = 'badge-danger';
+                                                    }
+                                                }
+                                            @endphp
+                                            <h2 class="mb-0">
+                                                @if ($califEspecial)
+                                                    <span class="badge {{ $claseEspecial }}"
+                                                        style="font-size: 2rem; padding: 1rem;">
+                                                        {{ number_format($califEspecial, 1) }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-secondary"
+                                                        style="font-size: 1.5rem; padding: 0.8rem;">
+                                                        N/A
+                                                    </span>
+                                                @endif
+                                            </h2>
+                                        </div>
+                                        <div class="col-md-4 mb-3 text-center">
+                                            <label class="text-muted text-uppercase d-block mb-2">Estado:</label>
+                                            @php
+                                                $califFinal =
+                                                    $calificacion->calificacion_especial ?? $calificacion->calificacion;
+                                            @endphp
+                                            <h2 class="mb-0">
+                                                @if ($califFinal >= 7)
+                                                    <span class="badge badge-success"
+                                                        style="font-size: 1.5rem; padding: 0.8rem;">
+                                                        <i class="fas fa-check-circle mr-2"></i>Aprobado
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-danger"
+                                                        style="font-size: 1.5rem; padding: 0.8rem;">
+                                                        <i class="fas fa-times-circle mr-2"></i>Reprobado
+                                                    </span>
+                                                @endif
+                                            </h2>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label class="text-muted text-uppercase d-block">Fecha de Registro:</label>
+                                            <div class="text-muted d-block font-weight-bold">
+                                                <i class="fas fa-calendar-alt mr-2"></i>
+                                                {{ $calificacion->fecha ? \Carbon\Carbon::parse($calificacion->fecha)->format('d/m/Y H:i') : 'N/A' }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                         </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer modal-footer-custom border-top">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="fas fa-times mr-2"></i>Cancelar
-                    </button>
-                    <button type="submit" form="formEditarCalificacion{{ $calificacion->id_calificacion }}" class="btn btn-success">
-                        <i class="fas fa-save mr-2"></i>Guardar Cambios
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Eliminar Calificación -->
-    <div class="modal fade" id="eliminarCalificacionModal{{ $calificacion->id_calificacion }}" tabindex="-1" role="dialog"
-        aria-labelledby="eliminarCalificacionModalLabel{{ $calificacion->id_calificacion }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-danger border-0">
-                    <div class="w-100">
-                        <div class="text-center">
-                            <h5 class="m-0 font-weight-bold text-white" id="eliminarCalificacionModalLabel{{ $calificacion->id_calificacion }}">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                Eliminar Calificación
-                            </h5>
-                        </div>
                     </div>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
-                        style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
 
-                <div class="modal-body p-4 text-center">
-                    <div class="mb-4">
-                        <i class="fas fa-exclamation-circle text-warning" style="font-size: 4rem;"></i>
-                    </div>
-                    
-                    <h5 class="mb-3">¿Estás seguro de eliminar esta calificación?</h5>
-                    <p class="text-danger font-weight-bold mb-0">
-                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                        Esta acción no se puede deshacer
-                    </p>
-                </div>
-
-                <div class="modal-footer border-top">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        <i class="fas fa-times mr-2"></i>Cancelar
-                    </button>
-                    <form action="{{ route('calificaciones.destroy', $calificacion->id_calificacion) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash-alt mr-2"></i>Eliminar
+                    <div class="modal-footer modal-footer-custom border-top">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times mr-2"></i>Cerrar
                         </button>
-                    </form>
-                </div>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
+                            data-target="#editarCalificacionModal{{ $calificacion->id_calificacion }}">
+                            <i class="fas fa-edit mr-2"></i>Editar
+                        </button>
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
-@endforeach
+
+        <!-- Modal Editar Calificación -->
+        <div class="modal fade" id="editarCalificacionModal{{ $calificacion->id_calificacion }}" tabindex="-1"
+            role="dialog" aria-labelledby="editarCalificacionModalLabel{{ $calificacion->id_calificacion }}"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header modal-header-custom border-0">
+                        <div class="w-100">
+                            <div class="text-center">
+                                <h5 class="m-0 font-weight-bold"
+                                    id="editarCalificacionModalLabel{{ $calificacion->id_calificacion }}">
+                                    Editar Calificación
+                                </h5>
+                                <p class="m-0 mt-2 mb-0" style="font-size: 0.9rem; opacity: 0.95;">
+                                    Modifica la información de la calificación
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                            style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body modal-body-custom p-4">
+                        <form action="{{ route('calificaciones.update', $calificacion->id_calificacion) }}"
+                            method="POST" id="formEditarCalificacion{{ $calificacion->id_calificacion }}">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="id_unidad" value="{{ $calificacion->id_unidad }}">
+                            <input type="hidden" name="id_evaluacion" value="{{ $calificacion->id_evaluacion }}">
+                            <div class="form-container p-4 bg-white rounded shadow-sm border">
+
+                                {{-- Información del Alumno (Solo lectura) --}}
+                                <div class="card shadow mb-4 border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-user-graduate mr-2"></i>
+                                            Información del Alumno
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <strong>Alumno:</strong>
+                                                </label>
+                                                <input type="text" class="form-control" readonly
+                                                    value="{{ optional($calificacion->alumno->datosPersonales)->nombres ?? 'N/A' }} {{ optional($calificacion->alumno->datosPersonales)->primer_apellido ?? '' }} ({{ $calificacion->alumno->datosAcademicos->matricula ?? 'N/A' }})">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Información Académica (Solo lectura) --}}
+                                <div class="card shadow mb-4 border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-book-open mr-2"></i>
+                                            Información Académica
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="text-muted text-uppercase d-block">Materia:</label>
+                                                <input type="text" class="form-control" readonly
+                                                    value="{{ $calificacion->asignacionDocente->materia->nombre ?? 'N/A' }}">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="text-muted text-uppercase d-block">Unidad:</label>
+                                                <input type="text" class="form-control" readonly
+                                                    value="{{ $calificacion->unidad->nombre ?? 'N/A' }}">
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <label class="text-muted text-uppercase d-block">Tipo de
+                                                    Evaluación:</label>
+                                                <input type="text" class="form-control" readonly
+                                                    value="{{ $calificacion->evaluacion->nombre ?? 'N/A' }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Calificaciones (Editable) --}}
+                                <div class="card shadow border-0">
+                                    <div class="card-header py-3 text-white card-header-custom">
+                                        <h6 class="m-0 font-weight-bold text-danger">
+                                            <i class="fas fa-star mr-2"></i>
+                                            Calificaciones
+                                        </h6>
+                                    </div>
+                                    <div class="card-body1 p-4">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <i class="fas fa-pencil-alt mr-1"></i>
+                                                    Calificación <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="number" name="calificacion" class="form-control"
+                                                    value="{{ $calificacion->calificacion }}" min="0"
+                                                    max="10" step="0.1" required>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i> Valor entre 0 y 10
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="text-muted text-uppercase d-block mb-2">
+                                                    <i class="fas fa-star-half-alt mr-1"></i>
+                                                    Calificación Especial
+                                                </label>
+                                                <input type="number" name="calificacion_especial"
+                                                    class="form-control"
+                                                    value="{{ $calificacion->calificacion_especial }}" min="0"
+                                                    max="10" step="0.1">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i> Opcional - Extraordinario
+                                                    Especial
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer modal-footer-custom border-top">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times mr-2"></i>Cancelar
+                        </button>
+                        <button type="submit" form="formEditarCalificacion{{ $calificacion->id_calificacion }}"
+                            class="btn btn-success">
+                            <i class="fas fa-save mr-2"></i>Guardar Cambios
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Eliminar Calificación -->
+        <div class="modal fade" id="eliminarCalificacionModal{{ $calificacion->id_calificacion }}" tabindex="-1"
+            role="dialog" aria-labelledby="eliminarCalificacionModalLabel{{ $calificacion->id_calificacion }}"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-danger border-0">
+                        <div class="w-100">
+                            <div class="text-center">
+                                <h5 class="m-0 font-weight-bold text-white"
+                                    id="eliminarCalificacionModalLabel{{ $calificacion->id_calificacion }}">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    Eliminar Calificación
+                                </h5>
+                            </div>
+                        </div>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
+                            style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body p-4 text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-exclamation-circle text-warning" style="font-size: 4rem;"></i>
+                        </div>
+
+                        <h5 class="mb-3">¿Estás seguro de eliminar esta calificación?</h5>
+                        <p class="text-danger font-weight-bold mb-0">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Esta acción no se puede deshacer
+                        </p>
+                    </div>
+
+                    <div class="modal-footer border-top">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times mr-2"></i>Cancelar
+                        </button>
+                        <form action="{{ route('calificaciones.destroy', $calificacion->id_calificacion) }}"
+                            method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt mr-2"></i>Eliminar
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    @endforeach
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const periodoSelect = document.getElementById('periodoCalificar');
@@ -823,34 +1039,34 @@
             // Iconos y colores por tipo de evaluación
             const tiposEvaluacion = {
                 'ordinario': {
-                    icon: '📘',
+                    icon: '',
                     color: '#007bff',
                     label: 'Ordinario'
                 },
                 'recuperación': {
-                    icon: '📗',
+                    icon: '',
                     color: '#28a745',
                     label: 'Recuperación'
                 },
                 'recuperacion': {
-                    icon: '📗',
+                    icon: '',
                     color: '#28a745',
                     label: 'Recuperación'
                 },
                 'extraordinario': {
-                    icon: '📕',
+                    icon: '',
                     color: '#dc3545',
                     label: 'Extraordinario'
                 },
                 'extraordinario_especial': {
-                    icon: '🎓',
+                    icon: '',
                     color: '#6f42c1',
-                    label: 'Extraordinario Especial'
+                    label: ''
                 },
                 'extraordinario especial': {
-                    icon: '🎓',
+                    icon: '',
                     color: '#6f42c1',
-                    label: 'Extraordinario Especial'
+                    label: ''
                 }
             };
 
@@ -948,11 +1164,26 @@
 
             // Renderizar matriz
             function renderMatriz() {
+                
                 if (datosMatriz.alumnos.length === 0) {
                     tbody.innerHTML =
                         '<tr><td colspan="100" class="text-center text-muted py-4">No hay alumnos en este grupo</td></tr>';
                     return;
                 }
+                // Ordenar alumnos por apellidos (primer_apellido + segundo_apellido)
+datosMatriz.alumnos.sort((a, b) => {
+        const nombreA = (a.nombre || '').trim();
+        const nombreB = (b.nombre || '').trim();
+        const partesA = nombreA.split(' ');
+        const partesB = nombreB.split(' ');
+        const primerApellidoA = partesA.length >= 2 ? partesA[partesA.length - 2] : nombreA;
+        const primerApellidoB = partesB.length >= 2 ? partesB[partesB.length - 2] : nombreB;
+        const apellidoCompare = primerApellidoA.localeCompare(primerApellidoB, 'es', { sensitivity: 'base' });
+        if (apellidoCompare !== 0) {
+            return apellidoCompare;
+        }
+        return nombreA.localeCompare(nombreB, 'es', { sensitivity: 'base' });
+    });
 
                 let headersUnidades = '';
                 datosMatriz.unidades.forEach(unidad => {
@@ -960,9 +1191,9 @@
                         `<th class="unidad-header" style="min-width: 200px;">${unidad.nombre}</th>`;
                 });
 
-                headersUnidades += `<th class="bg-info text-white">📊 Promedio</th>`;
+                headersUnidades += `<th class="bg-info text-white">Promedio</th>`;
                 headersUnidades +=
-                    `<th class="unidad-header bg-warning" style="min-width: 200px;">🎓 Calificación Final</th>`;
+                    `<th class="unidad-header bg-warning" style="min-width: 200px;">Extraordinario Especial</th>`;
 
                 thead.innerHTML = `
             <th style="position: sticky; left: 0; ; z-index: 101; min-width: 50px;" class="text-center">#</th>
@@ -997,167 +1228,183 @@
 
                     // Renderizar unidades
                     // Renderizar unidades con validación secuencial
-                   datosMatriz.unidades.forEach((unidad, indexUnidad) => {
-    const key = `${alumno.id_alumno}_${unidad.id_unidad}`;
-    const calificacionData = alumno.calificaciones[key];
-    const tieneCalifEspecial = alumno.calificacion_especial !== null && 
-        alumno.calificacion_especial !== undefined;
+                    datosMatriz.unidades.forEach((unidad, indexUnidad) => {
+                        const key = `${alumno.id_alumno}_${unidad.id_unidad}`;
+                        const calificacionData = alumno.calificaciones[key];
+                        const tieneCalifEspecial = alumno.calificacion_especial !== null &&
+                            alumno.calificacion_especial !== undefined;
 
-    // Contar unidades con calificación y verificar condiciones
-    let unidadesConCalificacion = 0;
-    let tieneExtraordinario = false;
-    const totalUnidades = datosMatriz.unidades.length;
-    
-    Object.entries(alumno.calificaciones).forEach(([k, calif]) => {
-        if (calif?.calificacion !== null) {
-            unidadesConCalificacion++;
-        }
-        if (calif?.tipo_evaluacion === 'Extraordinario') {
-            tieneExtraordinario = true;
-        }
-    });
+                        // Contar unidades con calificación y verificar condiciones
+                        let unidadesConCalificacion = 0;
+                        let tieneExtraordinario = false;
+                        const totalUnidades = datosMatriz.unidades.length;
 
-    // Verificar la ÚLTIMA unidad y su estado
-    const ultimaUnidad = datosMatriz.unidades[totalUnidades - 1];
-    const keyUltimaUnidad = `${alumno.id_alumno}_${ultimaUnidad.id_unidad}`;
-    const califUltimaUnidad = alumno.calificaciones[keyUltimaUnidad];
-    
-    let puedeHabilitarExtraordinario = false;
-    
-    // Todas las unidades deben tener calificación
-    const todasLasUnidadesCompletas = unidadesConCalificacion >= totalUnidades;
-    
-    if (todasLasUnidadesCompletas && califUltimaUnidad) {
-        const tipoUltimaUnidad = califUltimaUnidad.tipo_evaluacion;
-        const califUltimaAprobada = califUltimaUnidad.calificacion >= 7;
-        
-        // Casos en los que se habilita el Extraordinario:
-        // 1. La última unidad está en Extraordinario (ya llegó ahí)
-        if (tipoUltimaUnidad === 'Extraordinario') {
-            puedeHabilitarExtraordinario = true;
-        }
-        // 2. La última unidad está en Recuperación Y YA TIENE CALIFICACIÓN (aprobada o reprobada)
-        else if (tipoUltimaUnidad === 'Recuperación' && califUltimaUnidad.calificacion !== null) {
-            puedeHabilitarExtraordinario = true;
-        }
-        // 3. La última unidad está en Ordinario/Regularización Y está aprobada
-        else if ((tipoUltimaUnidad === 'Ordinario' || tipoUltimaUnidad === 'Regularización') && califUltimaAprobada) {
-            puedeHabilitarExtraordinario = true;
-        }
-    }
+                        Object.entries(alumno.calificaciones).forEach(([k, calif]) => {
+                            if (calif?.calificacion !== null) {
+                                unidadesConCalificacion++;
+                            }
+                            if (calif?.tipo_evaluacion === 'Extraordinario') {
+                                tieneExtraordinario = true;
+                            }
+                        });
 
-    // Verificar si reprobó algún Extraordinario
-    let reproboExtraordinario = false;
-    Object.values(alumno.calificaciones).forEach(calif => {
-        if (calif?.tipo_evaluacion === 'Extraordinario' &&
-            calif.calificacion !== null &&
-            calif.calificacion < 7) {
-            reproboExtraordinario = true;
-        }
-    });
+                        // Verificar la ÚLTIMA unidad y su estado
+                        const ultimaUnidad = datosMatriz.unidades[totalUnidades - 1];
+                        const keyUltimaUnidad = `${alumno.id_alumno}_${ultimaUnidad.id_unidad}`;
+                        const califUltimaUnidad = alumno.calificaciones[keyUltimaUnidad];
 
-    // Verificar si unidades anteriores están completadas y aprobadas
-    let puedeCapturarEstaUnidad = false;
-    let mensajeError = '';
+                        let puedeHabilitarExtraordinario = false;
 
-    if (indexUnidad === 0) {
-        // Primera unidad: siempre habilitada si no está bloqueada
-        puedeCapturarEstaUnidad = !tieneCalifEspecial && !reproboExtraordinario;
-    } else {
-        // Unidades posteriores: verificar unidad anterior
-        const unidadAnterior = datosMatriz.unidades[indexUnidad - 1];
-        const keyAnterior = `${alumno.id_alumno}_${unidadAnterior.id_unidad}`;
-        const califAnterior = alumno.calificaciones[keyAnterior];
+                        // Todas las unidades deben tener calificación
+                        const todasLasUnidadesCompletas = unidadesConCalificacion >= totalUnidades;
 
-        if (!califAnterior || califAnterior.calificacion === null) {
-            mensajeError = 'Captura la unidad anterior primero';
-        } else if (califAnterior.calificacion < 0) {
-            mensajeError = 'La unidad anterior debe estar aprobada';
-        } else {
-            puedeCapturarEstaUnidad = !tieneCalifEspecial && !reproboExtraordinario;
-        }
-    }
+                        if (todasLasUnidadesCompletas && califUltimaUnidad) {
+                            const tipoUltimaUnidad = califUltimaUnidad.tipo_evaluacion;
+                            const califUltimaAprobada = califUltimaUnidad.calificacion >= 7;
 
-    // LÓGICA ESPECIAL: Si la unidad actual ES un Extraordinario
-    const esExtraordinarioActual = calificacionData?.tipo_evaluacion === 'Extraordinario';
-    
-    if (esExtraordinarioActual && !puedeHabilitarExtraordinario) {
-        // Bloquear el Extraordinario hasta que se cumplan las condiciones
-        puedeCapturarEstaUnidad = false;
-        if (!todasLasUnidadesCompletas) {
-            mensajeError = '🔒 Completa todas las unidades primero';
-        } else if (califUltimaUnidad?.tipo_evaluacion === 'Recuperación' && califUltimaUnidad.calificacion < 7) {
-            mensajeError = '🔒 Aprueba la Recuperación de la última unidad';
-        } else {
-            mensajeError = '🔒 Completa todos los requisitos';
-        }
-    }
+                            // Casos en los que se habilita el Extraordinario:
+                            // 1. La última unidad está en Extraordinario (ya llegó ahí)
+                            if (tipoUltimaUnidad === 'Extraordinario') {
+                                puedeHabilitarExtraordinario = true;
+                            }
+                            // 2. La última unidad está en Recuperación Y YA TIENE CALIFICACIÓN (aprobada o reprobada)
+                            else if (tipoUltimaUnidad === 'Recuperación' && califUltimaUnidad
+                                .calificacion !== null) {
+                                puedeHabilitarExtraordinario = true;
+                            }
+                            // 3. La última unidad está en Ordinario/Regularización Y está aprobada
+                            else if ((tipoUltimaUnidad === 'Ordinario' || tipoUltimaUnidad ===
+                                    'Regularización') && califUltimaAprobada) {
+                                puedeHabilitarExtraordinario = true;
+                            }
+                        }
 
-    // Forzar bloqueo si hay calificación especial o extraordinario reprobado
-    if (tieneCalifEspecial || reproboExtraordinario) {
-        puedeCapturarEstaUnidad = false;
-        mensajeError = reproboExtraordinario ? '🔒 Bloqueado' : '🔒 Calificación especial asignada';
-    }
+                        // Verificar si reprobó algún Extraordinario
+                        let reproboExtraordinario = false;
+                        Object.values(alumno.calificaciones).forEach(calif => {
+                            if (calif?.tipo_evaluacion === 'Extraordinario' &&
+                                calif.calificacion !== null &&
+                                calif.calificacion < 7) {
+                                reproboExtraordinario = true;
+                            }
+                        });
 
-    if (!calificacionData) {
-        if (mensajeError) {
-            html += `<td class="text-center p-2 text-muted" title="${mensajeError}">${mensajeError}</td>`;
-        } else {
-            html += `<td class="text-center p-2">-</td>`;
-        }
-        return;
-    }
+                        // Verificar si unidades anteriores están completadas y aprobadas
+                        let puedeCapturarEstaUnidad = false;
+                        let mensajeError = '';
 
-    const calificacion = calificacionData.calificacion;
-    const yaCapturado = calificacion !== null;
-    const esAprobatoria = calificacion >= 7;
-    const siguienteEval = calificacionData.siguiente_evaluacion;
-    
-    // Aplicar la lógica de bloqueo del Extraordinario
-    let puedeCapturar = puedeCapturarEstaUnidad && calificacionData.puede_capturar;
-    
-    // Si la siguiente evaluación es Extraordinario, verificar si puede habilitarse
-    if (siguienteEval?.tipo === 'Extraordinario' && !puedeHabilitarExtraordinario) {
-        puedeCapturar = false;
-        if (!todasLasUnidadesCompletas) {
-            mensajeError = 'Extraordinario Pendiante';
-        } else if (califUltimaUnidad?.tipo_evaluacion === 'Recuperación' && califUltimaUnidad.calificacion < 7) {
-            mensajeError = '🔒 Aprueba la Recuperación de la última unidad';
-        } else {
-            mensajeError = '🔒 Completa todos los requisitos';
-        }
-    }
+                        if (indexUnidad === 0) {
+                            // Primera unidad: siempre habilitada si no está bloqueada
+                            puedeCapturarEstaUnidad = !tieneCalifEspecial && !reproboExtraordinario;
+                        } else {
+                            // Unidades posteriores: verificar unidad anterior
+                            const unidadAnterior = datosMatriz.unidades[indexUnidad - 1];
+                            const keyAnterior = `${alumno.id_alumno}_${unidadAnterior.id_unidad}`;
+                            const califAnterior = alumno.calificaciones[keyAnterior];
 
-    if (yaCapturado) {
-        const tipoEvaluacion = calificacionData.tipo_evaluacion || 'Ordinario';
-        const nombreEvaluacion = calificacionData.nombre_evaluacion || 'Evaluación';
-        const historialCompleto = calificacionData.historial_completo || [];
-        const tipoKey = tipoEvaluacion.toLowerCase().replace('ó', 'o').replace('ú', 'u');
-        const tipoEval = tiposEvaluacion[tipoKey] || tiposEvaluacion['ordinario'];
+                            if (!califAnterior || califAnterior.calificacion === null) {
+                                mensajeError = 'Captura la unidad anterior primero';
+                            } else if (califAnterior.calificacion < 0) {
+                                mensajeError = 'La unidad anterior debe estar aprobada';
+                            } else {
+                                puedeCapturarEstaUnidad = !tieneCalifEspecial && !
+                                    reproboExtraordinario;
+                            }
+                        }
 
-        let tooltipHistorial = '';
-        if (historialCompleto.length > 1) {
-            tooltipHistorial = 'Historial:\n' +
-                historialCompleto.map((h, i) => `${i + 1}. ${h.tipo}: ${h.calificacion}`).join('\n');
-        }
+                        // LÓGICA ESPECIAL: Si la unidad actual ES un Extraordinario
+                        const esExtraordinarioActual = calificacionData?.tipo_evaluacion ===
+                            'Extraordinario';
 
-        if (puedeCapturar && siguienteEval) {
-            const siguienteTipoKey = siguienteEval.tipo.toLowerCase().replace('ó', 'o').replace('ú', 'u');
-            const siguienteTipoInfo = tiposEvaluacion[siguienteTipoKey] || tiposEvaluacion['ordinario'];
+                        if (esExtraordinarioActual && !puedeHabilitarExtraordinario) {
+                            // Bloquear el Extraordinario hasta que se cumplan las condiciones
+                            puedeCapturarEstaUnidad = false;
+                            if (!todasLasUnidadesCompletas) {
+                                mensajeError = '🔒 Completa todas las unidades primero';
+                            } else if (califUltimaUnidad?.tipo_evaluacion === 'Recuperación' &&
+                                califUltimaUnidad.calificacion < 7) {
+                                mensajeError = '🔒 Aprueba la Recuperación de la última unidad';
+                            } else {
+                                mensajeError = '🔒 Completa todos los requisitos';
+                            }
+                        }
 
-            html += `
+                        // Forzar bloqueo si hay calificación especial o extraordinario reprobado
+                        if (tieneCalifEspecial || reproboExtraordinario) {
+                            puedeCapturarEstaUnidad = false;
+                            mensajeError = reproboExtraordinario ? ' ' :
+                                '🔒 Calificación especial asignada';
+                        }
+
+                        if (!calificacionData) {
+                            if (mensajeError) {
+                                html +=
+                                    `<td class="text-center p-2 text-muted" title="${mensajeError}">${mensajeError}</td>`;
+                            } else {
+                                html += `<td class="text-center p-2">-</td>`;
+                            }
+                            return;
+                        }
+
+                        const calificacion = calificacionData.calificacion;
+                        const yaCapturado = calificacion !== null;
+                        const esAprobatoria = calificacion >= 7;
+                        const siguienteEval = calificacionData.siguiente_evaluacion;
+
+                        // Aplicar la lógica de bloqueo del Extraordinario
+                        let puedeCapturar = puedeCapturarEstaUnidad && calificacionData
+                            .puede_capturar;
+
+                        // Si la siguiente evaluación es Extraordinario, verificar si puede habilitarse
+                        if (siguienteEval?.tipo === 'Extraordinario' && !
+                            puedeHabilitarExtraordinario) {
+                            puedeCapturar = false;
+                            if (!todasLasUnidadesCompletas) {
+                                mensajeError = 'Extraordinario Pendiante';
+                            } else if (califUltimaUnidad?.tipo_evaluacion === 'Recuperación' &&
+                                califUltimaUnidad.calificacion < 7) {
+                                mensajeError = '🔒 Aprueba la Recuperación de la última unidad';
+                            } else {
+                                mensajeError = '🔒 Completa todos los requisitos';
+                            }
+                        }
+
+                        if (yaCapturado) {
+                            const tipoEvaluacion = calificacionData.tipo_evaluacion || 'Ordinario';
+                            const nombreEvaluacion = calificacionData.nombre_evaluacion ||
+                                'Evaluación';
+                            const historialCompleto = calificacionData.historial_completo || [];
+                            const tipoKey = tipoEvaluacion.toLowerCase().replace('ó', 'o').replace(
+                                'ú', 'u');
+                            const tipoEval = tiposEvaluacion[tipoKey] || tiposEvaluacion[
+                                'ordinario'];
+
+                            let tooltipHistorial = '';
+                            if (historialCompleto.length > 1) {
+                                tooltipHistorial = 'Historial:\n' +
+                                    historialCompleto.map((h, i) =>
+                                        `${i + 1}. ${h.tipo}: ${h.calificacion}`).join('\n');
+                            }
+
+                            if (puedeCapturar && siguienteEval) {
+                                const siguienteTipoKey = siguienteEval.tipo.toLowerCase().replace(
+                                    'ó', 'o').replace('ú', 'u');
+                                const siguienteTipoInfo = tiposEvaluacion[siguienteTipoKey] ||
+                                    tiposEvaluacion['ordinario'];
+
+                                html += `
             <td class="text-center p-2" style="vertical-align: middle;">
                 <div class="d-flex flex-column align-items-center">
                     <span class="badge mb-2" 
-                          style="font-size: 0.9rem; padding: 0.4rem; background: ${esAprobatoria ? '#28a745' : '#dc3545'}; cursor: help;"
+                          style="font-size: 0.9rem; padding: 0.4rem; color: ${esAprobatoria ? '#28a745' : '#dc3545'}; cursor: help;"
                           ${tooltipHistorial ? `title="${tooltipHistorial.replace(/"/g, '&quot;')}"` : ''}>
-                        Actual: ${calificacion} ${tipoEval.icon}
+                         ${calificacion} ${tipoEval.icon}
                     </span>
                     ${historialCompleto.length > 1 ? `
-                    <small class="text-muted mb-2" style="font-size: 0.7rem;">
-                        
-                    </small>
-                    ` : ''}
+                        <small class="text-muted mb-2" style="font-size: 0.7rem;">
+                            
+                        </small>
+                        ` : ''}
                     <hr style="width: 100%; margin: 0.5rem 0; border-top: 1px dashed #ddd;">
                     <input type="number" 
                            class="form-control calificacion-input-matriz text-center mt-2" 
@@ -1170,17 +1417,17 @@
                            step="0.1"
                            placeholder="Nueva calif."
                            style="width: 100px; margin: 0 auto;">
-                    <small class="text-muted mt-1" style="color: ${siguienteTipoInfo.color};">
+                    <small class=" mt-1" style="color: ${siguienteTipoInfo.color};">
                         ${siguienteTipoInfo.icon} ${siguienteEval.tipo}
                     </small>
                 </div>
             </td>`;
-        } else {
-            html += `
+                            } else {
+                                html += `
             <td class="text-center p-2" style="vertical-align: middle;">
                 <div class="d-flex flex-column align-items-center">
                     <span class="badge mb-1" 
-                          style="font-size: 1.1rem; padding: 0.5rem; background: ${esAprobatoria ? '#28a745' : '#dc3545'}; cursor: help;"
+                          style="font-size: 1.1rem; padding: 0.5rem; color: ${esAprobatoria ? '#28a745' : '#dc3545'}; cursor: help;"
                           ${tooltipHistorial ? `title="${tooltipHistorial.replace(/"/g, '&quot;')}"` : ''}>
                         ${calificacion}
                     </span>
@@ -1188,27 +1435,29 @@
                         ${tipoEval.icon} ${tipoEval.label}
                     </small>
                     ${mensajeError ? `
-                    <small class="text-warning mt-1" style="font-size: 0.75rem;">
-                        ${mensajeError}
-                    </small>
-                    ` : esAprobatoria ? `
-                    <small class="text-success mt-1" style="font-size: 0.8rem;">
+                        <small class="text-warning mt-1" style="font-size: 0.75rem;">
+                            ${mensajeError}
+                        </small>
+                        ` : esAprobatoria ? `
                         
-                    </small>
-                    ` : `
-                    <small class="text-muted mt-1" style="font-size: 0.8rem;">
-                        
-                    </small>
-                    `}
+                            
+                        </small>
+                        ` : `
+                        <small class="text-muted mt-1" style="font-size: 0.8rem;">
+                            
+                        </small>
+                        `}
                 </div>
             </td>`;
-        }
-    } else {
-        if (puedeCapturar && siguienteEval) {
-            const tipoKey = siguienteEval.tipo.toLowerCase().replace('ó', 'o').replace('ú', 'u');
-            const tipoInfo = tiposEvaluacion[tipoKey] || tiposEvaluacion['ordinario'];
+                            }
+                        } else {
+                            if (puedeCapturar && siguienteEval) {
+                                const tipoKey = siguienteEval.tipo.toLowerCase().replace('ó', 'o')
+                                    .replace('ú', 'u');
+                                const tipoInfo = tiposEvaluacion[tipoKey] || tiposEvaluacion[
+                                    'ordinario'];
 
-            html += `
+                                html += `
             <td class="text-center p-2" style="vertical-align: middle;">
                 <input type="number" 
                        class="form-control calificacion-input-matriz text-center" 
@@ -1221,15 +1470,16 @@
                        step="0.1"
                        placeholder="0.0"
                        style="width: 100px; margin: 0 auto;">
-                <small class="text-muted mt-1" style="color: ${tipoInfo.color};">
+                <small class=" mt-1" style="color: ${tipoInfo.color};">
                     ${tipoInfo.icon} ${siguienteEval.tipo}
                 </small>
             </td>`;
-        } else {
-            html += `<td class="text-center p-2 text-muted" title="${mensajeError || 'Completado'}">${mensajeError || 'Completado'}</td>`;
-        }
-    }
-});
+                            } else {
+                                html +=
+                                    `<td class="text-center p-2 text-muted" title="${mensajeError || 'Completado'}">${mensajeError || 'Completado'}</td>`;
+                            }
+                        }
+                    });
 
                     // Columna de Promedio General
                     // Columna de Promedio General (redondeado sin decimales)
@@ -1247,7 +1497,7 @@
                             const esAprobado = promedioRedondeado >= 7;
                             html += `
         <td class="text-center p-2 bg-light" style="vertical-align: middle;">
-            <span class="badge" style="font-size: 1.2rem; padding: 0.6rem; background: ${esAprobado ? '#17a2b8' : '#6c757d'};">
+            <span class="badge" style="font-size: 1.2rem; padding: 0.6rem; color: ${esAprobado ? '#003ded' : '#6c757d'};">
                 ${promedioRedondeado}
             </span>
             <small class="d-block mt-1 text-muted" style="font-size: 0.7rem;">
@@ -1262,9 +1512,9 @@
 
                     // Columna Extraordinario Especial
                     const tipoEvalEspecial = tiposEvaluacion['extraordinario_especial'] || {
-                        icon: '🎓',
+                        icon: '',
                         color: '#6f42c1',
-                        label: 'Extraordinario Especial'
+                        label: ''
                     };
 
                     if (tieneCalifEspecial) {
@@ -1272,19 +1522,19 @@
                         html += `
                         <td class="text-center p-2" style="vertical-align: middle; background: #fff3cd; border-left: 3px solid #6f42c1;">
                             <div class="d-flex flex-column align-items-center">
-                                <span class="badge mb-1" style="font-size: 1.2rem; padding: 0.6rem; background: ${esAprob ? '#28a745' : '#dc3545'};">
+                                <span class="badge mb-1" style="font-size: 1.2rem; padding: 0.6rem; color: ${esAprob ? '#28a745' : '#dc3545'};">
                                     ${alumno.calificacion_especial}
                                 </span>
                                 <small style="color: ${tipoEvalEspecial.color}; font-weight: bold;">
                                     ${tipoEvalEspecial.icon} ${tipoEvalEspecial.label}
                                 </small>
                                 ${esAprob ? `
-                                            <small class="text-success mt-1">
-                                                <i class="fas fa-check-circle"></i>
-                                            </small>` : `
-                                            <small class="text-danger mt-1">
-                                                <i class="fas fa-times-circle"></i>
-                                            </small>`}
+                                                <small class="text-success mt-1">
+                                                    
+                                                </small>` : `
+                                                <small class="text-danger mt-1">
+                                                    
+                                                </small>`}
                                 <small class="text-muted mt-1" style="font-size: 0.7rem;">
                                     
                                 </small>
@@ -1303,9 +1553,7 @@
                                        data-evaluacion="${evalEspecial.id_evaluacion}"
                                        min="0" max="10" step="0.1" placeholder="Calif."
                                        style="width: 90px; margin: 0 auto; border: 3px solid #dc3545; font-weight: bold;">
-                                <small class="d-block mt-2" style="color: #6f42c1; font-weight: bold; font-size: 0.75rem;">
-                                    🎓 ${evalEspecial.nombre}
-                                </small>
+                                
                                 <small class="d-block text-danger mt-1" style="font-size: 0.65rem; font-weight: bold;">
                                     
                                 </small>
@@ -1392,7 +1640,7 @@
 
                 validarGuardar();
                 // Activar botón de PDF cuando se carga la matriz
-document.getElementById('btnExportarPDF').style.display = 'inline-block';
+                document.getElementById('btnExportarPDF').style.display = 'inline-block';
             }
 
             // Navegación con teclado
@@ -1546,20 +1794,21 @@ document.getElementById('btnExportarPDF').style.display = 'inline-block';
             });
         });
         // Exportar matriz actual a PDF
-document.getElementById('btnExportarPDF')?.addEventListener('click', function() {
-    const idGrupo = document.getElementById('grupoCalificar').value;
-    const idPeriodo = document.getElementById('periodoCalificar').value;
-    const idAsignacion = document.getElementById('materiaCalificar').value;
-    
-    if (!idGrupo || !idPeriodo || !idAsignacion) {
-        alert('Selecciona una materia primero');
-        return;
-    }
-    
-    // Abrir en nueva pestaña para descargar PDF
-    const url = `/calificaciones/exportar-pdf?grupo=${idGrupo}&periodo=${idPeriodo}&materia=${idAsignacion}`;
-    window.open(url, '_blank');
-});
+        document.getElementById('btnExportarPDF')?.addEventListener('click', function() {
+            const idGrupo = document.getElementById('grupoCalificar').value;
+            const idPeriodo = document.getElementById('periodoCalificar').value;
+            const idAsignacion = document.getElementById('materiaCalificar').value;
+
+            if (!idGrupo || !idPeriodo || !idAsignacion) {
+                alert('Selecciona una materia primero');
+                return;
+            }
+
+            // Abrir en nueva pestaña para descargar PDF
+            const url =
+            `/calificaciones/exportar-pdf?grupo=${idGrupo}&periodo=${idPeriodo}&materia=${idAsignacion}`;
+            window.open(url, '_blank');
+        });
     </script>
     <!-- Logout Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -1635,36 +1884,36 @@ document.getElementById('btnExportarPDF')?.addEventListener('click', function() 
     </script>
     <script>
         // ===== BÚSQUEDA EN TABLA =====
-            const searchInput = document.getElementById('searchInput');
+        const searchInput = document.getElementById('searchInput');
 
-            if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
 
-                    // Normaliza lo que escribe el usuario
-                    const searchTerm = e.target.value
+                // Normaliza lo que escribe el usuario
+                const searchTerm = e.target.value
+                    .toLowerCase()
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                const table = document.getElementById('teachersTable');
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                for (let row of rows) {
+
+                    // Normaliza el texto real de la fila
+                    const text = row.textContent
                         .toLowerCase()
                         .replace(/\s+/g, ' ')
                         .trim();
 
-                    const table = document.getElementById('teachersTable');
-                    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-                    for (let row of rows) {
-
-                        // Normaliza el texto real de la fila
-                        const text = row.textContent
-                            .toLowerCase()
-                            .replace(/\s+/g, ' ')
-                            .trim();
-
-                        if (text.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
+                    if (text.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
                     }
-                });
-            }
+                }
+            });
+        }
         $(document).ready(function() {
             // Espera un poco para asegurar que todos los modales existan
             setTimeout(function() {
