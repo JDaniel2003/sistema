@@ -91,4 +91,8 @@ public function getEmailForPasswordReset()
     // Cargar relaciones en cadena: docente → datosDocente → correo
     return optional($this->docente)->datosDocentes?->correo ?? '';
 }
+public function directivo()
+{
+    return $this->hasOne(Directivo::class, 'id_usuario', 'id_usuario');
+}
 }

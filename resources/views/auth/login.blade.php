@@ -27,7 +27,7 @@
         body {
             font-family: 'Nunito', sans-serif;
             height: 100vh;
-            background: #8A1010;
+            background: #192f59;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -43,7 +43,7 @@
 
         .left-section {
             flex: 1;
-            background: #8A1010;
+            background: #192f59;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -90,7 +90,7 @@
 
         .right-section {
             flex: 1;
-            background: #8A1010;
+            background: #192f59;
             display: flex;
             align-items: center;
             position: relative;
@@ -156,7 +156,7 @@
         .btn-login {
             width: 100%;
             padding: 15px;
-            background: #5B8736;
+            background: #3db166;
             color: white;
             border: none;
             border-radius: 50px;

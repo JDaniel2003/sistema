@@ -25,7 +25,7 @@
 <body id="page-top">
 
     <!-- Top Header -->
-    <div class="bg-danger text-white1 text-center py-2">
+    <div class="bg-danger1 text-white1 text-center py-2">
         <div class="d-flex justify-content-between align-items-center px-4">
 
             <h4 class="mb-0" style="text-align: center;">SISTEMA DE CONTROL ESCOLAR</h4>
@@ -85,10 +85,10 @@
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
-        <div class="d-flex align-items-center">
+        <div class="text-center">
             <div style="width: 300px; height: 120px; ">
                 <img src="{{ asset('libs/sbadmin/img/upn.png') }}" alt="Logo"
-                    style="width: 100%; height: 100%; object-fit: cover;">
+                    style="width: 90%; height: 90%; object-fit: cover;">
             </div>
         </div>
 
@@ -128,7 +128,7 @@
                 <!-- Main Content -->
                 <div class="container-fluid py-5">
 
-                    <h1 class="text-danger text-center mb-5"
+                    <h1 class="text-danger1 text-center mb-5"
                         style="font-size: 2.5rem; font-family: 'Arial Black', Verdana, sans-serif; font-weight: bold;">
                         Bienvenidos al Sistema de Control Escolar</h1>
 
@@ -331,6 +331,16 @@
                                         style="border-width: 3px; border-radius: 25px;">
                                         <div class="card-body d-flex justify-content-between align-items-center py-4">
                                             <h5 class="card-title font-weight-bold mb-0">GENERACIONES</h5>
+                                            <i class="fas fa-clipboard-check fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div onclick="window.location.href='{{ route('directivos.index') }}'"
+                                    class="col-md-6 col-lg-4 mb-4">
+                                    <div class="logout-link card border-success h-100"
+                                        style="border-width: 3px; border-radius: 25px;">
+                                        <div class="card-body d-flex justify-content-between align-items-center py-4">
+                                            <h5 class="card-title font-weight-bold mb-0">DIRECTIVOS</h5>
                                             <i class="fas fa-clipboard-check fa-2x text-success"></i>
                                         </div>
                                     </div>

@@ -6,6 +6,7 @@ use App\Models\Calificacion;
 use App\Models\Alumno;
 use App\Models\Historial;
 use App\Models\AsignacionDocente;
+use App\Models\Directivo;
 use App\Models\Unidad;
 use App\Models\Evaluacion;
 use App\Models\PeriodoEscolar;
@@ -1217,15 +1218,20 @@ public function exportarPDF(Request $request)
     $asignacion = AsignacionDocente::with(['materia', 'docente.datosDocentes'])->find($idAsignacion);
     $grupo = Grupo::find($idGrupo);
     $periodo = PeriodoEscolar::find($idPeriodo);
-
+$directivo = Directivo::with('abreviatura')
+    ->where('cargo', 'Jefe del Departamento de Servicios Escolares')
+    ->first();
     $pdf = PDF::loadView('calificaciones.pdf', [
         'alumnos' => $data['alumnos'],
         'unidades' => $data['unidades'],
         'materiaNombre' => $asignacion->materia->nombre ?? 'N/A',
+        'carreraNombre' => $grupo->carrera->nombre ?? 'N/A',
         'docenteNombre' => optional($asignacion->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A',
         'grupoNombre' => $grupo->nombre ?? 'N/A',
         'periodoNombre' => $periodo->nombre ?? 'N/A',
-        'totalAlumnos' => count($data['alumnos'])
+        'totalAlumnos' => count($data['alumnos']),
+        'directivoNombre' => optional($directivo)->nombre_con_abreviatura ?? 'N/A',
+    'directivoCargo' => optional($directivo)->cargo ?? 'N/A'
     ])
     ->setPaper('letter', 'landscape')
     ->setOption('margin_top', 10)

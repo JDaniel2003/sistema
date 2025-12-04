@@ -7,197 +7,294 @@
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 7.5px;
-            margin: 10px;
+            font-size: 5.6px;
+            margin: 4mm;
+            line-height: 1.05;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .header h2 {
-            margin: 8px 0;
-            font-size: 14px;
-        }
-
-        .header p {
-            margin: 4px 0;
-            font-size: 10px;
-        }
-
-        table {
+        .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            table-layout: fixed;
         }
 
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 3px 2px;
+        .header-logo {
+            width: 18%;
             text-align: center;
-            font-size: 6.5px;
-            overflow: hidden;
+            padding: 1px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .header-logo img {
+            width: 90px;
+            height: auto;
+            max-height: 30px;
+        }
+
+        .header-info {
+            width: 82%;
+            text-align: center;
+            padding: 1px;
+            font-size: 5.6px;
+        }
+
+        .header-info div {
+            margin: 1px 0;
+        }
+
+        .header-info .title {
             font-weight: bold;
-            white-space: normal;
-            word-wrap: break-word;
+            font-size: 8.5px;
+        }
+
+        .header-info .subtitle {
+            font-size: 7px;
+        }
+
+        .header-info .details {
+            font-size: 6.5px;
+            color: #333;
+        }
+
+        table.main {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 5.6px;
+        }
+
+        th, td {
+            border: 0.6px solid #000;
+            padding: 1px;
+            text-align: center;
+            vertical-align: middle;
+            height: 10.5px;
+            line-height: 1.05;
+            overflow: hidden;
         }
 
         .text-left {
             text-align: left !important;
+            padding-left: 1.5px !important;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            white-space: normal;
+            word-wrap: break-word;
+            padding: 0.8px 1px;
         }
 
         .sub-header {
-            font-size: 4.5px !important;
-            background-color: #e9ecef !important;
+            font-size: 4px !important;
+            background-color: #e9e9e9 !important;
+            font-weight: bold !important;
         }
 
         .calif-valor {
             font-weight: bold;
-            font-size: 7px !important;
+            font-size: 5.8px !important;
         }
 
-        .firma-section {
-            margin-top: 25px;
+        .eficiencia {
+            font-weight: bold;
+            font-size: 5.8px !important;
+            background-color: #ffffff;
+        }
+
+        .footnote {
+            font-size: 5px;
+            margin-top: 3px;
             text-align: right;
+            clear: both;
         }
 
-        .firma-line {
-            border-top: 1px solid #000;
-            margin-top: 25px;
-            padding-top: 8px;
+       .fixed-footer {
+            position: fixed;
+            bottom: 8mm;
+            left: 4mm;
+            right: 4mm;
+            font-size: 5.8px;
+        }
+
+        .sign-row {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .sign-cell {
+            display: table-cell;
+            text-align: center;
+            padding: 0 2px;
+        }
+
+        .sign-line {
+            border-top: 0.8px solid #000;
+            height: 14px;
+            margin-bottom: 2px;
+        }
+
+        .sign-label {
+            font-weight: bold;
+            margin-top: 1px;
+        }
+
+        tr {
+            page-break-inside: avoid;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="header">
-        <h2>ACTA DE CALIFICACIONES</h2>
-        <p><strong>Materia:</strong> {{ $materiaNombre }}</p>
-        <p><strong>Docente:</strong> {{ $docenteNombre }}</p>
-        <p><strong>Grupo:</strong> {{ $grupoNombre }}</p>
-        <p><strong>Período:</strong> {{ $periodoNombre }}</p>
-    </div>
+<!-- Encabezado compacto -->
+<table class="header-table">
+    <tr>
+        <td class="header-logo">
+            <img src="{{ public_path('libs/sbadmin/img/upn.png') }}" alt="Logo">
+        </td>
+        <td class="header-info">
+            <div class="title">UNIVERSIDAD POLITÉCNICA DE NOCHIXTLÁN "ABRAHAM CASTELLANOS"</div>
+            <div class="subtitle">ACTA DE CALIFICACIONES</div>
+            <div class="details">
+                AÑO: {{ date('Y') }} &nbsp;&nbsp;&nbsp;
+                PERÍODO: {{ strtoupper($periodoNombre) ?? ' ' }} &nbsp;&nbsp;&nbsp;
+                GRUPO: {{ strtoupper($grupoNombre) ?? ' ' }} &nbsp;&nbsp;&nbsp;
+                MATERIA: {{ strtoupper($materiaNombre) ?? ' ' }}<br>
+                CARRERA: {{ strtoupper($carreraNombre) ?? ' ' }}
+            </div>
+        </td>
+    </tr>
+</table>
 
-    <table>
-        <thead>
-            <tr>
-                <th rowspan="2" style="width: 2%">#</th>
-                <th rowspan="2" style="width: 5%">Matrícula</th>
-                <th rowspan="2" style="width: 15%">Alumno</th>
-                <!-- Unidades con número y nombre separados -->
-                @foreach ($unidades as $unidad)
-                    <th colspan="3">
-                        <div><strong>Unidad {{ $unidad['numero_unidad'] }}:</strong></div>
-                        <div>{{ $unidad['nombre_unidad'] }}</div>
-                    </th>
-                @endforeach
-                <th rowspan="2" style="width: 5%">Promedio</th>
-                <th rowspan="2" style="width: 5%">Calificación<br>Especial</th>
-            </tr>
-            <tr>
-                @foreach ($unidades as $unidad)
-                    <th class="sub-header" style="width: 2%">Ordinario</th>
-                    <th class="sub-header" style="width: 2%">Recuperación</th>
-                    <th class="sub-header" style="width: 2%">Extraordinario</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($alumnos as $index => $alumno)
+<!-- Tabla principal -->
+<table class="main">
+     <thead>
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $alumno['matricula'] }}</td>
-                    <td class="text-left">{{ $alumno['nombre'] }}</td>
-
+                    <th rowspan="2" style="width: 2%">#</th>
+                    <th rowspan="2" style="width: 5%">Matrícula</th>
+                    <th rowspan="2" style="width: 15%">Nombre</th>
                     @foreach ($unidades as $unidad)
-                        @php
-                            $key = $alumno['id_alumno'] . '_' . $unidad['id_unidad'];
-                            $califData = $alumno['calificaciones'][$key] ?? null;
-                            $historial = $califData['historial_completo'] ?? [];
-
-                            // Inicializar en null
-                            $ordinario = null;
-                            $recuperacion = null;
-                            $extraordinario = null;
-
-                            // Buscar en el historial con coincidencia EXACTA
-                            foreach ($historial as $h) {
-                                $tipo = $h['tipo'] ?? '';
-
-                                if ($tipo === 'Ordinario') {
-                                    $ordinario = $h['calificacion'];
-                                } elseif ($tipo === 'Recuperación') {
-                                    $recuperacion = $h['calificacion'];
-                                } elseif ($tipo === 'Extraordinario') {
-                                    $extraordinario = $h['calificacion'];
-                                }
-                                // Ignorar "Extraordinario Especial" aquí (va en columna aparte)
-                            }
-                        @endphp
-
-                        <td>
-                            @if ($ordinario !== null)
-                                <span class="calif-valor">{{ number_format($ordinario, 0) }}</span>
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td>
-                            @if ($recuperacion !== null)
-                                <span class="calif-valor">{{ number_format($recuperacion, 0) }}</span>
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td>
-                            @if ($extraordinario !== null)
-                                <span class="calif-valor">{{ number_format($extraordinario, 0) }}</span>
-                            @else
-                                -
-                            @endif
-                        </td>
+                        <th colspan="3">
+                            <div><strong>UNIDAD {{ $unidad['numero_unidad'] }}:</strong></div>
+                            <div>{{ $unidad['nombre_unidad'] }}</div>
+                        </th>
                     @endforeach
+                    <th rowspan="2" style="width: 5%">Promedio</th>
+                    <th rowspan="2" style="width: 5%">Calificacion<br>Especial</th>
+                    <th rowspan="2" style="width: 3%">Comp.<br>Prof.</th>
+                </tr>
+                <tr>
+                    @foreach ($unidades as $unidad)
+                        <th class="sub-header" style="width: 2%">Ordinario</th>
+                        <th class="sub-header" style="width: 2%">Recuperación</th>
+                        <th class="sub-header" style="width: 2%">Extraordinario</th>
+                    @endforeach
+                </tr>
+            </thead>
+
+    <tbody>
+        @foreach ($alumnos as $index => $alumno)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $alumno['matricula'] }}</td>
+                <td class="text-left">{{ Str::limit($alumno['nombre'], 32, '…') }}</td>
+
+                @foreach ($unidades as $unidad)
+                    @php
+                        $key = $alumno['id_alumno'] . '_' . $unidad['id_unidad'];
+                        $califData = $alumno['calificaciones'][$key] ?? null;
+                        $historial = $califData['historial_completo'] ?? [];
+
+                        $ordinario = $recuperacion = $extraordinario = null;
+
+                        foreach ($historial as $h) {
+                            $tipo = $h['tipo'] ?? '';
+                            if ($tipo === 'Ordinario') $ordinario = $h['calificacion'];
+                            elseif ($tipo === 'Recuperación') $recuperacion = $h['calificacion'];
+                            elseif ($tipo === 'Extraordinario') $extraordinario = $h['calificacion'];
+                        }
+                    @endphp
 
                     <td>
-                        @php
-                            $tieneEspecial = $alumno['calificacion_especial'] !== null;
-                            $promedio = $tieneEspecial
-                                ? '-'
-                                : ($alumno['promedio_general'] !== null
-                                    ? number_format($alumno['promedio_general'], 0)
-                                    : 'Pend.');
-                        @endphp
-                        {{ $promedio }}
-                    </td>
-                    <td>
-                        @if ($alumno['calificacion_especial'] !== null)
-                            {{ number_format($alumno['calificacion_especial'], 0) }}
+                        @if ($ordinario !== null)
+                            <span class="calif-valor">{{ number_format($ordinario, 0) }}</span>
                         @else
                             -
                         @endif
                     </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <br>
+                    <td>
+                        @if ($recuperacion !== null)
+                            <span class="calif-valor">{{ number_format($recuperacion, 0) }}</span>
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if ($extraordinario !== null)
+                            <span class="calif-valor">{{ number_format($extraordinario, 0) }}</span>
+                        @else
+                            -
+                        @endif
+                    </td>
+                @endforeach
 
-    <div class="text-center">
-        <div>
-            <p><strong>_________________________________________</strong></p>
-            <p><strong>Firma del Docente</strong></p>
-            <p>{{ $docenteNombre }}</p>
-        </div>
+                <td>
+                    @php
+                        $tieneEspecial = $alumno['calificacion_especial'] !== null;
+                        $promedio = $tieneEspecial
+                            ? '-'
+                            : ($alumno['promedio_general'] !== null ? number_format($alumno['promedio_general'], 0) : 'Pend.');
+                    @endphp
+                    {{ $promedio }}
+                </td>
+                <td>
+                    @if ($alumno['calificacion_especial'] !== null)
+                        {{ number_format($alumno['calificacion_especial'], 0) }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td class="eficiencia">
+                    @php
+                        $califEficiencia = $alumno['calificacion_especial'] ?? $alumno['promedio_general'];
+                        $eficiencia = 'N/A';
+                        if ($califEficiencia !== null) {
+                            $c = round($califEficiencia);
+                            $eficiencia = ($c == 10) ? 'E' : (($c == 9) ? 'A' : (($c == 8) ? 'B' : (($c == 7) ? 'R' : 'NA')));
+                        }
+                    @endphp
+                    {{ $eficiencia }}
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
+<div style="font-size: 7px; text-align: right; margin: 5px 0; border: 1px solid #ffffff; padding: 3px;">
+    <strong>COMPETENCIA PROFESIONAL:</strong> 
+    <span style="margin: 0 3px;"><strong>E=10</strong> (Estratégico)</span> | 
+    <span style="margin: 0 3px;"><strong>A=9</strong> (Autónomo)</span> | 
+    <span style="margin: 0 3px;"><strong>B=8</strong> (Básico)</span> | 
+    <span style="margin: 0 3px;"><strong>R=7</strong> (Receptivo)</span> | 
+    <span style="margin: 0 3px;"><strong>NA=6</strong> (Preformal)</span>
+</div>
+
+<!-- Firmas compactas -->
+<div class="fixed-footer">
+    <div class="sign-row">
+        <div class="sign-cell"><div class="sign-line"></div></div>
+        <div class="sign-cell"><div class="sign-line"></div></div>
+        <div class="sign-cell"><div class="sign-line"></div></div>
+        <div class="sign-cell"><div class="sign-line"></div></div>
     </div>
+    <div class="sign-row">
+        <div class="sign-cell"><div>{{ strtoupper($docenteNombre) }}</div><div class="sign-label">DOCENTE</div></div>
+        <div class="sign-cell"><div>{{ date('d/m/Y') }}</div><div class="sign-label">FECHA ENTREGA</div></div>
+        <div class="sign-cell"><div>{{ strtoupper($directivoNombre) }}</div><div class="sign-label">{{ strtoupper($directivoCargo ) }}</div></div>
+        <div class="sign-cell"><div>&nbsp;</div><div class="sign-label">SUBDIRECTORA ACADÉMICA</div></div>
+    </div>
+</div>
 
 </body>
-
 </html>

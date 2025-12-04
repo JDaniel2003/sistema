@@ -28,6 +28,7 @@ use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\CiclosEscolaresController;
+use App\Http\Controllers\DirectivosController;
 use App\Http\Controllers\GeneracionController;
 
 Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])
@@ -165,6 +166,7 @@ Route::middleware(['auth', 'role.level:4'])->group(function () {
 })->name('admin');
 
 Route::resource('generaciones', GeneracionController::class);
+Route::resource('directivos', DirectivosController::class);
 
     // Catálogos
     Route::get('/catalogos', [CatalogosController::class, 'index'])->name('catalogos.index');

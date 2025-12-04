@@ -1651,16 +1651,16 @@ datosMatriz.alumnos.sort((a, b) => {
                 const columnas = datosMatriz.unidades.length;
 
                 switch (tecla) {
-                    case 'ArrowUp':
+                    case 'ArrowLeft':
                         nuevoIndex = indexActual - columnas;
                         break;
-                    case 'ArrowDown':
+                    case 'ArrowRight':
                         nuevoIndex = indexActual + columnas;
                         break;
-                    case 'ArrowLeft':
+                    case 'ArrowUp':
                         nuevoIndex = indexActual - 1;
                         break;
-                    case 'ArrowRight':
+                    case 'ArrowDown':
                         nuevoIndex = indexActual + 1;
                         break;
                 }
