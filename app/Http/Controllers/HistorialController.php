@@ -842,7 +842,7 @@ public function storePrimeraVez(Request $request)
    } catch (\Illuminate\Validation\ValidationException $e) {
     return back()->withErrors($e->errors())->withInput();
 } catch (\Exception $e) {
-    \Log::error('Error en storePrimeraVez: ' . $e->getMessage());
+    Log::error('Error en storePrimeraVez: ' . $e->getMessage());
     return back()->withErrors(['error' => 'Error: ' . $e->getMessage()])->withInput();
 }
     

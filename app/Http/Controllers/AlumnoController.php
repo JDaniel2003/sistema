@@ -513,5 +513,32 @@ class AlumnoController extends Controller
     return redirect()->route('alumnos.index')
         ->with('success', 'Alumno eliminado correctamente.');
 }
+public function modalVer($id)
+{
+    $alumno = Alumno::with([
+        'datosPersonales', 'datosAcademicos.carrera', 'statusAcademico',
+        'escuelaProcedencia', 'tutor', 'domicilioAlumno', 'generaciones'
+    ])->findOrFail($id);
+
+    return view('alumnos.alumnos', compact('alumno'));
+}
+
+public function modalEditar($id)
+{
+    $alumno = Alumno::with([
+        'datosPersonales', 'datosAcademicos', 'tutor.domiciliosTutor'
+    ])->findOrFail($id);
+
+    // Carga variables necesarias (igual que en tu vista actual)
+    $estados = Estado::all();
+    $carreras = Carrera::all();
+    $estatus = HistorialStatus::all();
+    $estados_civiles = EstadoCivil::all();
+    // ... todas las variables que usas en el modal de edición
+
+    return view('alumnos.partials.alumnos', compact(
+        'alumno', 'estados', 'carreras', 'estatus', 'estados_civiles', /* ... */
+    ));
+}
 
 }

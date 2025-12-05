@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdministracionCarrera;
 use App\Models\Calificacion;
 use App\Models\Alumno;
 use App\Models\Historial;
@@ -1214,34 +1215,71 @@ public function exportarPDF(Request $request)
         return redirect()->back()->with('error', 'Error al cargar datos para el PDF.');
     }
 
-    // ✅ CORREGIDO: Solo una consulta
     $asignacion = AsignacionDocente::with(['materia', 'docente.datosDocentes'])->find($idAsignacion);
-    $grupo = Grupo::find($idGrupo);
+    $grupo = Grupo::with('carrera')->find($idGrupo);
     $periodo = PeriodoEscolar::find($idPeriodo);
-$directivo = Directivo::with('abreviatura')
-    ->where('cargo', 'Jefe del Departamento de Servicios Escolares')
-    ->first();
+
+    // 🔹 COORDINADOR: consulta directa (sin Eloquent)
+    $directivoCarreraNombre = 'Sin coordinador asignado';
+    $directivoCarreraCargo = 'Coordinador de la carrera';
+
+    $grupoRecord = DB::table('grupos')->where('id_grupo', $idGrupo)->first();
+    if ($grupoRecord && $grupoRecord->id_carrera) {
+        $adminRecord = DB::table('administracion_carreras')
+            ->where('id_carrera', $grupoRecord->id_carrera)
+            ->first();
+
+        if ($adminRecord) {
+            $directivoRecord = DB::table('directivos')
+                ->where('id_usuario', $adminRecord->id_usuario)
+                ->first();
+
+            if ($directivoRecord) {
+                $abrev = '';
+                if (!empty($directivoRecord->id_abreviatura)) {
+                    $abrevStr = DB::table('abreviaturas')
+                        ->where('id_abreviatura', $directivoRecord->id_abreviatura)
+                        ->value('abreviatura');
+                    $abrev = $abrevStr ? $abrevStr . ' ' : '';
+                }
+                $nombre = trim("{$directivoRecord->nombres} {$directivoRecord->primer_apellido} {$directivoRecord->segundo_apellido}");
+                $directivoCarreraNombre = $abrev . $nombre;
+                $directivoCarreraCargo = $directivoRecord->cargo ?? 'Coordinador de la carrera';
+            }
+        }
+    }
+
+    // 🔹 Directivo general
+    $directivoGeneral = Directivo::with('abreviatura')
+        ->where('cargo', 'Jefe del Departamento de Servicios Escolares')
+        ->first();
+
     $pdf = PDF::loadView('calificaciones.pdf', [
         'alumnos' => $data['alumnos'],
         'unidades' => $data['unidades'],
-        'materiaNombre' => $asignacion->materia->nombre ?? 'N/A',
-        'carreraNombre' => $grupo->carrera->nombre ?? 'N/A',
-        'docenteNombre' => optional($asignacion->docente->datosDocentes)->nombre_con_abreviatura ?? 'N/A',
-        'grupoNombre' => $grupo->nombre ?? 'N/A',
-        'periodoNombre' => $periodo->nombre ?? 'N/A',
-        'totalAlumnos' => count($data['alumnos']),
-        'directivoNombre' => optional($directivo)->nombre_con_abreviatura ?? 'N/A',
-    'directivoCargo' => optional($directivo)->cargo ?? 'N/A'
+        'materiaNombre' => $asignacion?->materia?->nombre ?? 'N/A',
+        'carreraNombre' => $grupo?->carrera?->nombre ?? 'N/A',
+        'docenteNombre' => optional($asignacion?->docente?->datosDocentes)->nombre_con_abreviatura ?? 'N/A',
+        'grupoNombre' => $grupo?->nombre ?? 'N/A',
+        'periodoNombre' => $periodo?->nombre ?? 'N/A',
+        'totalAlumnos' => count($data['alumnos'] ?? []),
+
+        'directivoCarreraNombre' => $directivoCarreraNombre,
+        'directivoCarreraCargo'  => $directivoCarreraCargo,
+
+        'directivoGeneralNombre' => optional($directivoGeneral)->nombre_con_abreviatura ?? 'N/A',
+        'directivoGeneralCargo'  => optional($directivoGeneral)->cargo ?? 'N/A',
     ])
     ->setPaper('letter', 'landscape')
-    ->setOption('margin_top', 10)
-    ->setOption('margin_bottom', 10)
-    ->setOption('margin_left', 10)
-    ->setOption('margin_right', 10);
+    ->setOptions([
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+    ]);
 
     return $pdf->download('calificaciones_' . now()->format('Y-m-d') . '.pdf');
 }
-
     // Método auxiliar para reutilizar lógica
     private function obtenerMatrizCompletaData($idGrupo, $idPeriodo, $idAsignacion)
     {

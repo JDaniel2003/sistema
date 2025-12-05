@@ -82,7 +82,6 @@
         </div>
     </div>
 
-
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
         <div class="text-center">
@@ -92,8 +91,13 @@
             </div>
         </div>
 
+        <!-- Botón hamburguesa para móviles -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <div class="collapse navbar-collapse ml-4">
+        <div class="collapse navbar-collapse ml-4" id="navbarNav">
             <ul class="navbar-nav" style="padding-left: 28%;">
                 <li class="nav-item"><a class="nav-link navbar-active-item px-3 mr-1">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('periodos.index') }}">Períodos Escolares</a></li>
@@ -103,7 +107,6 @@
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('asignaciones.index') }}">Asignaciones Docentes</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3" href="{{ route('historial.index') }}">Historial</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('calificaciones.index') }}">Calificaciones</a></li>
-
             </ul>
         </div>
         <div class="position-absolute" style="top: 10px; right: 20px; z-index: 1000;">
@@ -345,9 +348,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
 
                             </div>
                         </div>

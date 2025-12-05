@@ -18,13 +18,13 @@
 
 <body id="page-top">
     <!-- Top Header -->
-    <!-- Top Header -->
-    <div class="bg-danger text-white1 text-center py-2">
+     <div class="bg-danger1 text-white1 text-center py-2">
         <div class="d-flex justify-content-between align-items-center px-4">
+
             <h4 class="mb-0" style="text-align: center;">SISTEMA DE CONTROL ESCOLAR</h4>
+
         </div>
     </div>
-
     <!-- Logout Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -46,22 +46,20 @@
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
-        <div class="d-flex align-items-center">
-            <div style="width: 300px; height: 120px;">
+        <div class="text-center">
+            <div style="width: 300px; height: 120px; ">
                 <img src="{{ asset('libs/sbadmin/img/upn.png') }}" alt="Logo"
-                    style="width: 100%; height: 100%; object-fit: cover;">
+                    style="width: 90%; height: 90%; object-fit: cover;">
             </div>
         </div>
         <div class="collapse navbar-collapse ml-4">
-            <ul class="navbar-nav" style="padding-left: 20%;">
+            <ul class="navbar-nav" style="padding-left: 28%;">
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('admin') }}">Inicio</a>
                 </li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
                         href="{{ route('periodos.index') }}">Períodos Escolares</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
                         href="{{ route('carreras.index') }}">Carreras</a></li>
-                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
-                        href="{{ route('materias.index') }}">Materias</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('planes.index') }}">Planes
                         de estudio</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
@@ -90,7 +88,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <div class="container-fluid py-5">
-                    <h1 class="text-danger text-center mb-5"
+                    <h1 class="text-danger1 text-center mb-5"
                         style="font-size: 2.5rem; font-family: 'Arial Black', Verdana, sans-serif; font-weight: bold;">
                         Gestión de Usuarios
                     </h1>

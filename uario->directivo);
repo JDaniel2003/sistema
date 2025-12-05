@@ -1,0 +1,7 @@
+[90m= [39m[34;4mApp\Models\Usuario[39;24m {#6683
+    [34mid_usuario[39m: [35m19[39m,
+    [34musername[39m: "[32mcitlali[39m",
+    #[33mpassword[39m: "[32m$2y$12$VMojai7qQNSJfYRu7Y4MrO0lMAWtQ3T9PzqD2dQ/Rhhu08TENzvJe[39m",
+    [34mid_rol[39m: [35m5[39m,
+  }
+

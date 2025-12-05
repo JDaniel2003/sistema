@@ -2394,7 +2394,7 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #5B8736;
+  background-color: #3db166 ;
   border-color: #fff;
 }
 
@@ -4216,7 +4216,7 @@ input[type="button"].btn-block {
   padding: 0.25rem 0.75rem;
   font-size: 1.25rem;
   line-height: 1;
-  background-color: transparent;
+  background-color: #192f59;
   border: 1px solid transparent;
   border-radius: 0.35rem;
 }

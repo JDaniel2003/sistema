@@ -12,86 +12,15 @@
     <link rel="icon" type="image/png" href="{{ asset('libs/sbadmin/img/up_logo.png') }}">
     <link href="{{ asset('libs/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
     
-    <style>
-    /* Estilos personalizados */
-    .modal-header-custom {
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-        color: white;
-        padding: 2rem;
-    }
-
-    .modal-body-custom {
-        background: #f8f9fc;
-    }
-
-    .modal-footer-custom {
-        background: #fff;
-        padding: 1rem 1.5rem;
-    }
-
-    .card-header-custom {
-        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-    }
-
-    .form-label-custom {
-        font-weight: 600;
-        color: #333;
-        font-size: 0.95rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control-custom {
-        border: 2px solid #e3e6f0;
-        border-radius: 0.5rem;
-        padding: 0.75rem;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-control-custom:focus {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-    }
-
-    .required-asterisk {
-        color: #dc3545;
-        font-weight: bold;
-    }
-
-    .card-body1 {
-        background: #ffffff;
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%);
-        border: none;
-        padding: 0.6rem 1.5rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(28, 200, 138, 0.4);
-    }
-
-    .btn-info {
-        background: linear-gradient(135deg, #36b9cc 0%, #2c9faf 100%);
-        border: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-info:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(54, 185, 204, 0.4);
-    }
-    </style>
-</head>
 
 <body id="page-top">
     <!-- Top Header -->
-    <div class="bg-danger text-white1 text-center py-2">
-        <h4 class="mb-0">SISTEMA DE CONTROL ESCOLAR</h4>
+     <div class="bg-danger1 text-white1 text-center py-2">
+        <div class="d-flex justify-content-between align-items-center px-4">
+
+            <h4 class="mb-0" style="text-align: center;">SISTEMA DE CONTROL ESCOLAR</h4>
+
+        </div>
     </div>
 
     <!-- Logout Modal -->
@@ -133,21 +62,32 @@
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
-        <div class="d-flex align-items-center">
-            <div style="width: 300px; height: 120px;">
-                <img src="{{ asset('libs/sbadmin/img/upn.png') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
+        <div class="text-center">
+            <div style="width: 300px; height: 120px; ">
+                <img src="{{ asset('libs/sbadmin/img/upn.png') }}" alt="Logo"
+                    style="width: 90%; height: 90%; object-fit: cover;">
             </div>
         </div>
 
         <div class="collapse navbar-collapse ml-4">
-            <ul class="navbar-nav" style="padding-left: 20%;">
-                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('admin') }}">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link navbar-active-item px-3 mr-1">Directivos</a></li>
-                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('carreras.index') }}">Carreras</a></li>
-                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('materias.index') }}">Materias</a></li>
-                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('alumnos.index') }}">Alumnos</a></li>
+            <ul class="navbar-nav" style="padding-left: 28%;">
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('admin') }}">Inicio</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('periodos.index') }}">Períodos Escolares</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('carreras.index') }}">Carreras</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('planes.index') }}">Planes
+                        de estudio</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('alumnos.index') }}">Alumnos</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
+                        href="{{ route('asignaciones.index') }}">Asignaciones Docentes</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3"
+                        href="{{ route('historial.index') }}">Historial</a></li>
+                <li class="nav-item"><a class="nav-link text-white px-3"
+                        href="{{ route('calificaciones.index') }}">Calificaciones</a></li>
             </ul>
         </div>
         <div class="position-absolute" style="top: 10px; right: 20px; z-index: 1000;">
@@ -166,7 +106,7 @@
             <div id="content">
                 <!-- Main Content -->
                 <div class="container-fluid py-4">
-                    <h1 class="text-danger text-center mb-5" style="font-size: 2.5rem; font-weight: bold; font-family: 'Arial Black', Verdana, sans-serif;">
+                    <h1 class="text-danger1 text-center mb-5" style="font-size: 2.5rem; font-weight: bold; font-family: 'Arial Black', Verdana, sans-serif;">
                         Gestión de Directivos
                     </h1>
                     

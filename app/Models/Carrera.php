@@ -48,4 +48,17 @@ public function datosAcademicos()
         'id_usuario'
     )->withPivot('id_usuario');
 }
+public function administracion()
+{
+    return $this->hasOne(AdministracionCarrera::class, 'id_carrera', 'id_carrera');
+}
+
+/**
+ * Obtener el directivo de la carrera
+ */
+public function getDirectivoAttribute()
+{
+    return $this->administracion ? $this->administracion->directivo : null;
+}
+
 }

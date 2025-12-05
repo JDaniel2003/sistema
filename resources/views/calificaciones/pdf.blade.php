@@ -24,7 +24,7 @@
         }
 
         .header-logo img {
-            width: 90px;
+            width: 0px;
             height: auto;
             max-height: 30px;
         }
@@ -291,8 +291,8 @@
     <div class="sign-row">
         <div class="sign-cell"><div>{{ strtoupper($docenteNombre) }}</div><div class="sign-label">DOCENTE</div></div>
         <div class="sign-cell"><div>{{ date('d/m/Y') }}</div><div class="sign-label">FECHA ENTREGA</div></div>
-        <div class="sign-cell"><div>{{ strtoupper($directivoNombre) }}</div><div class="sign-label">{{ strtoupper($directivoCargo ) }}</div></div>
-        <div class="sign-cell"><div>&nbsp;</div><div class="sign-label">SUBDIRECTORA ACADÉMICA</div></div>
+        <div class="sign-cell"><div>{{ strtoupper($directivoGeneralNombre) }}</div><div class="sign-label">{{ strtoupper($directivoGeneralCargo ) }}</div></div>
+        <div class="sign-cell"><div>{{ strtoupper($directivoCarreraNombre) }}</div><div class="sign-label">{{ strtoupper($directivoCarreraCargo) }}</div></div>
     </div>
 </div>
 

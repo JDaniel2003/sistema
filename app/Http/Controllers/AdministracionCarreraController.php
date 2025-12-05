@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdministracionCarrera;
 use App\Models\Area;
 use App\Models\Carrera;
+use App\Models\Directivo;
 use App\Models\User;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -36,9 +37,10 @@ class AdministracionCarreraController extends Controller
         $areas = Area::all();
         $carreras = Carrera::all();
         $usuarios = Usuario::all();
+        $directivo = Directivo::all();
 
         return view('administracion_carreras.index', compact(
-            'administraciones', 'areas', 'carreras', 'usuarios'
+            'administraciones', 'areas', 'carreras', 'usuarios','directivo'
         ));
     }
 

@@ -82,7 +82,6 @@
         </div>
     </div>
 
-
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
         <div class="text-center">

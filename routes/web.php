@@ -239,6 +239,9 @@ Route::resource('ciclos', CiclosEscolaresController::class)->names('ciclos');
     Route::delete('/alumnos/{id}', [AlumnoController::class, 'destroy'])->name('alumnos.destroy');
     Route::resource('alumnos', AlumnoController::class);
 
+    Route::post('/historial/obtener-alumnos-grupo', [HistorialController::class, 'obtenerAlumnosGrupo']);
+Route::post('/historial/obtener-materias-grupo', [HistorialController::class, 'obtenerMateriasGrupo']);
+Route::get('/historial/obtener-tipo-periodo/{id}', [HistorialController::class, 'obtenerTipoPeriodo']);
     // Historial
     Route::get('/historial/alumnos-primera-vez', [HistorialController::class, 'getAlumnosPrimeraVez']);
     Route::post('/historial/primera-vez', [HistorialController::class, 'storePrimeraVez'])->name('historial.store-primera-vez');
