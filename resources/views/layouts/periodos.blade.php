@@ -105,7 +105,7 @@
                     <a class="nav-link text-white px-3 mr-1" href="{{ route('alumnos.index') }}">Alumnos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white px-3 mr-1" href="#">Asignaciones Docentes</a>
+                    <a class="nav-link text-white px-3 mr-1" href="{{ route('asignaciones.index') }}">Asignaciones Docentes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white px-3" href="{{ route('historial.index') }}">Historial</a>
@@ -244,10 +244,32 @@
                                                     <td>{{ $periodo->fecha_inicio }}</td>
                                                     <td>{{ $periodo->fecha_fin }}</td>
                                                     <td>{{ $periodo->ciclos->nombre ?? '- - -'}}</td>
-                                                    <td>{{ $periodo->estado }}</td>
                                                     <td>
-                                                        <!-- Botón Editar -->
-                                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editarModal{{ $periodo->id_periodo_escolar }}">
+    <!-- Select para cambiar estado desde la tabla -->
+    <select class="form-control form-control-sm estado-periodo" 
+            data-periodo-id="{{ $periodo->id_periodo_escolar }}"
+            data-estado-anterior="{{ $periodo->estado }}"
+            style="width: auto; display: inline-block; max-width: 120px;">
+        <option value="Abierto" {{ $periodo->estado == 'Abierto' ? 'selected' : '' }} 
+                {{ $periodo->estado == 'Cerrado' ? 'disabled' : '' }}>
+            Abierto
+        </option>
+        <option value="Cerrado" {{ $periodo->estado == 'Cerrado' ? 'selected' : '' }}>
+            Cerrado
+        </option>
+    </select>
+    
+    <!-- Badge con estado actual -->
+    <span class="badge {{ $periodo->estado == 'Abierto' ? 'badge-success' : 'badge-secondary' }} ml-2" 
+          id="badge-{{ $periodo->id_periodo_escolar }}">
+        <i class="fas {{ $periodo->estado == 'Abierto' ? 'fa-unlock' : 'fa-lock' }} mr-1"></i> 
+        {{ $periodo->estado }}
+    </span>
+</td>
+                                                    <td>
+                                                         <!-- Botón Editar -->
+                                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editarModal{{ $periodo->id_periodo_escolar }}" 
+                                                                {{ $periodo->estado == 'Cerrado' ? 'disabled' : '' }}>
                                                             <i class="fas fa-edit"></i> Editar
                                                         </button>
 
@@ -469,7 +491,7 @@
                                                         <form action="{{ route('periodos.destroy', $periodo) }}" method="POST" style="display:inline-block;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#eliminarModal{{ $periodo->id_periodo_escolar }}">
+                                                              <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#eliminarModal{{ $periodo->id_periodo_escolar }}">
                                                                 <i class="fas fa-trash-alt"></i> Eliminar
                                                             </button>
 
@@ -909,6 +931,273 @@
             });
         }
     </script>
+    
+<!-- Modal de Confirmación para Cerrar Período -->
+<div class="modal fade" id="confirmarCerrarModal" tabindex="-1" role="dialog" aria-labelledby="confirmarCerrarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg">
+            <!-- Header del modal -->
+            <div class="modal-header bg-warning text-dark border-bottom-0">
+                <div class="w-100 text-center position-relative">
+                    <h5 class="modal-title font-weight-bold" id="confirmarCerrarModalLabel">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Confirmar Cierre de Período
+                    </h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <!-- Body del modal -->
+            <div class="modal-body text-center py-4">
+                <div class="mb-4">
+                    <h5 class="font-weight-bold text-dark mb-3">
+                        ¿Está seguro de cerrar este período?
+                    </h5>
+                </div>
+                
+                <div class="mt-3">
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Esta acción es <strong>permanente</strong> e <strong>irreversible</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Footer del modal -->
+            <div class="modal-footer border-top-0">
+                <button type="button" class="btn btn-secondary" id="btnCancelarCerrar">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" id="btnConfirmarCerrar">
+                    <i class="fas fa-lock mr-2"></i>Sí, Cerrar Período
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar CSRF token para todas las peticiones AJAX
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
+    // Variables globales para el modal de confirmación
+    let confirmModalSelect = null;
+    let confirmModalPeriodoId = null;
+    let confirmModalNuevoEstado = null;
+    let confirmModalEstadoAnterior = null;
+    let confirmModalPeriodoNombre = null;
+
+    // Evento para cambiar estado desde el select en la tabla
+    $('.estado-periodo').change(function() {
+        const select = $(this);
+        const periodoId = select.data('periodo-id');
+        const nuevoEstado = select.val();
+        const estadoAnterior = select.data('estado-anterior');
+        const periodoNombre = select.closest('tr').find('td:first').text().trim();
+        
+        console.log('Cambiando estado:', {
+            periodoId: periodoId,
+            nuevoEstado: nuevoEstado,
+            estadoAnterior: estadoAnterior,
+            periodoNombre: periodoNombre
+        });
+        
+        // Si el estado anterior era "Cerrado" y se intenta cambiar a "Abierto"
+        if (estadoAnterior === 'Cerrado' && nuevoEstado === 'Abierto') {
+            select.val('Cerrado'); // Revertir al valor anterior
+            showNotification('❌ No se puede reabrir un período que ya está cerrado.', 'danger');
+            return;
+        }
+
+        // Si se intenta cambiar a Cerrado, mostrar modal de confirmación
+        if (nuevoEstado === 'Cerrado') {
+            // Guardar datos para el modal
+            confirmModalSelect = select;
+            confirmModalPeriodoId = periodoId;
+            confirmModalNuevoEstado = nuevoEstado;
+            confirmModalEstadoAnterior = estadoAnterior;
+            confirmModalPeriodoNombre = periodoNombre;
+            
+            // Mostrar modal de confirmación
+            $('#confirmarCerrarModal').modal('show');
+            return;
+        }
+
+        // Para cambios a Abierto (si no viene de Cerrado), proceder directamente
+        cambiarEstadoPeriodo(select, periodoId, nuevoEstado, estadoAnterior);
+    });
+
+    // Función para cambiar estado del período (llamada después de confirmación)
+    function cambiarEstadoPeriodo(select, periodoId, nuevoEstado, estadoAnterior) {
+        // Enviar petición AJAX (usando POST)
+        $.ajax({
+            url: '/periodos/' + periodoId + '/cambiar-estado',
+            method: 'POST',
+            data: {
+                estado: nuevoEstado
+            },
+            beforeSend: function() {
+                // Mostrar indicador de carga
+                select.prop('disabled', true);
+            },
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                
+                if (response.success) {
+                    // Actualizar badge
+                    const badge = $('#badge-' + periodoId);
+                    badge.removeClass('badge-success badge-secondary');
+                    if (nuevoEstado === 'Abierto') {
+                        badge.addClass('badge-success');
+                        badge.html('<i class="fas fa-unlock mr-1"></i> Abierto');
+                    } else {
+                        badge.addClass('badge-secondary');
+                        badge.html('<i class="fas fa-lock mr-1"></i> Cerrado');
+                    }
+                    
+                    // Actualizar estado anterior en el select
+                    select.data('estado-anterior', nuevoEstado);
+                    
+                    // Deshabilitar opción "Abierto" si se cerró
+                    if (nuevoEstado === 'Cerrado') {
+                        select.find('option[value="Abierto"]').prop('disabled', true);
+                        
+                        // Deshabilitar botones de editar y eliminar en esta fila
+                        const row = select.closest('tr');
+                        row.find('.btn-warning, .btn-danger').prop('disabled', true);
+                        
+                        // Mostrar mensaje de éxito
+                        showNotification('Período cerrado correctamente.', 'success');
+                    } else {
+                        showNotification('Estado actualizado correctamente.', 'success');
+                    }
+                } else {
+                    // Revertir al valor anterior si hay error
+                    select.val(estadoAnterior);
+                    showNotification('❌ ' + response.message, 'danger');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error AJAX:', xhr.responseText);
+                
+                // Revertir al valor anterior
+                select.val(estadoAnterior);
+                
+                let errorMessage = 'Error al cambiar el estado';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (xhr.status === 0) {
+                    errorMessage = 'Error de conexión. Verifique su red.';
+                } else if (xhr.status === 404) {
+                    errorMessage = 'Recurso no encontrado.';
+                } else if (xhr.status === 500) {
+                    errorMessage = 'Error interno del servidor.';
+                }
+                
+                showNotification('❌ ' + errorMessage, 'danger');
+            },
+            complete: function() {
+                // Rehabilitar el select
+                select.prop('disabled', false);
+            }
+        });
+    }
+
+    // Evento para botón confirmar en el modal
+    $('#btnConfirmarCerrar').click(function() {
+        if (confirmModalSelect) {
+            // Cerrar modal
+            $('#confirmarCerrarModal').modal('hide');
+            
+            // Proceder con el cambio de estado
+            cambiarEstadoPeriodo(
+                confirmModalSelect,
+                confirmModalPeriodoId,
+                confirmModalNuevoEstado,
+                confirmModalEstadoAnterior
+            );
+            
+            // Limpiar variables
+            confirmModalSelect = null;
+            confirmModalPeriodoId = null;
+            confirmModalNuevoEstado = null;
+            confirmModalEstadoAnterior = null;
+            confirmModalPeriodoNombre = null;
+        }
+    });
+
+    // Evento para botón cancelar en el modal
+    $('#btnCancelarCerrar').click(function() {
+        // Revertir al estado anterior en el select
+        if (confirmModalSelect) {
+            confirmModalSelect.val(confirmModalEstadoAnterior);
+        }
+        
+        // Limpiar variables
+        confirmModalSelect = null;
+        confirmModalPeriodoId = null;
+        confirmModalNuevoEstado = null;
+        confirmModalEstadoAnterior = null;
+        confirmModalPeriodoNombre = null;
+        
+        // Cerrar modal
+        $('#confirmarCerrarModal').modal('hide');
+    });
+
+    // Evento cuando se cierra el modal (por cualquier razón)
+    $('#confirmarCerrarModal').on('hidden.bs.modal', function () {
+        // Si el modal se cerró sin confirmar, revertir el select
+        if (confirmModalSelect) {
+            confirmModalSelect.val(confirmModalEstadoAnterior);
+            
+            // Limpiar variables
+            confirmModalSelect = null;
+            confirmModalPeriodoId = null;
+            confirmModalNuevoEstado = null;
+            confirmModalEstadoAnterior = null;
+            confirmModalPeriodoNombre = null;
+        }
+    });
+
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'info') {
+        // Remover notificaciones anteriores
+        $('.alert-notification').remove();
+        
+        // Determinar clase de alerta
+        let alertClass = 'alert-info';
+        if (type === 'success') alertClass = 'alert-success';
+        if (type === 'danger') alertClass = 'alert-danger';
+        if (type === 'warning') alertClass = 'alert-warning';
+        
+        // Crear elemento de notificación
+        const notification = $('<div class="alert alert-notification ' + alertClass + ' alert-dismissible fade show" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">' +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+            '<div class="d-flex align-items-center">' +
+            (type === 'success' ? '<i class="fas fa-check-circle mr-2"></i>' : 
+             type === 'danger' ? '<i class="fas fa-exclamation-circle mr-2"></i>' : 
+             type === 'warning' ? '<i class="fas fa-exclamation-triangle mr-2"></i>' : 
+             '<i class="fas fa-info-circle mr-2"></i>') +
+            '<span>' + message + '</span>' +
+            '</div>' +
+            '</div>');
+        
+        // Agregar al DOM
+        $('body').append(notification);
+        
+        // Auto-eliminar después de 5 segundos
+        setTimeout(function() {
+            notification.alert('close');
+        }, 5000);
+    }
+});
+</script>
     <script>
         $(document).ready(function() {
             // Espera un poco para asegurar que todos los modales existan

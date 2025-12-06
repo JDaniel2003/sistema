@@ -18,7 +18,7 @@
         }
 
         .header-logo {
-            width: 18%;
+            width: 22%;
             text-align: center;
             padding: 1px;
         }
@@ -30,7 +30,7 @@
         }
 
         .header-info {
-            width: 82%;
+            width: 78%;
             text-align: center;
             padding: 1px;
             font-size: 5.6px;
@@ -149,9 +149,13 @@
 
 <!-- Encabezado compacto -->
 <table class="header-table">
-    <tr>
+    <tr>@php
+        $logo = base64_encode(file_get_contents(public_path('libs/sbadmin/img/upn.png')));
+
+    @endphp
         <td class="header-logo">
-            <img src="{{ public_path('libs/sbadmin/img/upn.png') }}" alt="Logo">
+            <img src="data:image/png;base64,{{ $logo }}" style="width:130px;">
+
         </td>
         <td class="header-info">
             <div class="title">UNIVERSIDAD POLITÉCNICA DE NOCHIXTLÁN "ABRAHAM CASTELLANOS"</div>

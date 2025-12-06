@@ -87,6 +87,38 @@
                                     <i class="fas fa-plus"></i> Nuevo Grupo
                                 </button>
                             </div>
+                            </div>
+<div class="container mb-4 d-flex justify-content-center">
+                                <div class="p-3 border rounded bg-light d-inline-block shadow-sm">
+                                    <form id="filtrosForm" method="GET" action="{{ route('grupos.index') }}"
+                                        class="d-flex flex-wrap gap-2 align-items-center">
+                                        <div style="width: 500px;">
+                                            <input type="text" id="searchInput"
+                                                class="form-control form-control-sm" placeholder="🔍 Buscar">
+                                        </div>
+                                        <select name="mostrar" onchange="this.form.submit()"
+                                            class="form-control form-control-sm w-auto">
+                                            <option value="10" {{ request('mostrar') == 10 ? 'selected' : '' }}>10
+                                            </option>
+                                            <option value="13" {{ request('mostrar') == 13 ? 'selected' : '' }}>13
+                                            </option>
+                                            <option value="25" {{ request('mostrar') == 25 ? 'selected' : '' }}>25
+                                            </option>
+                                            <option value="50" {{ request('mostrar') == 50 ? 'selected' : '' }}>50
+                                            </option>
+                                            <option value="todo"
+                                                {{ request('mostrar') == 'todo' ? 'selected' : '' }}>Todo</option>
+                                        </select>
+                                        <a href="{{ route('grupos.index', ['mostrar' => 'todo']) }}"
+                                            class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+                                            <i class="fas fa-list me-1"></i> Mostrar todo
+                                        </a>
+                                    </form>
+
+
+                                </div>
+
+                            </div>
 
                             @if (session('success'))
                                 <div class="alert alert-success">{{ session('success') }}</div>
@@ -97,7 +129,7 @@
 
                             <div class="card-body1">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover text-center">
+                                    <table class="table table-bordered table-hover text-center" id="teachersTable">
                                         <thead class="thead-dark">
                                             <tr>
                                                 <th>Nombre</th>
@@ -305,5 +337,38 @@
     <script src="{{ asset('libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('libs/sbadmin/js/sb-admin-2.min.js') }}"></script>
+
+    <script>
+         const searchInput = document.getElementById('searchInput');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+
+                    // Normaliza lo que escribe el usuario
+                    const searchTerm = e.target.value
+                        .toLowerCase()
+                        .replace(/\s+/g, ' ')
+                        .trim();
+
+                    const table = document.getElementById('teachersTable');
+                    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                    for (let row of rows) {
+
+                        // Normaliza el texto real de la fila
+                        const text = row.textContent
+                            .toLowerCase()
+                            .replace(/\s+/g, ' ')
+                            .trim();
+
+                        if (text.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+    </script>
 </body>
 </html>

@@ -175,6 +175,8 @@ Route::resource('directivos', DirectivosController::class);
     Route::delete('/catalogos/{id}', [CatalogosController::class, 'destroy'])->name('catalogos.destroy');
 
     // Periodos Escolares
+    // En routes/web.php
+Route::post('/periodos/{periodo}/cambiar-estado', [PeriodoEscolarController::class, 'cambiarEstado'])->name('periodos.cambiar-estado');
     Route::get('/periodos', [PeriodoEscolarController::class, 'index'])->name('periodos');
     Route::get('/periodos/create', [PeriodoEscolarController::class, 'create'])->name('periodos.create');
     Route::post('/periodos', [PeriodoEscolarController::class, 'store'])->name('periodos.store');

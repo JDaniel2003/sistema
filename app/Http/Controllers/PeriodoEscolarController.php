@@ -311,4 +311,32 @@ if (!in_array($mesesReales, $duracionesValidas)) {
         return redirect()->route('periodos.index')
             ->with('success', 'Período escolar eliminado correctamente.');
     }
+    public function cambiarEstado(Request $request, $id)
+{
+    try {
+        $periodo = PeriodoEscolar::findOrFail($id);
+        
+        // Validar que no se pueda reabrir un período cerrado
+        if ($periodo->estado == 'Cerrado' && $request->estado == 'Abierto') {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede reabrir un período que ya está cerrado.'
+            ], 400);
+        }
+        
+        $periodo->estado = $request->estado;
+        $periodo->save();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado actualizado correctamente.'
+        ]);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al cambiar el estado: ' . $e->getMessage()
+        ], 500);
+    }
+}
 }

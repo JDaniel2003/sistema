@@ -11,15 +11,31 @@ use Illuminate\Http\Request;
 
 class GrupoController extends Controller
 {
-    public function index()
-    {
-        $grupos = Grupo::with(['turno', 'carrera', 'periodoEscolar'])->get();
-        $turnos = Turno::all();
-        $carreras = Carrera::all();
-        $periodos = PeriodoEscolar::all();
+    public function index(Request $request)
+{
+    // 🔹 Obtener valor del selector "mostrar" (10 por defecto)
+    $mostrar = $request->get('mostrar', 10);
 
-        return view('grupos.index', compact('grupos', 'turnos', 'carreras', 'periodos'));
+    // 🔹 Crear query base de grupos
+    $query = Grupo::with(['turno', 'carrera', 'periodoEscolar']);
+
+    // 🔹 Aplicar paginación o mostrar todo
+    if ($mostrar === "todo") {
+        $grupos = $query->get(); // sin paginar
+    } else {
+        // Asegurar que sea un número válido
+        $perPage = is_numeric($mostrar) ? (int)$mostrar : 10;
+
+        $grupos = $query->paginate($perPage)->appends($request->all());
     }
+
+    // 🔹 Datos adicionales
+    $turnos = Turno::all();
+    $carreras = Carrera::all();
+    $periodos = PeriodoEscolar::all();
+
+    return view('grupos.index', compact('grupos', 'turnos', 'carreras', 'periodos'));
+}
 
     public function store(Request $request)
     {

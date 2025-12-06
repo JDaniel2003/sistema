@@ -21,224 +21,228 @@
     <link href="{{ asset('libs/sbadmin/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
     <style>
-    /* ESTILOS COMPACTOS PARA CAPTURA DE CALIFICACIONES */
-    
-    /* Modal más compacto */
-    .modal-header-custom {
-        padding: 0.75rem 1rem !important;
-    }
-    
-    .modal-body {
-        padding: 0.5rem !important;
-    }
-    
-    .modal-footer-custom {
-        padding: 0.5rem 1rem !important;
-    }
-    
-    /* Filtros compactos */
-    .card.mb-3 .card-header {
-        padding: 0.75rem !important;
-        font-size: 0.95rem !important;
-    }
-    
-    .card.mb-3 .card-body1 {
-        padding: 1rem !important;
-    }
-    
-    .card.mb-3 .form-control {
-        padding: 0.375rem 0.5rem !important;
-        font-size: 0.9rem !important;
-        height: 36px !important;
-    }
-    
-    .card.mb-3 label {
-        font-size: 0.9rem !important;
-        margin-bottom: 0.25rem !important;
-    }
-    
-    .card.mb-3 .row.mt-3 {
-        margin-top: 1rem !important;
-    }
-    
-    /* Tabla matricial ultra compacta */
-    #tablaCalificaciones th,
-    #tablaCalificaciones td {
-        padding: 4px 3px !important;
-        font-size: 0.82rem !important;
-        line-height: 1.2 !important;
-        vertical-align: middle !important;
-    }
-    
-    /* Celdas sticky más estrechas */
-    #tablaCalificaciones th[style*="position: sticky"] {
-        min-width: 40px !important;
-        left: 0 !important;
-    }
-    
-    #tablaCalificaciones th[style*="position: sticky"] + th {
-        min-width: 90px !important;
-        left: 40px !important;
-    }
-    
-    #tablaCalificaciones th[style*="position: sticky"] + th + th {
-        min-width: 180px !important;
-        left: 130px !important;
-    }
-    
-    /* Inputs de calificación compactos */
-    .calificacion-input-matriz,
-    .calificacion-input-especial {
-        padding: 2px 4px !important;
-        height: 28px !important;
-        font-size: 0.85rem !important;
-        width: 65px !important;
-        margin: 2px auto !important;
-        display: block !important;
-    }
-    
-    /* Badges compactos */
-    #tablaCalificaciones .badge {
-        padding: 0.25em 0.4em !important;
-        font-size: 1.3em !important;
-        font-weight: 600 !important;
-    }
-    
-    /* Textos pequeños */
-    #tablaCalificaciones small {
-        font-size: 0.7rem !important;
-        line-height: 1.1 !important;
-    }
-    
-    /* Encabezados de unidad */
-    .unidad-header {
-        min-width: 140px !important;
-        font-size: 0.8rem !important;
-        padding: 4px 2px !important;
-    }
-    
-    /* Cabecera de tabla */
-    #tablaCalificaciones thead {
-        font-size: 0.8rem !important;
-    }
-    
-    /* Contenedor de tabla con scroll optimizado */
-    #contenedorTabla {
-        max-height: 500px !important;
-        overflow-x: auto !important;
-    }
-    
-    /* Botones pequeños */
-    #btnLimpiarTodo,
-    #btnExportarPDF,
-    #btnGuardarCalificaciones {
-        padding: 0.25rem 0.5rem !important;
-        font-size: 0.8rem !important;
-    }
-    
-    /* Card header compacto */
-    .card-header.text-white {
-        padding: 0.5rem 1rem !important;
-        font-size: 0.9rem !important;
-    }
-    
-    /* Card footer compacto */
-    .card-footer.bg-light {
-        padding: 0.5rem 1rem !important;
-        font-size: 0.8rem !important;
-    }
-    
-    /* Info materia */
-    #infoMateria {
-        font-size: 0.85rem !important;
-    }
-    
-    /* Total alumnos badge */
-    .badge-light strong {
-        font-size: 0.9rem !important;
-    }
-    
-    /* Espaciado reducido en filas */
-    #tablaCalificaciones tbody tr {
-        height: 38px !important;
-    }
-    
-    /* Separadores más delgados */
-    #tablaCalificaciones hr {
-        margin: 0.25rem 0 !important;
-        border-top: 1px solid #dee2e6 !important;
-    }
-    
-    /* Tooltips más compactos */
-    [title] {
-        font-size: 0.75rem !important;
-    }
-    
-    /* Iconos más pequeños */
-    .fa-table, .fa-eraser, .fa-file-pdf, .fa-save {
-        font-size: 0.85em !important;
-    }
-    
-    /* Columnas de promedio y final */
-    .bg-info.text-white,
-    .unidad-header.bg-warning {
-        font-size: 0.8rem !important;
-        min-width: 80px !important;
-    }
-    
-    /* Ajuste para inputs en celdas */
-    #tablaCalificaciones td.text-center {
-        padding: 2px !important;
-    }
-    
-    /* Colores para aprobado/reprobado más sutiles */
-    .unidad-aprobada {
-        background-color: rgba(40, 167, 69, 0.08) !important;
-        border-left: 2px solid #28a745 !important;
-    }
-    
-    .unidad-reprobada {
-        background-color: rgba(220, 53, 69, 0.08) !important;
-        border-left: 2px solid #dc3545 !important;
-    }
-    
-    /* Columna extraordinario especial */
-    #tablaCalificaciones td[style*="background: #fff3cd"] {
-        padding: 2px !important;
-    }
-    
-    /* Botón cargar tabla */
-    #btnCargarMatriz {
-        padding: 0.375rem 0.75rem !important;
-        font-size: 0.9rem !important;
-    }
-    
-    /* Mensaje de ayuda */
-    small.text-muted {
-        font-size: 0.75rem !important;
-        line-height: 1.2 !important;
-    }
-    
-    /* Ajuste para pantallas pequeñas */
-    @media (max-width: 768px) {
+        /* ESTILOS COMPACTOS PARA CAPTURA DE CALIFICACIONES */
+
+        /* Modal más compacto */
+        .modal-header-custom {
+            padding: 0.75rem 1rem !important;
+        }
+
+        .modal-body {
+            padding: 0.5rem !important;
+        }
+
+        .modal-footer-custom {
+            padding: 0.5rem 1rem !important;
+        }
+
+        /* Filtros compactos */
+        .card.mb-3 .card-header {
+            padding: 0.75rem !important;
+            font-size: 0.95rem !important;
+        }
+
+        .card.mb-3 .card-body1 {
+            padding: 1rem !important;
+        }
+
+        .card.mb-3 .form-control {
+            padding: 0.375rem 0.5rem !important;
+            font-size: 0.9rem !important;
+            height: 36px !important;
+        }
+
+        .card.mb-3 label {
+            font-size: 0.9rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .card.mb-3 .row.mt-3 {
+            margin-top: 1rem !important;
+        }
+
+        /* Tabla matricial ultra compacta */
         #tablaCalificaciones th,
         #tablaCalificaciones td {
-            font-size: 0.75rem !important;
-            padding: 3px 2px !important;
+            padding: 4px 3px !important;
+            font-size: 0.82rem !important;
+            line-height: 1.2 !important;
+            vertical-align: middle !important;
         }
-        
+
+        /* Celdas sticky más estrechas */
+        #tablaCalificaciones th[style*="position: sticky"] {
+            min-width: 40px !important;
+            left: 0 !important;
+        }
+
+        #tablaCalificaciones th[style*="position: sticky"]+th {
+            min-width: 90px !important;
+            left: 40px !important;
+        }
+
+        #tablaCalificaciones th[style*="position: sticky"]+th+th {
+            min-width: 180px !important;
+            left: 130px !important;
+        }
+
+        /* Inputs de calificación compactos */
         .calificacion-input-matriz,
         .calificacion-input-especial {
-            width: 55px !important;
-            height: 26px !important;
+            padding: 2px 4px !important;
+            height: 28px !important;
+            font-size: 0.85rem !important;
+            width: 65px !important;
+            margin: 2px auto !important;
+            display: block !important;
+        }
+
+        /* Badges compactos */
+        #tablaCalificaciones .badge {
+            padding: 0.25em 0.4em !important;
+            font-size: 1.3em !important;
+            font-weight: 600 !important;
+        }
+
+        /* Textos pequeños */
+        #tablaCalificaciones small {
+            font-size: 0.7rem !important;
+            line-height: 1.1 !important;
+        }
+
+        /* Encabezados de unidad */
+        .unidad-header {
+            min-width: 140px !important;
+            font-size: 0.8rem !important;
+            padding: 4px 2px !important;
+        }
+
+        /* Cabecera de tabla */
+        #tablaCalificaciones thead {
             font-size: 0.8rem !important;
         }
-        
+
+        /* Contenedor de tabla con scroll optimizado */
         #contenedorTabla {
-            max-height: 400px !important;
+            max-height: 500px !important;
+            overflow-x: auto !important;
         }
-    }
-</style>
+
+        /* Botones pequeños */
+        #btnLimpiarTodo,
+        #btnExportarPDF,
+        #btnGuardarCalificaciones {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        /* Card header compacto */
+        .card-header.text-white {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        /* Card footer compacto */
+        .card-footer.bg-light {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        /* Info materia */
+        #infoMateria {
+            font-size: 0.85rem !important;
+        }
+
+        /* Total alumnos badge */
+        .badge-light strong {
+            font-size: 0.9rem !important;
+        }
+
+        /* Espaciado reducido en filas */
+        #tablaCalificaciones tbody tr {
+            height: 38px !important;
+        }
+
+        /* Separadores más delgados */
+        #tablaCalificaciones hr {
+            margin: 0.25rem 0 !important;
+            border-top: 1px solid #dee2e6 !important;
+        }
+
+        /* Tooltips más compactos */
+        [title] {
+            font-size: 0.75rem !important;
+        }
+
+        /* Iconos más pequeños */
+        .fa-table,
+        .fa-eraser,
+        .fa-file-pdf,
+        .fa-save {
+            font-size: 0.85em !important;
+        }
+
+        /* Columnas de promedio y final */
+        .bg-info.text-white,
+        .unidad-header.bg-warning {
+            font-size: 0.8rem !important;
+            min-width: 80px !important;
+        }
+
+        /* Ajuste para inputs en celdas */
+        #tablaCalificaciones td.text-center {
+            padding: 2px !important;
+        }
+
+        /* Colores para aprobado/reprobado más sutiles */
+        .unidad-aprobada {
+            background-color: rgba(40, 167, 69, 0.08) !important;
+            border-left: 2px solid #28a745 !important;
+        }
+
+        .unidad-reprobada {
+            background-color: rgba(220, 53, 69, 0.08) !important;
+            border-left: 2px solid #dc3545 !important;
+        }
+
+        /* Columna extraordinario especial */
+        #tablaCalificaciones td[style*="background: #fff3cd"] {
+            padding: 2px !important;
+        }
+
+        /* Botón cargar tabla */
+        #btnCargarMatriz {
+            padding: 0.375rem 0.75rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        /* Mensaje de ayuda */
+        small.text-muted {
+            font-size: 0.75rem !important;
+            line-height: 1.2 !important;
+        }
+
+        /* Ajuste para pantallas pequeñas */
+        @media (max-width: 768px) {
+
+            #tablaCalificaciones th,
+            #tablaCalificaciones td {
+                font-size: 0.75rem !important;
+                padding: 3px 2px !important;
+            }
+
+            .calificacion-input-matriz,
+            .calificacion-input-especial {
+                width: 55px !important;
+                height: 26px !important;
+                font-size: 0.8rem !important;
+            }
+
+            #contenedorTabla {
+                max-height: 400px !important;
+            }
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -252,7 +256,7 @@
         </div>
     </div>
     <!-- Navigation -->
-     <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dangerb">
         <div class="text-center">
             <div style="width: 300px; height: 120px; ">
                 <img src="{{ asset('libs/sbadmin/img/upn.png') }}" alt="Logo"
@@ -269,7 +273,7 @@
                         href="{{ route('periodos.index') }}">Períodos Escolares</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
                         href="{{ route('carreras.index') }}">Carreras</a></li>
-                
+
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1" href="{{ route('planes.index') }}">Planes
                         de estudio</a></li>
                 <li class="nav-item"><a class="nav-link text-white px-3 mr-1"
@@ -470,10 +474,11 @@
                 <div class=" modal-header-custom border-0">
                     <div class="w-100 text-center">
                         <div class="w-100 text-center">
-                        <h5 class="text-danger1 text-center mb-5"
-                        style="font-size: 1.5rem; font-family: 'Arial Black', Verdana, sans-serif; font-weight: bold;">
-                        <i class="fas fa-graduation-cap mr-2"></i>Captura de Calificaciones</h5>
-                    </div>
+                            <h5 class="text-danger1 text-center mb-5"
+                                style="font-size: 1.5rem; font-family: 'Arial Black', Verdana, sans-serif; font-weight: bold;">
+                                <i class="fas fa-graduation-cap mr-2"></i>Captura de Calificaciones
+                            </h5>
+                        </div>
                     </div>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar"
                         style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 1.8rem; opacity: 0.9;">
@@ -590,7 +595,7 @@
                                             Calificaciones del 0 al 10.
                                         </small>
                                         <div>
-                                            
+
                                             <button type="button" class="btn btn-sm btn-danger mr-2"
                                                 id="btnExportarPDF" style="display: none;">
                                                 <i class="fas fa-file-pdf mr-1"></i> Exportar a PDF
@@ -1163,26 +1168,30 @@
 
             // Renderizar matriz
             function renderMatriz() {
-                
+
                 if (datosMatriz.alumnos.length === 0) {
                     tbody.innerHTML =
                         '<tr><td colspan="100" class="text-center text-muted py-4">No hay alumnos en este grupo</td></tr>';
                     return;
                 }
                 // Ordenar alumnos por apellidos (primer_apellido + segundo_apellido)
-datosMatriz.alumnos.sort((a, b) => {
-        const nombreA = (a.nombre || '').trim();
-        const nombreB = (b.nombre || '').trim();
-        const partesA = nombreA.split(' ');
-        const partesB = nombreB.split(' ');
-        const primerApellidoA = partesA.length >= 2 ? partesA[partesA.length - 2] : nombreA;
-        const primerApellidoB = partesB.length >= 2 ? partesB[partesB.length - 2] : nombreB;
-        const apellidoCompare = primerApellidoA.localeCompare(primerApellidoB, 'es', { sensitivity: 'base' });
-        if (apellidoCompare !== 0) {
-            return apellidoCompare;
-        }
-        return nombreA.localeCompare(nombreB, 'es', { sensitivity: 'base' });
-    });
+                datosMatriz.alumnos.sort((a, b) => {
+                    const nombreA = (a.nombre || '').trim();
+                    const nombreB = (b.nombre || '').trim();
+                    const partesA = nombreA.split(' ');
+                    const partesB = nombreB.split(' ');
+                    const primerApellidoA = partesA.length >= 2 ? partesA[partesA.length - 2] : nombreA;
+                    const primerApellidoB = partesB.length >= 2 ? partesB[partesB.length - 2] : nombreB;
+                    const apellidoCompare = primerApellidoA.localeCompare(primerApellidoB, 'es', {
+                        sensitivity: 'base'
+                    });
+                    if (apellidoCompare !== 0) {
+                        return apellidoCompare;
+                    }
+                    return nombreA.localeCompare(nombreB, 'es', {
+                        sensitivity: 'base'
+                    });
+                });
 
                 let headersUnidades = '';
                 datosMatriz.unidades.forEach(unidad => {
@@ -1400,10 +1409,10 @@ datosMatriz.alumnos.sort((a, b) => {
                          ${calificacion} ${tipoEval.icon}
                     </span>
                     ${historialCompleto.length > 1 ? `
-                        <small class="text-muted mb-2" style="font-size: 0.7rem;">
-                            
-                        </small>
-                        ` : ''}
+                            <small class="text-muted mb-2" style="font-size: 0.7rem;">
+                                
+                            </small>
+                            ` : ''}
                     <hr style="width: 100%; margin: 0.5rem 0; border-top: 1px dashed #ddd;">
                     <input type="number" 
                            class="form-control calificacion-input-matriz text-center mt-2" 
@@ -1434,18 +1443,18 @@ datosMatriz.alumnos.sort((a, b) => {
                         ${tipoEval.icon} ${tipoEval.label}
                     </small>
                     ${mensajeError ? `
-                        <small class="text-warning mt-1" style="font-size: 0.75rem;">
-                            ${mensajeError}
-                        </small>
-                        ` : esAprobatoria ? `
-                        
+                            <small class="text-warning mt-1" style="font-size: 0.75rem;">
+                                ${mensajeError}
+                            </small>
+                            ` : esAprobatoria ? `
                             
-                        </small>
-                        ` : `
-                        <small class="text-muted mt-1" style="font-size: 0.8rem;">
-                            
-                        </small>
-                        `}
+                                
+                            </small>
+                            ` : `
+                            <small class="text-muted mt-1" style="font-size: 0.8rem;">
+                                
+                            </small>
+                            `}
                 </div>
             </td>`;
                             }
@@ -1528,12 +1537,12 @@ datosMatriz.alumnos.sort((a, b) => {
                                     ${tipoEvalEspecial.icon} ${tipoEvalEspecial.label}
                                 </small>
                                 ${esAprob ? `
-                                                <small class="text-success mt-1">
-                                                    
-                                                </small>` : `
-                                                <small class="text-danger mt-1">
-                                                    
-                                                </small>`}
+                                                    <small class="text-success mt-1">
+                                                        
+                                                    </small>` : `
+                                                    <small class="text-danger mt-1">
+                                                        
+                                                    </small>`}
                                 <small class="text-muted mt-1" style="font-size: 0.7rem;">
                                     
                                 </small>
@@ -1805,7 +1814,7 @@ datosMatriz.alumnos.sort((a, b) => {
 
             // Abrir en nueva pestaña para descargar PDF
             const url =
-            `/calificaciones/exportar-pdf?grupo=${idGrupo}&periodo=${idPeriodo}&materia=${idAsignacion}`;
+                `/calificaciones/exportar-pdf?grupo=${idGrupo}&periodo=${idPeriodo}&materia=${idAsignacion}`;
             window.open(url, '_blank');
         });
     </script>

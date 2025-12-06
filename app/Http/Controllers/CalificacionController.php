@@ -1278,7 +1278,18 @@ public function exportarPDF(Request $request)
         'margin_right' => 10,
     ]);
 
-    return $pdf->download('calificaciones_' . now()->format('Y-m-d') . '.pdf');
+    // Formatear nombre del archivo
+$periodoStr = str_replace(['/', '-', ' '], '_', $periodo?->nombre ?? 'periodo');
+$carreraStr = str_replace(['/', '-', ' '], '_', $grupo?->carrera?->nombre ?? 'carrera');
+$grupoStr = str_replace(['/', '-', ' '], '_', $grupo?->nombre ?? 'grupo');
+
+// Extraer número de semestre del nombre del grupo (ej: "5A" → "5")
+$semestre = preg_replace('/\D/', '', $grupoStr); // Extrae solo dígitos
+$semestreStr = $semestre ?: '0';
+
+$nombreArchivo = "calificaciones_{$periodoStr}_sem{$semestreStr}_{$grupoStr}_{$carreraStr}_" . now()->format('Y-m-d') . '.pdf';
+
+return $pdf->download($nombreArchivo);
 }
     // Método auxiliar para reutilizar lógica
     private function obtenerMatrizCompletaData($idGrupo, $idPeriodo, $idAsignacion)

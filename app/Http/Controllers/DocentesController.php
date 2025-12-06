@@ -18,17 +18,38 @@ use Illuminate\Validation\Rule;
 
 class DocentesController extends Controller
 {
-    public function index()
-    {
-        $docentes = Docente::with(['datosDocentes.domicilioDocente', 'datosDocentes.genero', 'datosDocentes.abreviatura', 'usuario.rol'])->get();
-        $generos = Genero::all();
-        $distritos = Distrito::all();
-        $estados = Estado::all();
-        $roles = Rol::all();
-        $abreviaturas = Abreviatura::all();
+    public function index(Request $request)
+{
+    // 🔹 Obtener valor del selector "mostrar"
+    $mostrar = $request->get('mostrar', 10); // 10 por defecto
 
-        return view('docente.index', compact('docentes', 'generos', 'distritos', 'estados', 'roles', 'abreviaturas'));
+    // 🔹 Construir query base
+    $query = Docente::with([
+        'datosDocentes.domicilioDocente',
+        'datosDocentes.genero',
+        'datosDocentes.abreviatura',
+        'usuario.rol'
+    ]);
+
+    // 🔹 Aplicar paginación o mostrar todos
+    if ($mostrar === "todo") {
+        $docentes = $query->get(); // sin paginar
+    } else {
+        // Validar número
+        $perPage = is_numeric($mostrar) ? (int)$mostrar : 10;
+
+        $docentes = $query->paginate($perPage)->appends($request->all());
     }
+
+    $generos = Genero::all();
+    $distritos = Distrito::all();
+    $estados = Estado::all();
+    $roles = Rol::all();
+    $abreviaturas = Abreviatura::all();
+
+    return view('docente.index', compact('docentes', 'generos', 'distritos', 'estados', 'roles', 'abreviaturas'));
+}
+
 
     public function store(Request $request)
     {
